@@ -1,4 +1,4 @@
-import { AuthService } from './auth.service';
+import { User } from './../user.decorator';
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from 'passport-jwt'
@@ -6,15 +6,13 @@ import { passportJwtSecret } from 'jwks-rsa';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly authService: AuthService
-  ) {
+  constructor() {
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `https://cognito-idp.us-east-1.amazonaws.com/${process.env.USERPOOL_ID}/.well-known/jwks.json`
+        jwksUri: process.env.JWKS_URL
       }),
 
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -22,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  public async validate(payload: any) {
+  public async validate(payload: User) {
     return payload
   }
 }

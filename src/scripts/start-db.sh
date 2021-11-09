@@ -20,3 +20,5 @@ SLEEP 3;
 # create the db 
 echo "CREATE DATABASE $DB ENCODING 'UTF-8';" | docker exec -i $SERVER psql -U postgres
 echo "\l" | docker exec -i $SERVER psql -U postgres
+value=$(<create-sql-functions.sql)
+echo "$value" | docker exec -i $SERVER psql -U postgres -d "$DB"
