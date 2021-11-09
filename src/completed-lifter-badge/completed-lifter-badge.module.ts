@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { CompletedLifterBadgeController } from './completed-lifter-badge.controller';
 
-@Module({})
+@Module({
+  controllers: [CompletedLifterBadgeController]
+})
 export class CompletedLifterBadgeModule {}
