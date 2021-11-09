@@ -1,9 +1,12 @@
+import { Lead } from './../../model/leads.entity';
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { LeadsController } from './leads.controller';
 import { LeadsService } from './leads.service';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Lead])],
   controllers: [LeadsController],
   providers: [LeadsService]
 })
-export class LeadsModule {}
+export class LeadsModule { }
