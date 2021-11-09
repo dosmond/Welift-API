@@ -1,3 +1,4 @@
+import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
 import { RolesGuard } from './auth/roles/roles.gaurd';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,7 +9,7 @@ import { AddressModule } from './routes/address/address.module';
 import { AuthModule } from './auth/auth.module';
 import { AcceptedLiftModule } from './routes/accepted-lift/accepted-lift.module';
 import { BadgeModule } from './routes/badge/badge.module';
-import { BookingModule } from './routes/booking/booking.module';
+import { BookingModule } from './routes/booking/booking.module'
 import { CompletedLifterBadgeModule } from './routes/completed-lifter-badge/completed-lifter-badge.module';
 import { EquipmentModule } from './routes/equipment/equipment.module';
 import { LeadsModule } from './routes/leads/leads.module';
@@ -36,6 +37,7 @@ import { TrainingVideosModule } from './routes/training-videos/training-videos.m
     LifterCompletedTrainingVideosModule,
     LifterEquipmentModule,
     LifterReviewsModule,
+    LifterStatsModule,
     LiftersModule,
     LiftsModule,
     PartnerCreditHourPurchasesModule,
