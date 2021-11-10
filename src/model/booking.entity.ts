@@ -48,10 +48,10 @@ export class Booking {
   id: string;
 
   @Column("uuid", { name: "starting_address" })
-  startingAddress: string;
+  startingAddressId: string;
 
   @Column("uuid", { name: "ending_address", nullable: true })
-  endingAddress: string | null;
+  endingAddressId: string | null;
 
   @Column("timestamp with time zone", { name: "start_time" })
   startTime: Date;
@@ -111,13 +111,13 @@ export class Booking {
 
   @ManyToOne(() => Address, (addresses) => addresses.bookings)
   @JoinColumn([{ name: "ending_address", referencedColumnName: "id" }])
-  endingAddress2: Address;
+  endingAddress: Address;
 
   @ManyToOne(() => Address, (addresses) => addresses.bookings2, {
     onDelete: "CASCADE",
   })
   @JoinColumn([{ name: "starting_address", referencedColumnName: "id" }])
-  startingAddress2: Address;
+  startingAddress: Address;
 
   @OneToOne(() => Lift, (lifts) => lifts.booking)
   lifts: Lift;

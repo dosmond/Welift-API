@@ -27,10 +27,10 @@ export class Address {
   @Column("character varying", { name: "postal_code", length: 32 })
   postalCode: string;
 
-  @OneToMany(() => Booking, (booking) => booking.endingAddress2)
+  @OneToMany(() => Booking, (booking) => booking.endingAddress)
   bookings: Booking[];
 
-  @OneToMany(() => Booking, (booking) => booking.startingAddress2)
+  @OneToMany(() => Booking, (booking) => booking.startingAddress)
   bookings2: Booking[];
 
   @OneToMany(() => Lifters, (lifters) => lifters.address2)
