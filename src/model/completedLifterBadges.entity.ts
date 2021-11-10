@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Badge } from "./badges.entity";
-import { Lifters } from "./lifters.entity";
+import { Lifter } from "./lifters.entity";
 
 @Index("Unique_row", ["badgeId", "lifterId"], { unique: true })
 @Index("fki_fk_badge_id", ["badgeId"], {})
@@ -21,7 +21,7 @@ export class CompletedLifterBadge {
   @JoinColumn([{ name: "badge_id", referencedColumnName: "id" }])
   badge: Badge;
 
-  @ManyToOne(() => Lifters, (lifters) => lifters.completedLifterBadges)
+  @ManyToOne(() => Lifter, (lifters) => lifters.completedLifterBadges)
   @JoinColumn([{ name: "lifter_id", referencedColumnName: "id" }])
-  lifter: Lifters;
+  lifter: Lifter;
 }

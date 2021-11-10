@@ -1,3 +1,4 @@
+import { AcceptedLiftDTO } from './../../dto/acceptedLift.dto';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
@@ -24,10 +25,12 @@ export class AcceptedLiftService {
     if (page && pageSize)
       query.skip((page - 1) * pageSize).take(pageSize)
 
-    return await query.getManyAndCount();
+    return await query.getMany().then(lifts => lifts.map(lift => AcceptedLiftDTO.fromEntity(lift)));
   }
 
   public async getById(id: string) {
-    return await this.repo.findOne({ id: id }, { relations: ['lifter', 'lift', 'lift.booking'] });
+    return await
+      this.repo.findOne({ id: id }, { relations: ['lifter', 'lift', 'lift.booking'] })
+        .then(e => AcceptedLiftDTO.fromEntity(e));
   }
 }

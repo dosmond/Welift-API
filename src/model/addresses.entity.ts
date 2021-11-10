@@ -1,6 +1,6 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Booking } from "./booking.entity";
-import { Lifters } from "./lifters.entity";
+import { Lifter } from "./lifters.entity";
 
 @Index("pr_address", ["id"], { unique: true })
 @Entity("addresses", { schema: "public" })
@@ -33,6 +33,6 @@ export class Address {
   @OneToMany(() => Booking, (booking) => booking.startingAddress)
   bookings2: Booking[];
 
-  @OneToMany(() => Lifters, (lifters) => lifters.address2)
-  lifters: Lifters[];
+  @OneToMany(() => Lifter, (lifters) => lifters.address2)
+  lifters: Lifter[];
 }

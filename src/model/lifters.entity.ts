@@ -22,7 +22,7 @@ import { Address } from "./addresses.entity";
 @Index("lifters_phone_key", ["phone"], { unique: true })
 @Index("lifters_user_id_key", ["userId"], { unique: true })
 @Entity("lifters", { schema: "public" })
-export class Lifters {
+export class Lifter {
   @Column("character varying", { name: "first_name", length: 64 })
   firstName: string;
 

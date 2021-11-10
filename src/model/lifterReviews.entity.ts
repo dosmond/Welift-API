@@ -1,5 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Lifters } from "./lifters.entity";
+import { Lifter } from "./lifters.entity";
 
 @Index("lifter_reviews_pkey", ["id"], { unique: true })
 @Index("fki_fk_lifter_review_lifter_id", ["lifterId"], {})
@@ -17,7 +17,7 @@ export class LifterReview {
   @Column("integer", { name: "rating" })
   rating: number;
 
-  @ManyToOne(() => Lifters, (lifters) => lifters.lifterReviews)
+  @ManyToOne(() => Lifter, (lifters) => lifters.lifterReviews)
   @JoinColumn([{ name: "lifter_id", referencedColumnName: "id" }])
-  lifter: Lifters;
+  lifter: Lifter;
 }
