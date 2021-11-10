@@ -1,4 +1,18 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
+import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { AcceptedLiftService } from './accepted-lift.service';
 
 @Controller('accepted-lift')
-export class AcceptedLiftController {}
+export class AcceptedLiftController {
+  constructor(private serv: AcceptedLiftService) { }
+
+  @Get()
+  public async getAll(@Query() query) {
+    return await this.serv.getAll(query.start, query.end, query.order);
+  }
+
+  @Get('accepted')
+  public async getById(@Query() query): Promise<AcceptedLift> {
+    return await this.serv.getById(query.id);
+  }
+}
