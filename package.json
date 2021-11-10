@@ -34,6 +34,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "@types/passport-jwt": "^3.0.6",
     "amazon-cognito-identity-js": "^5.2.2",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
     "jwks-rsa": "^2.0.5",
