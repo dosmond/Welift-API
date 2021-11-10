@@ -7,13 +7,15 @@ import { AcceptedLiftService } from './accepted-lift.service';
 export class AcceptedLiftController {
   constructor(private serv: AcceptedLiftService) { }
 
-  @Get()
+  @Get('list')
   public async getAll(@Query() query): Promise<AcceptedLiftDTO[]> {
     return await this.serv.getAll(query.start, query.end, query.order, query.page, query.pageSize);
   }
 
-  @Get('accepted')
+  @Get()
   public async getById(@Query() query): Promise<AcceptedLiftDTO> {
     return await this.serv.getById(query.id);
   }
+
+
 }
