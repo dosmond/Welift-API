@@ -1,32 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool
 } from 'amazon-cognito-identity-js'
-import { rejects } from 'assert';
 
 @Injectable()
 export class AuthService {
-  private userPool: CognitoUserPool;
+  private userPools: { [key: string]: CognitoUserPool }
 
   constructor() {
-    this.userPool = new CognitoUserPool({
-      UserPoolId: process.env.USERPOOL_ID,
-      ClientId: process.env.COGNITO_CLIENT_ID
-    });
+    this.userPools = {
+      landing: new CognitoUserPool({
+        UserPoolId: process.env.LANDING_USERPOOL_ID,
+        ClientId: process.env.LANDING_CLIENT_ID
+      }),
+      partner: new CognitoUserPool({
+        UserPoolId: process.env.PARTNER_USERPOOL_ID,
+        ClientId: process.env.PARTNER_CLIENT_ID
+      }),
+      mobile: new CognitoUserPool({
+        UserPoolId: process.env.MOBILE_USERPOOL_ID,
+        ClientId: process.env.MOBILE_CLIENT_ID
+      }),
+      admin: new CognitoUserPool({
+        UserPoolId: process.env.ADMIN_USERPOOL_ID,
+        ClientId: process.env.ADMIN_CLIENT_ID
+      })
+    }
   }
 
   registerUser(registerRequest: {
     username: string,
     email: string,
     password: string,
+    appName: string
   }) {
-    const { username, email, password } = registerRequest;
+    const { username, email, password, appName } = registerRequest;
 
     return new Promise((res, rej) => {
-      return this.userPool.signUp(username, password,
+      const userPool = this.userPools[appName]
+
+      if (!userPool) {
+        throw new BadRequestException(`App name: ${appName} does not exist`)
+      }
+
+      return userPool.signUp(username, password,
         [new CognitoUserAttribute({ Name: 'email', Value: email })],
         null,
         (error, result) => {
@@ -38,17 +58,22 @@ export class AuthService {
     })
   }
 
-  authenticateUser(user: { username: string, password: string }) {
-    const { username, password } = user;
+  authenticateUser(request: { username: string, password: string, appName: string }) {
+    const { username, password, appName } = request;
 
     const authenticationDetails = new AuthenticationDetails({
       Username: username,
       Password: password
     });
 
+    const userPool = this.userPools[appName]
+
+    if (!userPool)
+      throw new BadRequestException(`App name: ${appName} does not exist`)
+
     const userData = {
       Username: username,
-      Pool: this.userPool
+      Pool: userPool
     };
 
     const newUser = new CognitoUser(userData)
