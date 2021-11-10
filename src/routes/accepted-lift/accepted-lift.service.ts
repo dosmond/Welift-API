@@ -2,45 +2,29 @@ import { AcceptedLift } from './../../model/acceptedLift.entity';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between } from 'typeorm';
-import { orderBy } from 'lodash'
 
 @Injectable()
 export class AcceptedLiftService {
   constructor(@InjectRepository(AcceptedLift) private readonly repo: Repository<AcceptedLift>) { }
 
-  public async getAll(start: Date, end: Date, order: string) {
-    let whereClause = {}
+  public async getAll(start: Date, end: Date, order: 'ASC' | 'DESC', page: number, pageSize: number) {
+    let query = this.repo.createQueryBuilder('q')
+      .leftJoinAndSelect('q.lift', 'lift')
+      .leftJoinAndSelect('lift.booking', 'booking')
 
-    if (start && end) {
-      whereClause = {
-        lift: {
-          booking: {
-            startTime: Between(start, end)
-          }
-        }
-      }
-    }
-    else if (start) {
-      whereClause = {
-        lift: {
-          booking: {
-            startTime: Between(start, new Date())
-          }
-        }
-      }
-    }
+    // Time Queries
+    if (start && end)
+      query.where('booking.startTime between :start and :end', { start: start, end: end })
+    else if (start)
+      query.where('booking.startTime between :start and :end', { start: start, end: new Date() })
 
-    let orderDirection = ['asc']
-    if (order.toUpperCase() === 'DESC')
-      orderDirection = ['desc']
+    query.orderBy('booking.startTime', order)
 
-    let value = await this.repo.find({
-      relations: ['lifter', 'lift', 'lift.booking'],
-      where: whereClause,
-      take: 100,
-    });
-    return orderBy(value, (accepted: AcceptedLift) => accepted.lift.booking.startTime, orderDirection)
+    // Pagination
+    if (page && pageSize)
+      query.skip((page - 1) * pageSize).take(pageSize)
+
+    return await query.getManyAndCount();
   }
 
   public async getById(id: string) {

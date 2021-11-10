@@ -8,7 +8,7 @@ export class AcceptedLiftController {
 
   @Get()
   public async getAll(@Query() query) {
-    return await this.serv.getAll(query.start, query.end, query.order);
+    return await this.serv.getAll(query.start, query.end, query.order, query.page, query.pageSize);
   }
 
   @Get('accepted')
