@@ -1,45 +1,51 @@
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
-import { Lifter } from './../model/lifters.entity';
-import { Lift } from './../model/lifts.entity';
+import { Lifter } from '../../../model/lifters.entity';
+import { Lift } from '../../../model/lifts.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsNumber, IsObject, IsUUID, } from 'class-validator';
+import { IsBoolean, IsDate, IsNumber, IsOptional, IsUUID, } from 'class-validator';
 import { User } from 'src/user.decorator';
 
-export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
+export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO>{
   @ApiProperty({ required: false })
   @IsUUID()
   id: string;
 
   @ApiProperty({ required: false })
   @IsUUID()
+  @IsOptional()
   lifterId: string;
 
   @ApiProperty({ required: false })
   @IsDate()
+  @IsOptional()
   clockInTime: Date;
 
   @ApiProperty({ required: false })
   @IsDate()
+  @IsOptional()
   clockOutTime: Date;
 
   @ApiProperty({ required: false })
   @IsUUID()
+  @IsOptional()
   liftId: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   @IsNumber()
+  @IsOptional()
   payrate: number;
 
   @ApiProperty({ required: false })
   @IsBoolean()
+  @IsOptional()
   usePickupTruck: boolean;
 
   @ApiProperty({ required: false })
-  @IsObject()
+  @IsOptional()
   lift: Lift;
 
   @ApiProperty({ required: false })
-  @IsObject()
+  @IsOptional()
   lifter: Lifter;
 
   public static from(dto: Partial<AcceptedLiftDTO>): AcceptedLiftDTO {
@@ -73,12 +79,35 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
   public toEntity(user: User = null): AcceptedLift {
     const lift = new AcceptedLift();
     lift.id = this.id;
-    lift.lifterId = this.lifterId;
-    lift.liftId = this.liftId;
-    lift.clockInTime = this.clockInTime;
-    lift.clockOutTime = this.clockOutTime;
-    lift.payrate = this.payrate;
-    lift.usePickupTruck = this.usePickupTruck;
+    lift.lifterId = this.lifterId ?? null;
+    lift.liftId = this.liftId ?? null;
+    lift.clockInTime = this.clockInTime ?? null;
+    lift.clockOutTime = this.clockOutTime ?? null;
+    lift.payrate = this.payrate ?? null;
+    lift.usePickupTruck = this.usePickupTruck ?? null;
     return lift;
+  }
+
+  public toUpdateEntity(): Partial<AcceptedLift> {
+    const lift = new AcceptedLift()
+    lift.id = this.id;
+    if (this.lifterId !== undefined)
+      lift.lifterId = this.lifterId
+
+    if (this.liftId !== undefined)
+      lift.liftId = this.liftId;
+
+    if (this.clockInTime !== undefined)
+      lift.clockInTime = this.clockInTime;
+
+    if (this.clockOutTime !== undefined)
+      lift.clockOutTime = this.clockOutTime;
+
+    if (this.payrate !== undefined)
+      lift.payrate = this.payrate;
+
+    if (this.usePickupTruck !== undefined)
+      lift.usePickupTruck = this.usePickupTruck;
+    return lift
   }
 }

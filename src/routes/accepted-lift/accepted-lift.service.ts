@@ -2,8 +2,9 @@ import { AcceptedLift } from './../../model/acceptedLift.entity';
 import { Injectable, BadRequestException, ConflictException, NotAcceptableException } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
-import { AcceptedLiftDTO } from './../../dto/acceptedLift.dto';
+import { TokenVerificationRequestDTO } from 'src/routes/accepted-lift/dto/tokenVerification.dto';
+import { AcceptedLiftDTO } from './dto/acceptedLift.dto';
+import { User } from 'src/user.decorator';
 
 @Injectable()
 export class AcceptedLiftService {
@@ -61,6 +62,11 @@ export class AcceptedLiftService {
     let updatedLift = await this.repo.save(lift)
 
     return AcceptedLiftDTO.fromEntity(updatedLift)
+  }
+
+  public async update(user: User, acceptedLift: AcceptedLiftDTO): Promise<AcceptedLiftDTO> {
+    let dto = AcceptedLiftDTO.fromEntity(acceptedLift)
+    return AcceptedLiftDTO.fromEntity(await this.repo.save(dto.toUpdateEntity()))
   }
 
   private getPayrate(lift: AcceptedLift): number {
