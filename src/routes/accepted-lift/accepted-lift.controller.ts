@@ -1,21 +1,43 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
-import { AcceptedLiftDTO } from './dto/acceptedLift.dto';
-import { TokenVerificationRequestDTO } from 'src/routes/accepted-lift/dto/tokenVerification.dto';
+import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AcceptedLiftService } from './accepted-lift.service';
 import { User } from 'src/user.decorator';
+import { DeleteResult } from 'typeorm';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/enum/roles.enum';
+import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
+import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
+import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
+import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
 
 @Controller('accepted-lift')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AcceptedLiftController {
   constructor(private serv: AcceptedLiftService) { }
 
-  @Get('list')
-  public async getAll(@Query() query): Promise<AcceptedLiftDTO[]> {
-    return await this.serv.getAll(query.start, query.end, query.order, query.page, query.pageSize);
-  }
-
   @Get()
+  @Roles(Role.Lifter)
   public async getById(@Query() query): Promise<AcceptedLiftDTO> {
     return await this.serv.getById(query.id);
+  }
+
+  @Get('list')
+  @Roles(Role.Admin)
+  public async getAll(@Query() query: PaginatedDTO): Promise<AcceptedLiftDTO[]> {
+    return await this.serv.getAll(query);
+  }
+
+  @Get('list-lifter-accepted')
+  @Roles(Role.Lifter)
+  public async getLifterAccepted(@Query() query: LifterPaginatedDTO): Promise<AcceptedLiftDTO[]> {
+    return await this.serv.getLifterAccepted(query)
+  }
+
+  @Post('create')
+  public async create(@User() user: User, @Body() body: AcceptedLiftDTO): Promise<AcceptedLiftDTO> {
+    return await this.serv.create(user, body);
   }
 
   @Post('verify-completion-token')
@@ -24,7 +46,12 @@ export class AcceptedLiftController {
   }
 
   @Put('update')
-  public async update(@User() user: User, @Body() acceptedLift: AcceptedLiftDTO): Promise<AcceptedLiftDTO> {
-    return await this.serv.update(user, acceptedLift)
+  public async update(@User() user: User, @Body() acceptedLift: AcceptedLiftUpdateDTO): Promise<AcceptedLiftDTO> {
+    return await this.serv.update(user, acceptedLift);
+  }
+
+  @Delete('delete')
+  public async delete(@User() user: User, @Query() query: { id: string }): Promise<DeleteResult> {
+    return await this.serv.delete(user, query.id);
   }
 }

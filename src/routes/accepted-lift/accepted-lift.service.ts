@@ -2,15 +2,21 @@ import { AcceptedLift } from './../../model/acceptedLift.entity';
 import { Injectable, BadRequestException, ConflictException, NotAcceptableException } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TokenVerificationRequestDTO } from 'src/routes/accepted-lift/dto/tokenVerification.dto';
-import { AcceptedLiftDTO } from './dto/acceptedLift.dto';
+import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
+import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
 import { User } from 'src/user.decorator';
+import { DeleteResult } from 'typeorm';
+import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
+import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
 
 @Injectable()
 export class AcceptedLiftService {
   constructor(@InjectRepository(AcceptedLift) private readonly repo: Repository<AcceptedLift>) { }
 
-  public async getAll(start: Date, end: Date, order: 'ASC' | 'DESC', page: number, pageSize: number) {
+  public async getAll(details: PaginatedDTO) {
+    const { start, end, order, page, pageSize } = details;
+
     let query = this.repo.createQueryBuilder('q')
       .leftJoinAndSelect('q.lift', 'lift')
       .leftJoinAndSelect('lift.booking', 'booking')
@@ -34,6 +40,34 @@ export class AcceptedLiftService {
     return await
       this.repo.findOne({ id: id }, { relations: ['lifter', 'lift', 'lift.booking'] })
         .then(e => AcceptedLiftDTO.fromEntity(e));
+  }
+
+  public async getLifterAccepted(details: LifterPaginatedDTO): Promise<AcceptedLiftDTO[]> {
+    const { lifterId, start, end, order, page, pageSize } = details;
+
+    let query = this.repo.createQueryBuilder('q')
+      .leftJoinAndSelect('q.lift', 'lift')
+      .leftJoinAndSelect('lift.booking', 'booking')
+
+    query.where('lifter_id = :id', { id: lifterId })
+    // Time Queries
+    if (start && end)
+      query.where('booking.startTime between :start and :end', { start: start, end: end })
+    else if (start)
+      query.where('booking.startTime between :start and :end', { start: start, end: new Date() })
+
+    query.orderBy('booking.startTime', order)
+
+    // Pagination
+    if (page && pageSize)
+      query.skip((page - 1) * pageSize).take(pageSize)
+
+    return await query.getMany().then(lifts => lifts.map(lift => AcceptedLiftDTO.fromEntity(lift)));
+  }
+
+  public async create(user: User, lift: AcceptedLiftDTO): Promise<AcceptedLiftDTO> {
+    const dto = AcceptedLiftDTO.fromEntity(lift)
+    return AcceptedLiftDTO.fromEntity(await this.repo.save(dto.toEntity(user)))
   }
 
   public async verifyToken(request: TokenVerificationRequestDTO) {
@@ -64,9 +98,13 @@ export class AcceptedLiftService {
     return AcceptedLiftDTO.fromEntity(updatedLift)
   }
 
-  public async update(user: User, acceptedLift: AcceptedLiftDTO): Promise<AcceptedLiftDTO> {
-    let dto = AcceptedLiftDTO.fromEntity(acceptedLift)
-    return AcceptedLiftDTO.fromEntity(await this.repo.save(dto.toUpdateEntity()))
+  public async update(user: User, acceptedLift: AcceptedLiftUpdateDTO): Promise<AcceptedLiftUpdateDTO> {
+    let dto = AcceptedLiftUpdateDTO.fromEntity(acceptedLift)
+    return AcceptedLiftUpdateDTO.fromEntity(await this.repo.save(dto.toUpdateEntity()))
+  }
+
+  public async delete(user: User, id: string): Promise<DeleteResult> {
+    return await this.repo.delete({ id: id })
   }
 
   private getPayrate(lift: AcceptedLift): number {

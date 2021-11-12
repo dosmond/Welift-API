@@ -1,13 +1,14 @@
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
-import { Lifter } from '../../../model/lifters.entity';
-import { Lift } from '../../../model/lifts.entity';
+import { Lifter } from '../model/lifters.entity';
+import { Lift } from '../model/lifts.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsNumber, IsOptional, IsUUID, } from 'class-validator';
 import { User } from 'src/user.decorator';
 
-export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO>{
+export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
   @ApiProperty({ required: false })
   @IsUUID()
+  @IsOptional()
   id: string;
 
   @ApiProperty({ required: false })
@@ -63,17 +64,20 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO>{
   }
 
   public static fromEntity(entity: AcceptedLift): AcceptedLiftDTO {
-    return this.from({
-      id: entity.id,
-      lifterId: entity.lifterId,
-      liftId: entity.liftId,
-      clockInTime: entity.clockInTime,
-      clockOutTime: entity.clockOutTime,
-      payrate: entity.payrate,
-      usePickupTruck: entity.usePickupTruck,
-      lift: entity.lift,
-      lifter: entity.lifter
-    });
+    if (entity)
+      return this.from({
+        id: entity.id,
+        lifterId: entity.lifterId,
+        liftId: entity.liftId,
+        clockInTime: entity.clockInTime,
+        clockOutTime: entity.clockOutTime,
+        payrate: entity.payrate,
+        usePickupTruck: entity.usePickupTruck,
+        lift: entity.lift,
+        lifter: entity.lifter
+      });
+
+    return null
   }
 
   public toEntity(user: User = null): AcceptedLift {
@@ -86,28 +90,5 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO>{
     lift.payrate = this.payrate ?? null;
     lift.usePickupTruck = this.usePickupTruck ?? null;
     return lift;
-  }
-
-  public toUpdateEntity(): Partial<AcceptedLift> {
-    const lift = new AcceptedLift()
-    lift.id = this.id;
-    if (this.lifterId !== undefined)
-      lift.lifterId = this.lifterId
-
-    if (this.liftId !== undefined)
-      lift.liftId = this.liftId;
-
-    if (this.clockInTime !== undefined)
-      lift.clockInTime = this.clockInTime;
-
-    if (this.clockOutTime !== undefined)
-      lift.clockOutTime = this.clockOutTime;
-
-    if (this.payrate !== undefined)
-      lift.payrate = this.payrate;
-
-    if (this.usePickupTruck !== undefined)
-      lift.usePickupTruck = this.usePickupTruck;
-    return lift
   }
 }

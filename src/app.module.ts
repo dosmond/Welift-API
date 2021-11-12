@@ -22,6 +22,7 @@ import { PartnerCreditHourPurchasesModule } from './routes/partner-credit-hour-p
 import { PartnerReferralsModule } from './routes/partner-referrals/partner-referrals.module';
 import { PartnersModule } from './routes/partners/partners.module';
 import { TrainingVideosModule } from './routes/training-videos/training-videos.module';
+import { NoteModule } from './routes/note/note.module';
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { TrainingVideosModule } from './routes/training-videos/training-videos.m
     PartnerCreditHourPurchasesModule,
     PartnerReferralsModule,
     PartnersModule,
-    TrainingVideosModule
+    TrainingVideosModule,
+    NoteModule
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],

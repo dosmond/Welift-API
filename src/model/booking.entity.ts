@@ -4,11 +4,13 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Address } from "./addresses.entity";
 import { Lift } from "./lifts.entity";
+import { Note } from "./note.entity";
 
 @Index("fki_fk_ending_address", ["endingAddress"], {})
 @Index("pr_booking", ["id"], { unique: true })
@@ -118,6 +120,9 @@ export class Booking {
   })
   @JoinColumn([{ name: "starting_address", referencedColumnName: "id" }])
   startingAddress: Address;
+
+  @OneToMany(() => Note, (note) => note.booking)
+  notes: Note[]
 
   @OneToOne(() => Lift, (lifts) => lifts.booking)
   lifts: Lift;

@@ -1,4 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Note } from "./note.entity";
 
 @Index("leads_pkey", ["id"], { unique: true })
 @Entity("leads", { schema: "public" })
@@ -94,4 +95,7 @@ export class Lead {
     default: () => "CURRENT_TIMESTAMP",
   })
   creationDate: string | null;
+
+  @OneToMany(() => Note, (note) => note.lead)
+  notes: Note[]
 }
