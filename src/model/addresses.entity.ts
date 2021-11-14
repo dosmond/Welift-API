@@ -16,7 +16,7 @@ export class Address {
     nullable: true,
     length: 128,
   })
-  street_2: string | null;
+  street2: string | null;
 
   @Column("character varying", { name: "city", length: 128 })
   city: string;

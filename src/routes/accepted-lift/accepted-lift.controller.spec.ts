@@ -15,4 +15,9 @@ describe('AcceptedLiftController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('GetById', () => {
+
+    it('should reject')
+  })
 });
