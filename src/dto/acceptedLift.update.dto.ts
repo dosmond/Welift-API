@@ -42,24 +42,9 @@ export class AcceptedLiftUpdateDTO extends AcceptedLiftDTO implements Readonly<A
 
   public toUpdateEntity(user: User = null): Partial<AcceptedLift> {
     const lift = new AcceptedLift()
-    lift.id = this.id;
-    if (this.lifterId !== undefined)
-      lift.lifterId = this.lifterId
-
-    if (this.liftId !== undefined)
-      lift.liftId = this.liftId;
-
-    if (this.clockInTime !== undefined)
-      lift.clockInTime = this.clockInTime;
-
-    if (this.clockOutTime !== undefined)
-      lift.clockOutTime = this.clockOutTime;
-
-    if (this.payrate !== undefined)
-      lift.payrate = this.payrate;
-
-    if (this.usePickupTruck !== undefined)
-      lift.usePickupTruck = this.usePickupTruck;
+    for (const property in (this as AcceptedLiftUpdateDTO)) {
+      lift[property] = this[property]
+    }
     return lift
   }
 }

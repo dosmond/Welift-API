@@ -7,10 +7,35 @@ import { User } from 'src/user.decorator';
 import { AddressDTO } from './address.dto';
 
 export class AddressUpdateDTO extends AddressDTO implements Readonly<AddressUpdateDTO> {
-  @ApiProperty({ required: true })
-  @IsOptional()
+  @ApiProperty({ required: false })
   @IsUUID()
   id: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  street: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  street2: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  city: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  state: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  postalCode: string;
+
 
   public static from(dto: Partial<AddressUpdateDTO>): AddressUpdateDTO {
     const address = new AddressUpdateDTO();
@@ -37,24 +62,15 @@ export class AddressUpdateDTO extends AddressDTO implements Readonly<AddressUpda
     return null
   }
 
-  public toEntity(user: User = null): Address {
+  public override toEntity(user: User = null): Address {
     const address = new Address();
-    address.id = this.id;
 
-    if (this.street)
-      address.street = this.street;
+    for (const property in (this as AddressUpdateDTO)) {
+      address[property] = this[property]
+    }
 
-    if (this.street2)
-      address.street2 = this.street2;
-
-    if (this.city)
-      address.city = this.city;
-
-    if (this.state)
-      address.state = this.state;
-
-    if (this.postalCode)
-      address.postalCode = this.postalCode;
+    // if (this.postalCode)
+    //   address.postalCode = this.postalCode;
     // it.createDateTime = new Date();
     // it.createdBy = user ? user.sub : null;
     // it.lastChangedBy = user ? user.sub : null;

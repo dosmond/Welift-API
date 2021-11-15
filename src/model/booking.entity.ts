@@ -17,6 +17,9 @@ import { Note } from "./note.entity";
 @Index("fki_fk_starting_address", ["startingAddress"], {})
 @Entity("booking", { schema: "public" })
 export class Booking {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @Column("boolean", { name: "needs_pickup_truck" })
   needsPickupTruck: boolean;
 
@@ -46,9 +49,6 @@ export class Booking {
   })
   specialItems: string | null;
 
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
   @Column("uuid", { name: "starting_address" })
   startingAddressId: string;
 
@@ -75,7 +75,7 @@ export class Booking {
     nullable: true,
     default: () => "CURRENT_TIMESTAMP",
   })
-  creationDate: string | null;
+  creationDate: Date;
 
   @Column("character varying", {
     name: "stripe_session_id",
@@ -124,6 +124,6 @@ export class Booking {
   @OneToMany(() => Note, (note) => note.booking)
   notes: Note[]
 
-  @OneToOne(() => Lift, (lifts) => lifts.booking)
-  lifts: Lift;
+  @OneToOne(() => Lift, (lift) => lift.booking)
+  lift: Lift;
 }

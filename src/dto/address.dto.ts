@@ -15,7 +15,7 @@ export class AddressDTO implements Readonly<AddressDTO> {
   @IsString()
   street: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: true })
   @IsString()
   street2: string;
 

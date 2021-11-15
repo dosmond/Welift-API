@@ -31,14 +31,9 @@ export class BadgeUpdateDTO extends BadgeDTO implements Readonly<BadgeUpdateDTO>
 
   public toEntity(): Badge {
     const badge = new Badge();
-    badge.id = this.id;
-
-    if (this.name)
-      badge.name = this.name;
-
-    if (this.requiredValue)
-      badge.requiredValue = this.requiredValue;
-
+    for (const property in (this as BadgeUpdateDTO)) {
+      badge[property] = this[property]
+    }
     return badge;
   }
 }

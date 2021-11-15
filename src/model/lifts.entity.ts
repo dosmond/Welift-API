@@ -41,7 +41,7 @@ export class Lift {
   @OneToMany(() => AcceptedLift, (acceptedLifts) => acceptedLifts.lift)
   acceptedLifts: AcceptedLift[];
 
-  @OneToOne(() => Booking, (booking) => booking.lifts)
+  @OneToOne(() => Booking, (booking) => booking.lift)
   @JoinColumn([{ name: "booking_id", referencedColumnName: "id" }])
   booking: Booking;
 }
