@@ -96,6 +96,7 @@ export class BookingUpdateDTO extends BookingDTO implements Readonly<BookingUpda
     booking.referralCode = dto.referralCode;
     booking.status = dto.status;
     booking.timezone = dto.timezone;
+    booking.calendarEventId = dto.calendarEventId;
     return booking;
   }
 

@@ -1,4 +1,4 @@
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { AddressDTO } from './address.dto';
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
@@ -17,4 +17,9 @@ export class BookingBatchDTO implements Readonly<BookingBatchDTO> {
   @ApiProperty({ required: true })
   @Type(() => BookingDTO)
   booking: BookingDTO
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  referralCode: string
 }

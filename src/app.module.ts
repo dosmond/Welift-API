@@ -1,6 +1,6 @@
 import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
 import { RolesGuard } from './auth/roles/roles.gaurd';
-import { Module } from '@nestjs/common';
+import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -23,10 +23,12 @@ import { PartnerReferralsModule } from './routes/partner-referrals/partner-refer
 import { PartnersModule } from './routes/partners/partners.module';
 import { TrainingVideosModule } from './routes/training-videos/training-videos.module';
 import { NoteModule } from './routes/note/note.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+    CacheModule.register(),
     AddressModule,
     AuthModule,
     AcceptedLiftModule,
@@ -48,6 +50,13 @@ import { NoteModule } from './routes/note/note.module';
     NoteModule
   ],
   controllers: [AppController],
-  providers: [AppService, RolesGuard],
+  providers: [
+    AppService,
+    RolesGuard,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor
+    }
+  ],
 })
 export class AppModule { }

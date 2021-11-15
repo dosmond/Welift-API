@@ -102,6 +102,11 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  calendarEventId: string
+
+  @ApiProperty()
+  @IsOptional()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO
 
@@ -142,6 +147,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
     booking.referralCode = dto.referralCode;
     booking.status = dto.status;
     booking.timezone = dto.timezone;
+    booking.calendarEventId = dto.calendarEventId;
     return booking;
   }
 
@@ -167,7 +173,8 @@ export class BookingDTO implements Readonly<BookingDTO> {
         stripeSessionId: entity.stripeSessionId,
         referralCode: entity.referralCode,
         status: entity.status,
-        timezone: entity.timezone
+        timezone: entity.timezone,
+        calendarEventId: entity.calendarEventId
       });
     }
     return null
@@ -195,6 +202,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
     booking.referralCode = this.referralCode;
     booking.status = this.status;
     booking.timezone = this.timezone;
+    booking.calendarEventId = this.calendarEventId;
     return booking;
   }
 }

@@ -111,6 +111,13 @@ export class Booking {
   })
   timezone: string | null;
 
+  @Column("character varying", {
+    name: "calendar_event_id",
+    nullable: true,
+    length: 256,
+  })
+  calendarEventId: string | null;
+
   @ManyToOne(() => Address, (addresses) => addresses.bookings)
   @JoinColumn([{ name: "ending_address", referencedColumnName: "id" }])
   endingAddress: Address;

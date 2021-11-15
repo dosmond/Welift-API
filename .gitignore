@@ -1,5 +1,6 @@
 .env
 ormconfig.json
+keys
 
 # compiled output
 /dist
