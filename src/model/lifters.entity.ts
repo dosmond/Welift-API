@@ -6,91 +6,91 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { AcceptedLift } from "./acceptedLift.entity";
-import { CompletedLifterBadge } from "./completedLifterBadges.entity";
-import { LifterCompletedTrainingVideo } from "./lifterCompletedTrainingVideos.entity";
-import { LifterEquipment } from "./lifterEquipment.entity";
-import { LifterReview } from "./lifterReviews.entity";
-import { LifterStats } from "./lifterStats.entity";
-import { Address } from "./addresses.entity";
+} from 'typeorm';
+import { AcceptedLift } from './acceptedLift.entity';
+import { CompletedLifterBadge } from './completedLifterBadges.entity';
+import { LifterCompletedTrainingVideo } from './lifterCompletedTrainingVideos.entity';
+import { LifterEquipment } from './lifterEquipment.entity';
+import { LifterReview } from './lifterReviews.entity';
+import { LifterStats } from './lifterStats.entity';
+import { Address } from './addresses.entity';
 
-@Index("fki_fk_lifter_address", ["address"], {})
-@Index("lifters_email_phone_key", ["email", "phone"], { unique: true })
-@Index("lifters_email_key", ["email"], { unique: true })
-@Index("pr_lifters", ["id"], { unique: true })
-@Index("lifters_phone_key", ["phone"], { unique: true })
-@Index("lifters_user_id_key", ["userId"], { unique: true })
-@Entity("lifters", { schema: "public" })
+@Index('fki_fk_lifter_address', ['address'], {})
+@Index('lifters_email_phone_key', ['email', 'phone'], { unique: true })
+@Index('lifters_email_key', ['email'], { unique: true })
+@Index('pr_lifters', ['id'], { unique: true })
+@Index('lifters_phone_key', ['phone'], { unique: true })
+@Index('lifters_user_id_key', ['userId'], { unique: true })
+@Entity('lifters', { schema: 'public' })
 export class Lifter {
-  @Column("character varying", { name: "first_name", length: 64 })
+  @Column('character varying', { name: 'first_name', length: 64 })
   firstName: string;
 
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column("character varying", { name: "last_name", length: 64 })
+  @Column('character varying', { name: 'last_name', length: 64 })
   lastName: string;
 
-  @Column("uuid", { name: "address" })
+  @Column('uuid', { name: 'address' })
   address: string;
 
-  @Column("boolean", { name: "passed_bc", default: () => "false" })
+  @Column('boolean', { name: 'passed_bc', default: () => 'false' })
   passedBc: boolean;
 
-  @Column("character varying", { name: "email", length: 128 })
+  @Column('character varying', { name: 'email', length: 128 })
   email: string;
 
-  @Column("character varying", { name: "phone", length: 32 })
+  @Column('character varying', { name: 'phone', length: 32 })
   phone: string;
 
-  @Column("character varying", {
-    name: "expected_frequency",
+  @Column('character varying', {
+    name: 'expected_frequency',
     nullable: true,
     length: 128,
   })
   expectedFrequency: string | null;
 
-  @Column("boolean", { name: "has_pickup_truck", default: () => "false" })
+  @Column('boolean', { name: 'has_pickup_truck', default: () => 'false' })
   hasPickupTruck: boolean;
 
-  @Column("integer", { name: "lifter_rating", default: () => "0" })
+  @Column('integer', { name: 'lifter_rating', default: () => '0' })
   lifterRating: number;
 
-  @Column("character varying", { name: "status", length: 128 })
+  @Column('character varying', { name: 'status', length: 128 })
   status: string;
 
-  @Column("character varying", { name: "avatar", nullable: true, length: 1024 })
+  @Column('character varying', { name: 'avatar', nullable: true, length: 1024 })
   avatar: string | null;
 
-  @Column("boolean", { name: "accepted_contract", nullable: true })
+  @Column('boolean', { name: 'accepted_contract', nullable: true })
   acceptedContract: boolean | null;
 
-  @Column("uuid", { name: "user_id", nullable: true, unique: true })
+  @Column('uuid', { name: 'user_id', nullable: true, unique: true })
   userId: string | null;
 
-  @Column("character varying", {
-    name: "location",
+  @Column('character varying', {
+    name: 'location',
     nullable: true,
     length: 256,
     default: () => "'Interim'",
   })
   location: string | null;
 
-  @Column("integer", { name: "current_bonus", default: () => "0" })
+  @Column('integer', { name: 'current_bonus', default: () => '0' })
   currentBonus: number;
 
-  @Column("date", {
-    name: "creation_date",
+  @Column('date', {
+    name: 'creation_date',
     nullable: true,
-    default: () => "CURRENT_TIMESTAMP",
+    default: () => 'CURRENT_TIMESTAMP',
   })
   creationDate: string | null;
 
-  @Column("boolean", {
-    name: "bc_in_progress",
+  @Column('boolean', {
+    name: 'bc_in_progress',
     nullable: true,
-    default: () => "false",
+    default: () => 'false',
   })
   bcInProgress: boolean | null;
 
@@ -99,13 +99,13 @@ export class Lifter {
 
   @OneToMany(
     () => CompletedLifterBadge,
-    (completedLifterBadges) => completedLifterBadges.lifter
+    (completedLifterBadges) => completedLifterBadges.lifter,
   )
   completedLifterBadges: CompletedLifterBadge[];
 
   @OneToMany(
     () => LifterCompletedTrainingVideo,
-    (lifterCompletedTrainingVideos) => lifterCompletedTrainingVideos.lifter
+    (lifterCompletedTrainingVideos) => lifterCompletedTrainingVideos.lifter,
   )
   lifterCompletedTrainingVideos: LifterCompletedTrainingVideo[];
 
@@ -119,9 +119,9 @@ export class Lifter {
   lifterStats: LifterStats[];
 
   @ManyToOne(() => Address, (addresses) => addresses.lifters, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: "address", referencedColumnName: "id" }])
+  @JoinColumn([{ name: 'address', referencedColumnName: 'id' }])
   address2: Address;
 }
