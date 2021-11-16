@@ -7,6 +7,6 @@ import { TrainingVideosService } from './training-videos.service';
 @Module({
   imports: [TypeOrmModule.forFeature([TrainingVideo])],
   controllers: [TrainingVideosController],
-  providers: [TrainingVideosService]
+  providers: [TrainingVideosService],
 })
-export class TrainingVideosModule { }
+export class TrainingVideosModule {}
