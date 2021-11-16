@@ -1,16 +1,16 @@
 import { Order } from './../enum/order.enum';
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsEnum, IsNumber, IsOptional } from "class-validator";
+import { IsDateString, IsEnum, IsNumber, IsOptional } from "class-validator";
 
 export class PaginatedDTO implements Readonly<PaginatedDTO> {
   @ApiProperty()
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   start: Date
 
   @ApiProperty()
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   end: Date
 
   @ApiProperty()

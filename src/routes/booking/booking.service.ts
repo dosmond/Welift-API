@@ -60,6 +60,21 @@ export class BookingService {
       bookings.map(booking => BookingDTO.fromEntity(booking)));
   }
 
+  public async getTotalEarnings(start: Date, end: Date): Promise<number> {
+    let query = this.repo.createQueryBuilder('booking')
+      .select("SUM(booking.totalCost)")
+
+    if (start && end) {
+      query.where('booking.creationDate between :start and :end', { start: start, end: end })
+    }
+
+    if (start) {
+      query.where('booking.creationDate between :start and :end', { start: start, end: new Date() })
+    }
+
+    return await query.getRawOne()
+  }
+
   public async createBatch(batch: BookingBatchDTO): Promise<BookingDTO> {
     const startingAddress = AddressDTO.from(batch.startingAddress)
     const endingAddress = AddressDTO.from(batch.endingAddress)

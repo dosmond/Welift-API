@@ -18,6 +18,11 @@ export class BookingController {
     return await this.serv.getAll(query);
   }
 
+  @Get('total-earnings')
+  public async getTotalEarnings(@Query() query: PaginatedDTO): Promise<number> {
+    return await this.serv.getTotalEarnings(query.start, query.end)
+  }
+
   @Post('create-batch')
   public async createBatch(@Body() body: BookingBatchDTO): Promise<BookingDTO> {
     return await this.serv.createBatch(body)
