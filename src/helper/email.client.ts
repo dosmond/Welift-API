@@ -1,5 +1,5 @@
 import { Transporter, createTransport } from 'nodemailer';
-import ejs from 'ejs';
+import { renderFile } from 'ejs';
 import { Injectable } from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const stripe = require('stripe')(process.env.GATSBY_STRIPE_SECRET_KEY);
@@ -21,7 +21,7 @@ export class EmailClient {
       },
     });
 
-    transporter.verify(function (error, success) {
+    transporter.verify(function (error: Error) {
       if (error) {
         console.log(error);
       } else {
@@ -41,7 +41,7 @@ export class EmailClient {
         process.env.FRONTEND +
         '/lifter-created' +
         `?var=${lifterEncryptedData}`;
-      const data = await ejs.renderFile('./assets/newLifterEmail.ejs', {
+      const data = await renderFile('./assets/newLifterEmail.ejs', {
         lifterLink: lifterLink,
       });
 
@@ -80,7 +80,7 @@ export class EmailClient {
         process.env.FRONTEND +
         '/confirm-booking' +
         `?var=${bookingEncryptedData}`;
-      const data = await ejs.renderFile('./assets/leadConversionEmail.ejs', {
+      const data = await renderFile('./assets/leadConversionEmail.ejs', {
         bookingLink: bookingLink,
       });
       const emailObject = {
@@ -106,7 +106,7 @@ export class EmailClient {
 
   sendApplicationNotInNetwork = async (email) => {
     try {
-      const data = await ejs.renderFile('./assets/lifterNotInNetwork.ejs');
+      const data = await renderFile('./assets/lifterNotInNetwork.ejs');
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
@@ -133,9 +133,9 @@ export class EmailClient {
     }
   };
 
-  sendBookingReferralCode = async (email, code) => {
+  sendBookingReferralCode = async (email: string, code: string) => {
     try {
-      const data = await ejs.renderFile('./assets/bookingReferralCode.ejs', {
+      const data = await renderFile('./src/assets/bookingReferralCode.ejs', {
         referralCode: code,
       });
       const emailObject = {
@@ -146,7 +146,7 @@ export class EmailClient {
         attachments: [
           {
             filename: 'logo.png',
-            path: 'logo.png',
+            path: './src/assets/logo.png',
             cid: 'welift-logo',
           },
         ],
@@ -161,7 +161,7 @@ export class EmailClient {
 
   sendBookingRefundSent = async (email) => {
     try {
-      const data = await ejs.renderFile('./assets/bookingRefundSent.ejs');
+      const data = await renderFile('./assets/bookingRefundSent.ejs');
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
@@ -227,7 +227,7 @@ CEO/Co-Founder</div>
   }) => {
     try {
       const couponCode = await this.getCouponCode(hours);
-      const data = await ejs.renderFile('./assets/wholesaleCoupon.ejs', {
+      const data = await renderFile('./assets/wholesaleCoupon.ejs', {
         company_name: business_name,
         customMessage: custom_note,
         coupon: couponCode,
@@ -256,12 +256,13 @@ CEO/Co-Founder</div>
   };
 
   private async sendMail(email) {
-    const err = await this.transporter.sendMail(email);
-    if (err) {
-      throw new Error(err);
+    try {
+      await this.transporter.sendMail(email);
+      return true;
+    } catch (err) {
+      console.log(err);
+      throw err;
     }
-
-    return true;
   }
 
   private async getCouponCode(hours: number): Promise<string> {

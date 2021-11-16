@@ -192,18 +192,20 @@ export class BookingService {
     );
 
     // Step 1: Delete Accepted Lifts
-    let deletePromises: Promise<DeleteResult>[];
-    booking.lift.acceptedLifts.forEach((acceptedLift) => {
-      deletePromises.push(this.acceptedLiftRepo.delete(acceptedLift));
-    });
+    if (booking.lift.acceptedLifts.length > 0) {
+      let deletePromises: Promise<DeleteResult>[];
+      booking.lift?.acceptedLifts?.forEach((acceptedLift) => {
+        deletePromises.push(this.acceptedLiftRepo.delete(acceptedLift));
+      });
 
-    await Promise.all(deletePromises);
+      await Promise.all(deletePromises);
+    }
 
     // Step 2: Delete Lift
-    await this.liftRepo.delete(booking.lift);
+    await this.liftRepo.delete({ id: booking.lift.id });
 
     // Step 3: Delete Booking
-    const result = this.repo.delete(booking);
+    const result = this.repo.delete({ id: booking.id });
 
     if (process.env.NODE_ENV === 'production' && state && eventId) {
       await this.googleHelper.deleteGoogleCalendarEvent({
