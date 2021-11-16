@@ -1,15 +1,16 @@
-import { BookingDTO } from './../../dto/booking.dto';
+import { BookingDTO } from 'src/dto/booking.dto';
 import { BookingService } from './booking.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
+import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 
 @Controller('booking')
 export class BookingController {
   constructor(private serv: BookingService) { }
 
-  @Get()
-  public async getAll() {
-    return await this.serv.getAll();
+  @Get('list')
+  public async getAll(@Query() query: PaginatedDTO): Promise<BookingDTO[]> {
+    return await this.serv.getAll(query);
   }
 
   @Post('create-batch')

@@ -26,9 +26,9 @@ export class BadgeDTO implements Readonly<BadgeDTO> {
 
   public static from(dto: Partial<BadgeDTO>) {
     const badge = new BadgeDTO();
-    badge.id = dto.id;
-    badge.name = dto.name;
-    badge.requiredValue = dto.requiredValue;
+    for (const property in dto) {
+      badge[property] = dto[property]
+    }
     return badge;
   }
 

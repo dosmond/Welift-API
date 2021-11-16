@@ -1,13 +1,17 @@
+import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { EmailClient } from './../../helper/emailClient';
 import { Booking } from './../../model/booking.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+import { getConnection, Repository, Between, FindManyOptions } from 'typeorm';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
 import { AddressDTO } from 'src/dto/address.dto';
 
+var words = require('random-words')
+
 import Stripe from 'stripe'
+import { Lift } from 'src/model/lifts.entity';
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, { apiVersion: '2020-08-27' })
 
 @Injectable()
@@ -17,8 +21,35 @@ export class BookingService {
     private emailClient: EmailClient
   ) { }
 
-  public async getAll(): Promise<BookingDTO[]> {
-    return [new BookingDTO()]
+  public async getAll(request: PaginatedDTO): Promise<BookingDTO[]> {
+    const { start, end, page, pageSize, order } = request
+
+    let options: FindManyOptions = {
+      relations: [
+        'startingAddress',
+        'endingAddress',
+        'lift',
+        'notes'
+      ]
+    }
+
+    // Time Queries
+    if (start && end)
+      options.where = { startTime: Between(start, end) }
+    else if (start)
+      options.where = { startTime: Between(start, new Date()) }
+
+    options.order = { startTime: order }
+
+    // Pagination
+    if (page && pageSize) {
+      options.skip = (page - 1) * pageSize
+      options.take = pageSize
+    }
+
+    let results = await this.repo.find(options)
+    return await this.repo.find(options).then(bookings =>
+      bookings.map(booking => BookingDTO.fromEntity(booking)));
   }
 
   public async createBatch(batch: BookingBatchDTO): Promise<BookingDTO> {
@@ -32,13 +63,24 @@ export class BookingService {
     await queryRunner.startTransaction()
 
     try {
-      const starting = await queryRunner.manager.save(startingAddress.toEntity())
-      const ending = await queryRunner.manager.save(endingAddress.toEntity())
+      // Create addresses
+      const startingPromise = queryRunner.manager.save(startingAddress.toEntity())
+      const endingPromise = queryRunner.manager.save(endingAddress.toEntity())
+
+      let [starting, ending] = await Promise.all([startingPromise, endingPromise])
 
       booking.startingAddressId = starting.id
       booking.endingAddressId = ending.id
 
+      // Create Booking
       const result = await queryRunner.manager.save(booking.toEntity())
+
+      // Create new lift
+      const newLift = new Lift()
+      newLift.bookingId = result.id
+      newLift.completionToken = this.generateCompletionToken()
+
+      await queryRunner.manager.save(newLift)
 
       // Handle refund if referral code exists
       if (batch.referralCode) {
@@ -65,5 +107,15 @@ export class BookingService {
       await queryRunner.rollbackTransaction()
       throw (err)
     }
+  }
+
+
+  private generateCompletionToken(): string {
+    let token = []
+    while (token.length === 0 || token[0].length !== 6) {
+      token = words(1)
+    }
+
+    return token[0]
   }
 }

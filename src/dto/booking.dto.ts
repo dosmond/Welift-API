@@ -6,6 +6,7 @@ import { Type } from 'class-transformer';
 import { IsString, IsUUID, IsOptional, IsBoolean, IsDate, IsNumber } from 'class-validator';
 import { Booking } from 'src/model/booking.entity';
 import { User } from 'src/user.decorator';
+import { Address } from 'src/model/addresses.entity';
 
 export class BookingDTO implements Readonly<BookingDTO> {
   @ApiProperty({ required: false })
@@ -127,28 +128,12 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   public static from(dto: Partial<BookingDTO>): BookingDTO {
     const booking = new BookingDTO();
-    booking.id = dto.id;
-    booking.needsPickupTruck = dto.needsPickupTruck;
-    booking.name = dto.name;
-    booking.phone = dto.phone;
-    booking.email = dto.email;
-    booking.distanceInfo = dto.distanceInfo;
-    booking.additionalInfo = dto.additionalInfo;
-    booking.specialItems = dto.specialItems;
-    booking.startingAddressId = dto.startingAddressId;
-    booking.endingAddressId = dto.endingAddressId;
-    booking.startTime = dto.startTime;
-    booking.endTime = dto.endTime;
-    booking.lifterCount = dto.lifterCount;
-    booking.hoursCount = dto.hoursCount;
-    booking.totalCost = dto.totalCost;
-    booking.creationDate = dto.creationDate;
-    booking.stripeSessionId = dto.stripeSessionId;
-    booking.referralCode = dto.referralCode;
-    booking.status = dto.status;
-    booking.timezone = dto.timezone;
-    booking.calendarEventId = dto.calendarEventId;
-    return booking;
+
+    for (const property in dto) {
+      booking[property] = dto[property]
+    }
+
+    return booking
   }
 
   public static fromEntity(entity: Booking): BookingDTO {
@@ -174,7 +159,11 @@ export class BookingDTO implements Readonly<BookingDTO> {
         referralCode: entity.referralCode,
         status: entity.status,
         timezone: entity.timezone,
-        calendarEventId: entity.calendarEventId
+        calendarEventId: entity.calendarEventId,
+        endingAddress: AddressDTO.fromEntity(entity.endingAddress),
+        startingAddress: AddressDTO.fromEntity(entity.startingAddress),
+        lift: entity.lift,
+        notes: entity.notes
       });
     }
     return null

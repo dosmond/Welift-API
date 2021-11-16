@@ -45,12 +45,9 @@ export class AddressDTO implements Readonly<AddressDTO> {
 
   public static from(dto: Partial<AddressDTO>) {
     const address = new AddressDTO();
-    address.id = dto.id;
-    address.street = dto.street;
-    address.street2 = dto.street2;
-    address.city = dto.city;
-    address.state = dto.state;
-    address.postalCode = dto.postalCode;
+    for (const property in dto)
+      address[property] = dto[property]
+
     return address;
   }
 

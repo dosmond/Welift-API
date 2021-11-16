@@ -51,15 +51,9 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
 
   public static from(dto: Partial<AcceptedLiftDTO>): AcceptedLiftDTO {
     const lift = new AcceptedLiftDTO();
-    lift.id = dto.id;
-    lift.lifterId = dto.lifterId;
-    lift.liftId = dto.liftId;
-    lift.clockInTime = dto.clockInTime;
-    lift.clockOutTime = dto.clockOutTime;
-    lift.payrate = dto.payrate;
-    lift.usePickupTruck = dto.usePickupTruck;
-    lift.lift = dto.lift;
-    lift.lifter = dto.lifter;
+    for (const property in dto)
+      lift[property] = dto[property]
+
     return lift;
   }
 
