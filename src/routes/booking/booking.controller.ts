@@ -8,6 +8,11 @@ import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 export class BookingController {
   constructor(private serv: BookingService) { }
 
+  @Get()
+  public async getById(@Query() query: { id: string }): Promise<BookingDTO> {
+    return await this.serv.getById(query.id)
+  }
+
   @Get('list')
   public async getAll(@Query() query: PaginatedDTO): Promise<BookingDTO[]> {
     return await this.serv.getAll(query);

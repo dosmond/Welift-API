@@ -21,6 +21,14 @@ export class BookingService {
     private emailClient: EmailClient
   ) { }
 
+  public async getById(id: string): Promise<BookingDTO> {
+    return BookingDTO.fromEntity(
+      await this.repo.findOne(
+        { id: id },
+        { relations: ['startingAddress', 'endingAddress', 'lift', 'notes'] }
+      ))
+  }
+
   public async getAll(request: PaginatedDTO): Promise<BookingDTO[]> {
     const { start, end, page, pageSize, order } = request
 
