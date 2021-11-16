@@ -1,12 +1,16 @@
+import { TextClient } from './../../helper/textClient';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { BookingService } from './booking.service';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { BookingConfirmTextDTO } from 'src/dto/bookingConfirmText.dto';
 
 @Controller('booking')
 export class BookingController {
-  constructor(private serv: BookingService) { }
+  constructor(
+    private serv: BookingService,
+    private textClient: TextClient) { }
 
   @Get()
   public async getById(@Query() query: { id: string }): Promise<BookingDTO> {
@@ -26,5 +30,10 @@ export class BookingController {
   @Post('create-batch')
   public async createBatch(@Body() body: BookingBatchDTO): Promise<BookingDTO> {
     return await this.serv.createBatch(body)
+  }
+
+  @Post('confirm')
+  public async sendBookingConfirmText(@Body() body: BookingConfirmTextDTO): Promise<void> {
+    return await this.textClient.sendBookingConfirmedText(body)
   }
 }

@@ -1,34 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import AWS from 'aws-sdk';
+import { SNS, Credentials, config } from 'aws-sdk';
+import { BookingConfirmTextDTO } from 'src/dto/bookingConfirmText.dto';
 
 // This should only be necessary for local dev work.
 if (process.env.NODE_ENV == 'local') {
-  let creds = new AWS.Credentials(process.env.AWS_CRED_KEY, process.env.AWS_CRED_SECRET)
-  AWS.config.credentials = creds
-  AWS.config.update({ region: 'us-east-1' })
+  let creds = new Credentials(process.env.AWS_CRED_KEY, process.env.AWS_CRED_SECRET)
+  config.credentials = creds
+  config.update({ region: 'us-east-1' })
 }
 
 @Injectable()
 export class TextClient {
   constructor() { }
 
-  public async sendBookingConfirmedText({ number, date, num_lifters }) {
+  public async sendBookingConfirmedText(request: BookingConfirmTextDTO) {
+    const { number, date, numLifters } = request
+
     let subscriptions = []
     var params = {
       Protocol: "sms",
       TopicArn: "arn:aws:sns:us-east-1:592473490836:booking-confirmation",
-      Endpoint: number,
+      Endpoint: `+1${number}`,
       ReturnSubscriptionArn: true
     };
 
     console.info("Adding Subscription")
-    var subscribePromise = new AWS.SNS({ apiVersion: '2010-03-31' }).subscribe(params).promise();
+    var subscribePromise = new SNS({ apiVersion: '2010-03-31' }).subscribe(params).promise();
     let result = await subscribePromise
     subscriptions.push(result.SubscriptionArn)
 
     let message = `
 Thanks for booking with Welift!
-Your lift is scheduled for ${date} with ${num_lifters} lifters.
+Your lift is scheduled for ${date} with ${numLifters} lifter(s).
 Please contact us at support@thewelift.com with any questions.`
 
     console.info("Sending Message")
@@ -37,7 +40,7 @@ Please contact us at support@thewelift.com with any questions.`
       TopicArn: 'arn:aws:sns:us-east-1:592473490836:booking-confirmation'
     };
 
-    var publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(publishParams).promise();
+    var publishTextPromise = new SNS({ apiVersion: '2010-03-31' }).publish(publishParams).promise();
 
     await publishTextPromise
     await this.cleanUpSubscriptions(subscriptions)
@@ -54,7 +57,7 @@ Please contact us at support@thewelift.com with any questions.`
       };
 
       console.info("Adding Subscription")
-      var subscribePromise = new AWS.SNS({ apiVersion: '2010-03-31' }).subscribe(params).promise();
+      var subscribePromise = new SNS({ apiVersion: '2010-03-31' }).subscribe(params).promise();
       let result = await subscribePromise
       subscriptions.push(result.SubscriptionArn)
 
@@ -72,7 +75,7 @@ If you have any issues, please reach out to 385-309-3256`
         TopicArn: 'arn:aws:sns:us-east-1:592473490836:Lift-Completion-Code'
       };
 
-      var publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(publicParams).promise();
+      var publishTextPromise = new SNS({ apiVersion: '2010-03-31' }).publish(publicParams).promise();
 
       await publishTextPromise
       await this.cleanUpSubscriptions(subscriptions)
@@ -94,7 +97,7 @@ If you have any issues, please reach out to 385-309-3256`
         SubscriptionArn: sub /* required */
       };
 
-      promises.push(new AWS.SNS({ apiVersion: '2010-03-31' }).unsubscribe(params).promise())
+      promises.push(new SNS({ apiVersion: '2010-03-31' }).unsubscribe(params).promise())
     }
 
     await Promise.all(promises)

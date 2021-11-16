@@ -1,3 +1,4 @@
+import { TextClient } from './../../helper/textClient';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { EmailClient } from './../../helper/emailClient';
 import { Booking } from './../../model/booking.entity';
@@ -12,6 +13,7 @@ import { BookingService } from './booking.service';
   providers: [
     BookingService,
     EmailClient,
+    TextClient,
     GoogleCalendarApiHelper
   ]
 })
