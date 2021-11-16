@@ -1,14 +1,15 @@
-import { Transporter, createTransport } from 'nodemailer'
-import ejs from 'ejs'
-import { Injectable } from '@nestjs/common'
-const stripe = require('stripe')(process.env.GATSBY_STRIPE_SECRET_KEY)
+import { Transporter, createTransport } from 'nodemailer';
+import ejs from 'ejs';
+import { Injectable } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const stripe = require('stripe')(process.env.GATSBY_STRIPE_SECRET_KEY);
 
 @Injectable()
 export class EmailClient {
-  private readonly transporter: Transporter
+  private readonly transporter: Transporter;
 
   constructor() {
-    this.transporter = this.init()
+    this.transporter = this.init();
   }
 
   private init(): Transporter {
@@ -16,25 +17,33 @@ export class EmailClient {
       service: 'gmail',
       auth: {
         user: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
-        pass: process.env.LIFTER_APPLICATION_EMAIL_PASSWORD
-      }
-    })
+        pass: process.env.LIFTER_APPLICATION_EMAIL_PASSWORD,
+      },
+    });
 
     transporter.verify(function (error, success) {
       if (error) {
         console.log(error);
       } else {
-        console.log("Server is ready to take our messages");
+        console.log('Server is ready to take our messages');
       }
-    })
+    });
 
-    return transporter
+    return transporter;
   }
 
-  public async sendApplicationSubmitEmail(email: string, lifterEncryptedData: string) {
+  public async sendApplicationSubmitEmail(
+    email: string,
+    lifterEncryptedData: string,
+  ) {
     try {
-      const lifterLink = process.env.FRONTEND + '/lifter-created' + `?var=${lifterEncryptedData}`
-      const data = await ejs.renderFile('./assets/newLifterEmail.ejs', { lifterLink: lifterLink })
+      const lifterLink =
+        process.env.FRONTEND +
+        '/lifter-created' +
+        `?var=${lifterEncryptedData}`;
+      const data = await ejs.renderFile('./assets/newLifterEmail.ejs', {
+        lifterLink: lifterLink,
+      });
 
       const signupCompleteMail = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
@@ -45,28 +54,35 @@ export class EmailClient {
           {
             filename: 'logo.png',
             path: 'logo.png',
-            cid: 'welift-logo'
+            cid: 'welift-logo',
           },
           {
             filename: 'welift-youtube-video.png',
             path: 'welift-youtube-video.png',
-            cid: 'welift-youtube-video'
-          }
+            cid: 'welift-youtube-video',
+          },
         ],
-      }
+      };
 
-      return await this.sendMail(signupCompleteMail)
-    }
-    catch (error) {
-      console.log(error)
-      return { error: error }
+      return await this.sendMail(signupCompleteMail);
+    } catch (error) {
+      console.log(error);
+      return { error: error };
     }
   }
 
-  sendLeadConvertEmail = async (email: string, bookingEncryptedData: string) => {
+  sendLeadConvertEmail = async (
+    email: string,
+    bookingEncryptedData: string,
+  ) => {
     try {
-      const bookingLink = process.env.FRONTEND + '/confirm-booking' + `?var=${bookingEncryptedData}`
-      const data = await ejs.renderFile('./assets/leadConversionEmail.ejs', { bookingLink: bookingLink })
+      const bookingLink =
+        process.env.FRONTEND +
+        '/confirm-booking' +
+        `?var=${bookingEncryptedData}`;
+      const data = await ejs.renderFile('./assets/leadConversionEmail.ejs', {
+        bookingLink: bookingLink,
+      });
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
@@ -76,22 +92,21 @@ export class EmailClient {
           {
             filename: 'logo.png',
             path: 'logo.png',
-            cid: 'welift-logo'
-          }
+            cid: 'welift-logo',
+          },
         ],
-      }
+      };
 
-      return await this.sendMail(emailObject)
+      return await this.sendMail(emailObject);
+    } catch (error) {
+      console.log(error);
+      return { error: error };
     }
-    catch (error) {
-      console.log(error)
-      return { error: error }
-    }
-  }
+  };
 
   sendApplicationNotInNetwork = async (email) => {
     try {
-      const data = await ejs.renderFile('./assets/lifterNotInNetwork.ejs')
+      const data = await ejs.renderFile('./assets/lifterNotInNetwork.ejs');
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
@@ -101,28 +116,28 @@ export class EmailClient {
           {
             filename: 'logo.png',
             path: 'logo.png',
-            cid: 'welift-logo'
+            cid: 'welift-logo',
           },
           {
             filename: 'welift-youtube-video.png',
             path: 'welift-youtube-video.png',
-            cid: 'welift-youtube-video'
-          }
+            cid: 'welift-youtube-video',
+          },
         ],
-      }
+      };
 
-      return await this.sendMail(emailObject)
+      return await this.sendMail(emailObject);
+    } catch (error) {
+      console.log(error);
+      return { error: error };
     }
-    catch (error) {
-      console.log(error)
-      return { error: error }
-    }
-
-  }
+  };
 
   sendBookingReferralCode = async (email, code) => {
     try {
-      const data = await ejs.renderFile('./assets/bookingReferralCode.ejs', { referralCode: code })
+      const data = await ejs.renderFile('./assets/bookingReferralCode.ejs', {
+        referralCode: code,
+      });
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
@@ -132,49 +147,53 @@ export class EmailClient {
           {
             filename: 'logo.png',
             path: 'logo.png',
-            cid: 'welift-logo'
-          }
-        ]
-      }
+            cid: 'welift-logo',
+          },
+        ],
+      };
 
-      return await this.sendMail(emailObject)
+      return await this.sendMail(emailObject);
+    } catch (error) {
+      console.log(error);
+      return { error: error };
     }
-    catch (error) {
-      console.log(error)
-      return { error: error }
-    }
-  }
+  };
 
   sendBookingRefundSent = async (email) => {
     try {
-      const data = await ejs.renderFile('./assets/bookingRefundSent.ejs')
+      const data = await ejs.renderFile('./assets/bookingRefundSent.ejs');
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
-        subject: "Someone used your referral code!",
+        subject: 'Someone used your referral code!',
         html: data,
         attachments: [
           {
             filename: 'logo.png',
             path: 'logo.png',
-            cid: 'welift-logo'
-          }
-        ]
-      }
+            cid: 'welift-logo',
+          },
+        ],
+      };
 
-      return await this.sendMail(emailObject)
+      return await this.sendMail(emailObject);
+    } catch (error) {
+      console.log(error);
+      return { error: error };
     }
-    catch (error) {
-      console.log(error)
-      return { error: error }
-    }
-  }
+  };
 
-  sendCouponEmail = async ({ customer_name, business_name, hours, custom_note, email }) => {
+  sendCouponEmail = async ({
+    customer_name,
+    business_name,
+    hours,
+    custom_note,
+    email,
+  }) => {
     try {
-      let couponCode = await this.getCouponCode(hours)
+      const couponCode = await this.getCouponCode(hours);
 
-      let message = `Hi ${customer_name},<br><br> 
+      const message = `Hi ${customer_name},<br><br> 
 
     <div>We are so excited to be helping you with your next move.<br>Our main goal at Welift is to change the moving experience. We know that this is a stressful time for you, so take some stress off your shoulders and leave the heavy lifting to us.<br>
 <b>${business_name}</b> has gifted you ${hours} free hour(s) of moving labor with Welift. Visit our website at www.getwelift.com and use this code to redeem your free moving help! <br><br> <b>${couponCode}</b> <br><br>  If you have any questions, please contact us directly at (385)309-3256.</div>
@@ -184,36 +203,36 @@ CEO/Co-Founder</div>
 
 <p>${custom_note}</p>
 
-<p>Welift | ${business_name}</p>`
+<p>Welift | ${business_name}</p>`;
 
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
         subject: 'Welift coupon',
-        html: message
-      }
+        html: message,
+      };
 
-      return await this.sendMail(emailObject)
+      return await this.sendMail(emailObject);
+    } catch (e) {
+      console.log(e);
+      return { error: e };
     }
-    catch (e) {
-      console.log(e)
-      return { error: e }
-    }
+  };
 
-
-  }
-
-  sendWholeSaleCouponEmail = async ({ business_name, hours, custom_note, email }) => {
+  sendWholeSaleCouponEmail = async ({
+    business_name,
+    hours,
+    custom_note,
+    email,
+  }) => {
     try {
-      let couponCode = await this.getCouponCode(hours)
-      const data = await ejs.renderFile('./assets/wholesaleCoupon.ejs',
-        {
-          company_name: business_name,
-          customMessage: custom_note,
-          coupon: couponCode,
-          hours: hours
-        }
-      )
+      const couponCode = await this.getCouponCode(hours);
+      const data = await ejs.renderFile('./assets/wholesaleCoupon.ejs', {
+        company_name: business_name,
+        customMessage: custom_note,
+        coupon: couponCode,
+        hours: hours,
+      });
 
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
@@ -224,62 +243,61 @@ CEO/Co-Founder</div>
           {
             filename: 'logo.png',
             path: 'logo.png',
-            cid: 'welift-logo'
-          }
-        ]
-      }
+            cid: 'welift-logo',
+          },
+        ],
+      };
 
-      return await this.sendMail(emailObject)
+      return await this.sendMail(emailObject);
+    } catch (e) {
+      console.log(e);
+      return { error: e };
     }
-    catch (e) {
-      console.log(e)
-      return { error: e }
-    }
-  }
+  };
 
   private async sendMail(email) {
-    let err, _ = await this.transporter.sendMail(email)
+    const err = await this.transporter.sendMail(email);
     if (err) {
-      throw new Error(err)
+      throw new Error(err);
     }
 
-    return true
+    return true;
   }
 
   private async getCouponCode(hours: number): Promise<string> {
-    let promotionCode = {
+    const promotionCode = {
       coupon: this.getCouponId(hours),
-      max_redemptions: 1
-    }
+      max_redemptions: 1,
+    };
 
     const result = await stripe.promotionCodes.create(promotionCode);
-    return result.code
+    return result.code;
   }
 
   private getCouponId(hours: number): string {
     switch (hours) {
       case 1:
-        return "JBbBOugC"
+        return 'JBbBOugC';
       case 2:
-        return "KEjZkyOW"
+        return 'KEjZkyOW';
       case 3:
-        return "xlY7K699"
+        return 'xlY7K699';
       case 4:
-        return "waty2Afz"
+        return 'waty2Afz';
       case 5:
-        return "JyyTd3lx"
+        return 'JyyTd3lx';
       case 6:
-        return "H5rfVFao"
+        return 'H5rfVFao';
       case 7:
-        return "hbrUPdYw"
+        return 'hbrUPdYw';
       case 8:
-        return "T3kabVcS"
+        return 'T3kabVcS';
       case 9:
-        return "mcYsoEvE"
+        return 'mcYsoEvE';
       case 10:
-        return "WXZJo8FF"
+        return 'WXZJo8FF';
       default:
-        return ""
+        return '';
     }
   }
 }

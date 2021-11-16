@@ -1,16 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
 export class BookingConfirmTextDTO implements Readonly<BookingConfirmTextDTO> {
   @ApiProperty()
   @IsString()
-  number: string
+  number: string;
 
   @ApiProperty()
   @IsString()
-  date: string
+  date: string;
 
   @ApiProperty()
   @IsNumber()
-  numLifters: number
+  numLifters: number;
 }

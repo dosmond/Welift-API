@@ -8,5 +8,5 @@ export class AddressMultipleDTO implements Readonly<AddressMultipleDTO> {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AddressDTO)
-  addresses: AddressDTO[]
+  addresses: AddressDTO[];
 }

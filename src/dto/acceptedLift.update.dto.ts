@@ -4,10 +4,13 @@ import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { User } from 'src/user.decorator';
 
-export class AcceptedLiftUpdateDTO extends AcceptedLiftDTO implements Readonly<AcceptedLiftUpdateDTO> {
+export class AcceptedLiftUpdateDTO
+  extends AcceptedLiftDTO
+  implements Readonly<AcceptedLiftUpdateDTO>
+{
   @ApiProperty({ required: true })
   @IsUUID()
-  id: string
+  id: string;
 
   public static from(dto: Partial<AcceptedLiftDTO>): AcceptedLiftUpdateDTO {
     const lift = new AcceptedLiftUpdateDTO();
@@ -34,17 +37,17 @@ export class AcceptedLiftUpdateDTO extends AcceptedLiftDTO implements Readonly<A
         payrate: entity.payrate,
         usePickupTruck: entity.usePickupTruck,
         lift: entity.lift,
-        lifter: entity.lifter
+        lifter: entity.lifter,
       });
 
-    return null
+    return null;
   }
 
   public toUpdateEntity(user: User = null): Partial<AcceptedLift> {
-    const lift = new AcceptedLift()
-    for (const property in (this as AcceptedLiftUpdateDTO)) {
-      lift[property] = this[property]
+    const lift = new AcceptedLift();
+    for (const property in this as AcceptedLiftUpdateDTO) {
+      lift[property] = this[property];
     }
-    return lift
+    return lift;
   }
 }

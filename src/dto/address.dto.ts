@@ -45,8 +45,7 @@ export class AddressDTO implements Readonly<AddressDTO> {
 
   public static from(dto: Partial<AddressDTO>) {
     const address = new AddressDTO();
-    for (const property in dto)
-      address[property] = dto[property]
+    for (const property in dto) address[property] = dto[property];
 
     return address;
   }
@@ -59,10 +58,10 @@ export class AddressDTO implements Readonly<AddressDTO> {
         street2: entity.street2,
         city: entity.city,
         state: entity.state,
-        postalCode: entity.postalCode
+        postalCode: entity.postalCode,
       });
     }
-    return null
+    return null;
   }
 
   public toEntity(user: User = null) {

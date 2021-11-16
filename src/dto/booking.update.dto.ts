@@ -3,14 +3,24 @@ import { Note } from '../model/note.entity';
 import { AddressDTO } from './address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsString, IsUUID, IsOptional, IsBoolean, IsDate, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsUUID,
+  IsOptional,
+  IsBoolean,
+  IsDate,
+  IsNumber,
+} from 'class-validator';
 import { Address } from 'src/model/addresses.entity';
 import { Booking } from 'src/model/booking.entity';
 import { Lifter } from 'src/model/lifters.entity';
 import { User } from 'src/user.decorator';
 import { BookingDTO } from './booking.dto';
 
-export class BookingUpdateDTO extends BookingDTO implements Readonly<BookingUpdateDTO> {
+export class BookingUpdateDTO
+  extends BookingDTO
+  implements Readonly<BookingUpdateDTO>
+{
   @ApiProperty({ required: true })
   @IsUUID()
   id: string;
@@ -28,51 +38,51 @@ export class BookingUpdateDTO extends BookingDTO implements Readonly<BookingUpda
   @ApiProperty()
   @IsOptional()
   @IsString()
-  phone: string
+  phone: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  email: string
+  email: string;
 
   @ApiProperty()
   @IsOptional()
   @IsUUID()
-  startingAddressId: string
+  startingAddressId: string;
 
   @ApiProperty()
   @IsOptional()
   @IsDate()
-  startTime: Date
+  startTime: Date;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  lifterCount: number
+  lifterCount: number;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  hoursCount: number
+  hoursCount: number;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  totalCost: number
+  totalCost: number;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  stripeSessionId: string
+  stripeSessionId: string;
 
   @ApiProperty()
   @IsOptional()
   @IsDate()
-  endTime: Date
+  endTime: Date;
 
   @ApiProperty()
   @IsString()
-  timezone: string
+  timezone: string;
 
   public static from(dto: Partial<BookingUpdateDTO>): BookingUpdateDTO {
     const booking = new BookingUpdateDTO();
@@ -122,16 +132,16 @@ export class BookingUpdateDTO extends BookingDTO implements Readonly<BookingUpda
         stripeSessionId: entity.stripeSessionId,
         referralCode: entity.referralCode,
         status: entity.status,
-        timezone: entity.timezone
+        timezone: entity.timezone,
       });
     }
-    return null
+    return null;
   }
 
   public toEntity(user: User = null): Booking {
     const booking = new Booking();
-    for (const property in (this as BookingUpdateDTO)) {
-      booking[property] = this[property]
+    for (const property in this as BookingUpdateDTO) {
+      booking[property] = this[property];
     }
     return booking;
   }

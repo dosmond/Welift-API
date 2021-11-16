@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AcceptedLiftService } from './accepted-lift.service';
 import { User } from 'src/user.decorator';
 import { DeleteResult } from 'typeorm';
@@ -15,7 +24,7 @@ import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
 @Controller('accepted-lift')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AcceptedLiftController {
-  constructor(private serv: AcceptedLiftService) { }
+  constructor(private serv: AcceptedLiftService) {}
 
   @Get()
   @Roles(Role.Lifter)
@@ -25,33 +34,48 @@ export class AcceptedLiftController {
 
   @Get('list')
   @Roles(Role.Admin)
-  public async getAll(@Query() query: PaginatedDTO): Promise<AcceptedLiftDTO[]> {
+  public async getAll(
+    @Query() query: PaginatedDTO,
+  ): Promise<AcceptedLiftDTO[]> {
     return await this.serv.getAll(query);
   }
 
   @Get('list-lifter-accepted')
   @Roles(Role.Lifter)
-  public async getLifterAccepted(@Query() query: LifterPaginatedDTO): Promise<AcceptedLiftDTO[]> {
-    return await this.serv.getLifterAccepted(query)
+  public async getLifterAccepted(
+    @Query() query: LifterPaginatedDTO,
+  ): Promise<AcceptedLiftDTO[]> {
+    return await this.serv.getLifterAccepted(query);
   }
 
   @Post('create')
-  public async create(@User() user: User, @Body() body: AcceptedLiftDTO): Promise<AcceptedLiftDTO> {
+  public async create(
+    @User() user: User,
+    @Body() body: AcceptedLiftDTO,
+  ): Promise<AcceptedLiftDTO> {
     return await this.serv.create(user, body);
   }
 
   @Post('verify-completion-token')
-  public async verifyToken(@Body() verificationRequest: TokenVerificationRequestDTO): Promise<AcceptedLiftDTO> {
+  public async verifyToken(
+    @Body() verificationRequest: TokenVerificationRequestDTO,
+  ): Promise<AcceptedLiftDTO> {
     return await this.serv.verifyToken(verificationRequest);
   }
 
   @Put('update')
-  public async update(@User() user: User, @Body() acceptedLift: AcceptedLiftUpdateDTO): Promise<AcceptedLiftDTO> {
+  public async update(
+    @User() user: User,
+    @Body() acceptedLift: AcceptedLiftUpdateDTO,
+  ): Promise<AcceptedLiftDTO> {
     return await this.serv.update(user, acceptedLift);
   }
 
   @Delete('delete')
-  public async delete(@User() user: User, @Query() query: { id: string }): Promise<DeleteResult> {
+  public async delete(
+    @User() user: User,
+    @Query() query: { id: string },
+  ): Promise<DeleteResult> {
     return await this.serv.delete(user, query.id);
   }
 }

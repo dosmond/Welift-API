@@ -2,7 +2,13 @@ import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { Lifter } from '../model/lifters.entity';
 import { Lift } from '../model/lifts.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsNumber, IsOptional, IsUUID, } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 import { User } from 'src/user.decorator';
 
 export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
@@ -51,8 +57,7 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
 
   public static from(dto: Partial<AcceptedLiftDTO>): AcceptedLiftDTO {
     const lift = new AcceptedLiftDTO();
-    for (const property in dto)
-      lift[property] = dto[property]
+    for (const property in dto) lift[property] = dto[property];
 
     return lift;
   }
@@ -68,10 +73,10 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
         payrate: entity.payrate,
         usePickupTruck: entity.usePickupTruck,
         lift: entity.lift,
-        lifter: entity.lifter
+        lifter: entity.lifter,
       });
 
-    return null
+    return null;
   }
 
   public toEntity(user: User = null): AcceptedLift {

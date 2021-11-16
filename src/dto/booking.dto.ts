@@ -3,7 +3,14 @@ import { Note } from './../model/note.entity';
 import { AddressDTO } from './address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsString, IsUUID, IsOptional, IsBoolean, IsDate, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsUUID,
+  IsOptional,
+  IsBoolean,
+  IsDate,
+  IsNumber,
+} from 'class-validator';
 import { Booking } from 'src/model/booking.entity';
 import { User } from 'src/user.decorator';
 import { Address } from 'src/model/addresses.entity';
@@ -27,65 +34,65 @@ export class BookingDTO implements Readonly<BookingDTO> {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  phone: string
+  phone: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  email: string
+  email: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  distanceInfo: string
+  distanceInfo: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  additionalInfo: string
+  additionalInfo: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  specialItems: string
+  specialItems: string;
 
   @ApiProperty()
   @IsUUID()
-  startingAddressId: string
+  startingAddressId: string;
 
   @ApiProperty()
   @IsOptional()
   @IsUUID()
-  endingAddressId: string
+  endingAddressId: string;
 
   @ApiProperty()
   @IsDate()
-  startTime: Date
+  startTime: Date;
 
   @ApiProperty()
   @IsNumber()
-  lifterCount: number
+  lifterCount: number;
 
   @ApiProperty()
   @IsNumber()
-  hoursCount: number
+  hoursCount: number;
 
   @ApiProperty()
   @IsNumber()
-  totalCost: number
+  totalCost: number;
 
   @ApiProperty()
   @IsOptional()
   @IsDate()
-  creationDate: Date
+  creationDate: Date;
 
   @ApiProperty()
   @IsString()
-  stripeSessionId: string
+  stripeSessionId: string;
 
   @ApiProperty()
   @IsDate()
-  endTime: Date
+  endTime: Date;
 
   @ApiProperty()
   @IsOptional()
@@ -95,45 +102,45 @@ export class BookingDTO implements Readonly<BookingDTO> {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  status: string
+  status: string;
 
   @ApiProperty()
   @IsString()
-  timezone: string
+  timezone: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  calendarEventId: string
+  calendarEventId: string;
 
   @ApiProperty()
   @IsOptional()
   @Type(() => AddressDTO)
-  startingAddress: AddressDTO
+  startingAddress: AddressDTO;
 
   @ApiProperty()
   @IsOptional()
   @Type(() => AddressDTO)
-  endingAddress: AddressDTO
+  endingAddress: AddressDTO;
 
   @ApiProperty()
   @IsOptional()
   @Type(() => Note)
-  notes: Note[]
+  notes: Note[];
 
   @ApiProperty()
   @IsOptional()
   @Type(() => Lift)
-  lift: Lift
+  lift: Lift;
 
   public static from(dto: Partial<BookingDTO>): BookingDTO {
     const booking = new BookingDTO();
 
     for (const property in dto) {
-      booking[property] = dto[property]
+      booking[property] = dto[property];
     }
 
-    return booking
+    return booking;
   }
 
   public static fromEntity(entity: Booking): BookingDTO {
@@ -163,10 +170,10 @@ export class BookingDTO implements Readonly<BookingDTO> {
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: entity.lift,
-        notes: entity.notes
+        notes: entity.notes,
       });
     }
-    return null
+    return null;
   }
 
   public toEntity(user: User = null): Booking {
