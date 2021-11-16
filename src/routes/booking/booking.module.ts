@@ -10,11 +10,6 @@ import { BookingService } from './booking.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Booking])],
   controllers: [BookingController],
-  providers: [
-    BookingService,
-    EmailClient,
-    TextClient,
-    GoogleCalendarApiHelper
-  ]
+  providers: [BookingService, EmailClient, TextClient, GoogleCalendarApiHelper],
 })
-export class BookingModule { }
+export class BookingModule {}

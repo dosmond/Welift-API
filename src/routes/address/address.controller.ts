@@ -7,25 +7,37 @@ import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 
 @Controller('address')
 export class AddressController {
-  constructor(private serv: AddressService) { }
+  constructor(private serv: AddressService) {}
 
   @Get()
-  public async getById(@User() user: User, @Query() query: { id: string }): Promise<AddressDTO> {
-    return await this.serv.getById(user, query.id)
+  public async getById(
+    @User() user: User,
+    @Query() query: { id: string },
+  ): Promise<AddressDTO> {
+    return await this.serv.getById(user, query.id);
   }
 
   @Post('create')
-  public async create(@User() user: User, @Body() body: AddressDTO): Promise<AddressDTO> {
-    return await this.serv.create(user, body)
+  public async create(
+    @User() user: User,
+    @Body() body: AddressDTO,
+  ): Promise<AddressDTO> {
+    return await this.serv.create(user, body);
   }
 
   @Post('create-all')
-  public async createMultiple(@User() user: User, @Body() body: AddressMultipleDTO): Promise<AddressDTO[]> {
-    return await this.serv.createMultiple(user, body)
+  public async createMultiple(
+    @User() user: User,
+    @Body() body: AddressMultipleDTO,
+  ): Promise<AddressDTO[]> {
+    return await this.serv.createMultiple(user, body);
   }
 
   @Put('update')
-  public async update(@User() user: User, @Body() body: AddressUpdateDTO): Promise<AddressDTO> {
-    return await this.serv.update(user, body)
+  public async update(
+    @User() user: User,
+    @Body() body: AddressUpdateDTO,
+  ): Promise<AddressDTO> {
+    return await this.serv.update(user, body);
   }
 }

@@ -7,6 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([Badge])],
   controllers: [BadgeController],
-  providers: [BadgeService]
+  providers: [BadgeService],
 })
-export class BadgeModule { }
+export class BadgeModule {}

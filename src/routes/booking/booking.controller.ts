@@ -8,13 +8,11 @@ import { BookingConfirmTextDTO } from 'src/dto/bookingConfirmText.dto';
 
 @Controller('booking')
 export class BookingController {
-  constructor(
-    private serv: BookingService,
-    private textClient: TextClient) { }
+  constructor(private serv: BookingService, private textClient: TextClient) {}
 
   @Get()
   public async getById(@Query() query: { id: string }): Promise<BookingDTO> {
-    return await this.serv.getById(query.id)
+    return await this.serv.getById(query.id);
   }
 
   @Get('list')
@@ -24,16 +22,18 @@ export class BookingController {
 
   @Get('total-earnings')
   public async getTotalEarnings(@Query() query: PaginatedDTO): Promise<number> {
-    return await this.serv.getTotalEarnings(query.start, query.end)
+    return await this.serv.getTotalEarnings(query.start, query.end);
   }
 
   @Post('create-batch')
   public async createBatch(@Body() body: BookingBatchDTO): Promise<BookingDTO> {
-    return await this.serv.createBatch(body)
+    return await this.serv.createBatch(body);
   }
 
   @Post('confirm')
-  public async sendBookingConfirmText(@Body() body: BookingConfirmTextDTO): Promise<void> {
-    return await this.textClient.sendBookingConfirmedText(body)
+  public async sendBookingConfirmText(
+    @Body() body: BookingConfirmTextDTO,
+  ): Promise<void> {
+    return await this.textClient.sendBookingConfirmedText(body);
   }
 }

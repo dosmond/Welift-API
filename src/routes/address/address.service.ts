@@ -9,34 +9,44 @@ import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 
 @Injectable()
 export class AddressService {
-  constructor(@InjectRepository(Address) private readonly repo: Repository<Address>) { }
+  constructor(
+    @InjectRepository(Address) private readonly repo: Repository<Address>,
+  ) {}
 
   public async getById(user: User, id: string): Promise<AddressDTO> {
-    return AddressDTO.fromEntity(await this.repo.findOne({ id: id }))
+    return AddressDTO.fromEntity(await this.repo.findOne({ id: id }));
   }
 
   public async create(user: User, address: AddressDTO): Promise<AddressDTO> {
-    const dto = AddressDTO.from(address)
-    return AddressDTO.fromEntity(await this.repo.save(dto.toEntity(user)))
+    const dto = AddressDTO.from(address);
+    return AddressDTO.fromEntity(await this.repo.save(dto.toEntity(user)));
   }
 
-  public async createMultiple(user: User, address: AddressMultipleDTO): Promise<AddressDTO[]> {
-    let returnValue: AddressDTO[] = []
-    let promises: Promise<void>[] = []
+  public async createMultiple(
+    user: User,
+    address: AddressMultipleDTO,
+  ): Promise<AddressDTO[]> {
+    const returnValue: AddressDTO[] = [];
+    const promises: Promise<void>[] = [];
 
-    address.addresses.forEach(item => {
-      const dto = AddressDTO.from(item)
-      promises.push(this.repo.save(dto.toEntity(user)).then(res => {
-        returnValue.push(AddressDTO.from(res))
-      }))
-    })
+    address.addresses.forEach((item) => {
+      const dto = AddressDTO.from(item);
+      promises.push(
+        this.repo.save(dto.toEntity(user)).then((res) => {
+          returnValue.push(AddressDTO.from(res));
+        }),
+      );
+    });
 
-    await Promise.all(promises)
-    return returnValue
+    await Promise.all(promises);
+    return returnValue;
   }
 
-  public async update(user: User, address: AddressUpdateDTO): Promise<AddressDTO> {
-    const dto = AddressUpdateDTO.from(address)
-    return AddressDTO.fromEntity(await this.repo.save(dto.toEntity(user)))
+  public async update(
+    user: User,
+    address: AddressUpdateDTO,
+  ): Promise<AddressDTO> {
+    const dto = AddressUpdateDTO.from(address);
+    return AddressDTO.fromEntity(await this.repo.save(dto.toEntity(user)));
   }
 }

@@ -17,7 +17,6 @@ describe('AcceptedLiftController', () => {
   });
 
   describe('GetById', () => {
-
-    it('should reject')
-  })
+    it('should reject');
+  });
 });

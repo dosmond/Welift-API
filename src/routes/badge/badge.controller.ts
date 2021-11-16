@@ -5,25 +5,25 @@ import { BadgeUpdateDTO } from 'src/dto/badge.update.dto';
 
 @Controller('badge')
 export class BadgeController {
-  constructor(private readonly serv: BadgeService) { }
+  constructor(private readonly serv: BadgeService) {}
 
   @Get()
   public async getById(@Query() query: { id: string }): Promise<BadgeDTO> {
-    return await this.serv.getById(query.id)
+    return await this.serv.getById(query.id);
   }
 
   @Get('list')
   public async getAll(): Promise<BadgeDTO[]> {
-    return await this.serv.getAll()
+    return await this.serv.getAll();
   }
 
   @Post('create')
   public async create(@Body() body: BadgeDTO): Promise<BadgeDTO> {
-    return await this.serv.create(body)
+    return await this.serv.create(body);
   }
 
   @Put('update')
   public async update(@Body() body: BadgeUpdateDTO): Promise<BadgeDTO> {
-    return await this.serv.update(body)
+    return await this.serv.update(body);
   }
 }
