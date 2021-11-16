@@ -1,3 +1,4 @@
+import { TextClient } from './helper/textClient';
 import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
 import { RolesGuard } from './auth/roles/roles.gaurd';
 import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
@@ -53,6 +54,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
   providers: [
     AppService,
     RolesGuard,
+    TextClient,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor
