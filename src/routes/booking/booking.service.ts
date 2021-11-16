@@ -1,3 +1,4 @@
+import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { Partners } from './../../model/Partners.entity';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
@@ -37,6 +38,10 @@ export class BookingService {
     private readonly partnerRepo: Repository<Partners>,
     @InjectRepository(PartnerReferral)
     private readonly partnerReferralRepo: Repository<PartnerReferral>,
+    @InjectRepository(Lift)
+    private readonly liftRepo: Repository<Lift>,
+    @InjectRepository(AcceptedLift)
+    private readonly acceptedLiftRepo: Repository<AcceptedLift>,
     private emailClient: EmailClient,
     private googleHelper: GoogleCalendarApiHelper,
   ) {}
@@ -100,7 +105,6 @@ export class BookingService {
 
   public async createBatch(batch: BookingBatchDTO): Promise<BookingDTO> {
     const startingAddress = AddressDTO.from(batch.startingAddress);
-    const endingAddress = AddressDTO.from(batch.endingAddress);
     const booking = BookingDTO.from(batch.booking);
 
     const queryRunner = getConnection().createQueryRunner();
@@ -110,18 +114,18 @@ export class BookingService {
 
     try {
       // Create addresses
-      const startingPromise = queryRunner.manager.save(
-        startingAddress.toEntity(),
-      );
-      const endingPromise = queryRunner.manager.save(endingAddress.toEntity());
+      const promises: Promise<Address>[] = [];
+      promises.push(queryRunner.manager.save(startingAddress.toEntity()));
 
-      const [starting, ending] = await Promise.all([
-        startingPromise,
-        endingPromise,
-      ]);
+      if (batch.endingAddress) {
+        const endingAddress = AddressDTO.from(batch.endingAddress);
+        promises.push(queryRunner.manager.save(endingAddress.toEntity()));
+      }
+
+      const [starting, ending] = await Promise.all(promises);
 
       booking.startingAddressId = starting.id;
-      booking.endingAddressId = ending.id;
+      booking.endingAddressId = ending?.id;
 
       // Create Booking
       const result = await queryRunner.manager.save(booking.toEntity());
@@ -166,7 +170,7 @@ export class BookingService {
     );
   }
 
-  public async update(request: BookingDTO): Promise<BookingUpdateDTO> {
+  public async update(request: BookingUpdateDTO): Promise<BookingDTO> {
     const dto = BookingUpdateDTO.from(request);
     const result = BookingDTO.fromEntity(await this.repo.save(dto.toEntity()));
 
@@ -182,7 +186,24 @@ export class BookingService {
     state: string,
     eventId: string,
   ): Promise<DeleteResult> {
-    const result = await this.repo.delete({ id: id });
+    const booking = await this.repo.findOne(
+      { id: id },
+      { relations: ['lift', 'lift.acceptedLifts'] },
+    );
+
+    // Step 1: Delete Accepted Lifts
+    let deletePromises: Promise<DeleteResult>[];
+    booking.lift.acceptedLifts.forEach((acceptedLift) => {
+      deletePromises.push(this.acceptedLiftRepo.delete(acceptedLift));
+    });
+
+    await Promise.all(deletePromises);
+
+    // Step 2: Delete Lift
+    await this.liftRepo.delete(booking.lift);
+
+    // Step 3: Delete Booking
+    const result = this.repo.delete(booking);
 
     if (process.env.NODE_ENV === 'production' && state && eventId) {
       await this.googleHelper.deleteGoogleCalendarEvent({

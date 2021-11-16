@@ -1,10 +1,20 @@
 import { TextClient } from '../../helper/text.client';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { BookingService } from './booking.service';
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { BookingConfirmTextDTO } from 'src/dto/bookingConfirmText.dto';
+import { BookingUpdateDTO } from 'src/dto/booking.update.dto';
+import { DeleteResult } from 'typeorm';
 
 @Controller('booking')
 export class BookingController {
@@ -42,5 +52,17 @@ export class BookingController {
     @Body() body: { bookingId: string },
   ): Promise<void> {
     return await this.serv.sendReferralCode(body.bookingId);
+  }
+
+  @Put('update')
+  public async update(@Body() body: BookingUpdateDTO): Promise<BookingDTO> {
+    return await this.serv.update(body);
+  }
+
+  @Delete('delete')
+  public async delete(
+    @Query() query: { id: string; state: string; eventId: string },
+  ): Promise<DeleteResult> {
+    return await this.serv.delete(query.id, query.state, query.eventId);
   }
 }

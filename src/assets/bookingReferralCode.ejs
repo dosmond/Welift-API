@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>Here's your code!</title>
+  <link rel='stylesheet' href='/newLifterEmailCss.css' type='text/css'>
+  <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+  <%- include('./styles.ejs'); %>
+</head>
+
+<body>
+  <table class='logo' width='100%' border='0' cellspacing='0' cellpadding='16px'>
+    <tr align='center'>
+      <td><img class='logo-img' src='cid:welift-logo' height='100px'></td>
+    </tr>
+  </table>
+  <table class='firstSection' width='100%' border='0' cellspacing='0' cellpadding='16px'>
+    <tr align='center'>
+      <td>
+        <h1 class='title'>Thanks for booking with us!</h1>
+      </td>
+    </tr>
+    <tr align='center'>
+      <td><span class='subtitle'>Here's your referral code</span></td>
+    </tr>
+    <tr align='center'>
+      <td><span class='subtitle'>
+          <b>
+            <%=referralCode %>
+          </b>
+        </span>
+      </td>
+    </tr>
+    <tr align='center'>
+      <td><span class='subtitle'>Give this referral code to a friend and get your $15 booking fee refunded when it's
+          used!</span>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>

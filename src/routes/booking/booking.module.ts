@@ -1,3 +1,5 @@
+import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { Lift } from 'src/model/lifts.entity';
 import { Partners } from './../../model/Partners.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { TextClient } from '../../helper/text.client';
@@ -14,6 +16,8 @@ import { BookingService } from './booking.service';
     TypeOrmModule.forFeature([Booking]),
     TypeOrmModule.forFeature([PartnerReferral]),
     TypeOrmModule.forFeature([Partners]),
+    TypeOrmModule.forFeature([Lift]),
+    TypeOrmModule.forFeature([AcceptedLift]),
   ],
   controllers: [BookingController],
   providers: [BookingService, EmailClient, TextClient, GoogleCalendarApiHelper],

@@ -10,6 +10,7 @@ import {
   IsBoolean,
   IsDate,
   IsNumber,
+  IsDateString,
 } from 'class-validator';
 import { Booking } from 'src/model/booking.entity';
 import { User } from 'src/user.decorator';
@@ -57,6 +58,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
   specialItems: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsUUID()
   startingAddressId: string;
 
@@ -66,7 +68,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
   endingAddressId: string;
 
   @ApiProperty()
-  @IsDate()
+  @IsDateString()
   startTime: Date;
 
   @ApiProperty()
@@ -91,7 +93,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
   stripeSessionId: string;
 
   @ApiProperty()
-  @IsDate()
+  @IsDateString()
   endTime: Date;
 
   @ApiProperty()
@@ -181,7 +183,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
     booking.id = this.id;
     booking.needsPickupTruck = this.needsPickupTruck;
     booking.name = this.name;
-    booking.phone = this.phone;
+    booking.phone = this.standardizePhoneNumber(this.phone);
     booking.email = this.email;
     booking.distanceInfo = this.distanceInfo;
     booking.additionalInfo = this.additionalInfo;
@@ -200,5 +202,9 @@ export class BookingDTO implements Readonly<BookingDTO> {
     booking.timezone = this.timezone;
     booking.calendarEventId = this.calendarEventId;
     return booking;
+  }
+
+  private standardizePhoneNumber(phoneNumber: string): string {
+    return phoneNumber.replace(/[^\d\+]/g, '');
   }
 }
