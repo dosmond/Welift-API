@@ -1,9 +1,18 @@
+import { PartnerReferral } from './../../model/partnerReferrals.entity';
+import { Partners } from './../../model/Partners.entity';
+import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
-import { EmailClient } from './../../helper/emailClient';
+import { EmailClient } from '../../helper/email.client';
 import { Booking } from './../../model/booking.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository, Between, FindManyOptions } from 'typeorm';
+import {
+  getConnection,
+  Repository,
+  Between,
+  FindManyOptions,
+  DeleteResult,
+} from 'typeorm';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
 import { AddressDTO } from 'src/dto/address.dto';
@@ -13,6 +22,8 @@ const words = require('random-words');
 
 import Stripe from 'stripe';
 import { Lift } from 'src/model/lifts.entity';
+import { BookingUpdateDTO } from 'src/dto/booking.update.dto';
+import { Address } from 'src/model/addresses.entity';
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });
@@ -20,8 +31,14 @@ const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectRepository(Booking) private readonly repo: Repository<Booking>,
+    @InjectRepository(Booking)
+    private readonly repo: Repository<Booking>,
+    @InjectRepository(Partners)
+    private readonly partnerRepo: Repository<Partners>,
+    @InjectRepository(PartnerReferral)
+    private readonly partnerReferralRepo: Repository<PartnerReferral>,
     private emailClient: EmailClient,
+    private googleHelper: GoogleCalendarApiHelper,
   ) {}
 
   public async getById(id: string): Promise<BookingDTO> {
@@ -52,7 +69,6 @@ export class BookingService {
       options.take = pageSize;
     }
 
-    const results = await this.repo.find(options);
     return await this.repo
       .find(options)
       .then((bookings) =>
@@ -110,6 +126,11 @@ export class BookingService {
       // Create Booking
       const result = await queryRunner.manager.save(booking.toEntity());
 
+      // Create google calendar event
+      if (process.env.NODE_ENV === 'production') {
+        await this.handleCreateGoogleCalendar(starting, result);
+      }
+
       // Create new lift
       const newLift = new Lift();
       newLift.bookingId = result.id;
@@ -119,22 +140,12 @@ export class BookingService {
 
       // Handle refund if referral code exists
       if (batch.referralCode) {
-        const referrerBooking = await this.repo.findOne({
-          referralCode: batch.referralCode,
-        });
-        const session = await stripe.checkout.sessions.retrieve(
-          referrerBooking.stripeSessionId,
-        );
-        const intentId = session.payment_intent;
-
-        await stripe.refunds.create({
-          payment_intent: intentId.toString(),
-          amount: 1500,
-        });
-
-        await this.emailClient.sendBookingRefundSent(referrerBooking.email);
-        referrerBooking.referralCode = 'complete';
-        await this.repo.save(referrerBooking);
+        if (batch.referralCode.length === 8) {
+          await this.handleBookingReferral(batch);
+        }
+        if (batch.referralCode.length === 10) {
+          await this.handlePartnerReferral(batch, result.id);
+        }
       }
 
       queryRunner.commitTransaction();
@@ -147,6 +158,42 @@ export class BookingService {
     }
   }
 
+  public async sendReferralCode(bookingId: string): Promise<void> {
+    const booking = await this.repo.findOne({ id: bookingId });
+    await this.emailClient.sendBookingReferralCode(
+      booking.email,
+      booking.referralCode,
+    );
+  }
+
+  public async update(request: BookingDTO): Promise<BookingUpdateDTO> {
+    const dto = BookingUpdateDTO.from(request);
+    const result = BookingDTO.fromEntity(await this.repo.save(dto.toEntity()));
+
+    if (process.env.NODE_ENV === 'production') {
+      await this.handleUpdateGoogleCalendar(result);
+    }
+
+    return result;
+  }
+
+  public async delete(
+    id: string,
+    state: string,
+    eventId: string,
+  ): Promise<DeleteResult> {
+    const result = await this.repo.delete({ id: id });
+
+    if (process.env.NODE_ENV === 'production' && state && eventId) {
+      await this.googleHelper.deleteGoogleCalendarEvent({
+        state: state,
+        eventId: eventId,
+      });
+    }
+
+    return result;
+  }
+
   private generateCompletionToken(): string {
     let token = [];
     while (token.length === 0 || token[0].length !== 6) {
@@ -154,5 +201,73 @@ export class BookingService {
     }
 
     return token[0];
+  }
+
+  private async handleBookingReferral(batch: BookingBatchDTO): Promise<void> {
+    const referrerBooking = await this.repo.findOne({
+      referralCode: batch.referralCode,
+    });
+    const session = await stripe.checkout.sessions.retrieve(
+      referrerBooking.stripeSessionId,
+    );
+    const intentId = session.payment_intent;
+
+    await stripe.refunds.create({
+      payment_intent: intentId.toString(),
+      amount: 1500,
+    });
+
+    await this.emailClient.sendBookingRefundSent(referrerBooking.email);
+    referrerBooking.referralCode = 'complete';
+    await this.repo.save(referrerBooking);
+  }
+
+  private async handlePartnerReferral(
+    batch: BookingBatchDTO,
+    bookingId: string,
+  ): Promise<void> {
+    const referrerPartner = await this.partnerRepo.findOne({
+      referralCode: batch.referralCode,
+    });
+
+    const referral = new PartnerReferral();
+    referral.partnerId = referrerPartner.id;
+    referral.bookingId = bookingId;
+    await this.partnerReferralRepo.save(referral);
+  }
+
+  private async handleCreateGoogleCalendar(
+    starting: Address,
+    booking: Booking,
+  ) {
+    const formattedAddress = `${starting.street} ${starting.street2}\n${starting.city} ${starting.state}, ${starting.postalCode}`;
+    await this.googleHelper.createGoogleCalendarEvent({
+      state: starting.state,
+      description: `${formattedAddress}\n\n${booking.additionalInfo}\n${booking.specialItems}`,
+      title: booking.name,
+      start: new Date(booking.startTime).toISOString(),
+      end: new Date(booking.endTime).toISOString(),
+    });
+  }
+
+  private async handleUpdateGoogleCalendar(result: Booking) {
+    try {
+      const resolvedBooking = await this.repo.findOne(
+        { id: result.id },
+        { relations: ['startingAddress'] },
+      );
+      const addressInfo = resolvedBooking.startingAddress;
+      const formattedAddress = `${addressInfo.street} ${addressInfo.street2}\n${addressInfo.city} ${addressInfo.state}, ${addressInfo.postalCode}`;
+      await this.googleHelper.updateGoogleCalendarEvent({
+        state: addressInfo.state,
+        description: `${formattedAddress}\n\n${resolvedBooking.additionalInfo}\n${resolvedBooking.specialItems}`,
+        title: resolvedBooking.name,
+        start: new Date(resolvedBooking.startTime).toISOString(),
+        end: new Date(resolvedBooking.endTime).toISOString(),
+        eventId: resolvedBooking.calendarEventId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

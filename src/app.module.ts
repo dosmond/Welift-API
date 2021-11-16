@@ -9,7 +9,7 @@ import { AddressModule } from './routes/address/address.module';
 import { AuthModule } from './auth/auth.module';
 import { AcceptedLiftModule } from './routes/accepted-lift/accepted-lift.module';
 import { BadgeModule } from './routes/badge/badge.module';
-import { BookingModule } from './routes/booking/booking.module'
+import { BookingModule } from './routes/booking/booking.module';
 import { CompletedLifterBadgeModule } from './routes/completed-lifter-badge/completed-lifter-badge.module';
 import { EquipmentModule } from './routes/equipment/equipment.module';
 import { LeadsModule } from './routes/leads/leads.module';
@@ -47,7 +47,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     PartnerReferralsModule,
     PartnersModule,
     TrainingVideosModule,
-    NoteModule
+    NoteModule,
   ],
   controllers: [AppController],
   providers: [
@@ -55,8 +55,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     RolesGuard,
     {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor
-    }
+      useClass: CacheInterceptor,
+    },
   ],
 })
-export class AppModule { }
+export class AppModule {}

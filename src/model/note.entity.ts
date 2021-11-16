@@ -5,11 +5,9 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Booking } from './booking.entity';
-import { Lifter } from './lifters.entity';
 
 @Index('pr_note', ['id'], { unique: true })
 @Entity('notes', { schema: 'public' })

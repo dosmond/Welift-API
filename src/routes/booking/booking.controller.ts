@@ -1,4 +1,4 @@
-import { TextClient } from './../../helper/textClient';
+import { TextClient } from '../../helper/text.client';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { BookingService } from './booking.service';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
@@ -35,5 +35,12 @@ export class BookingController {
     @Body() body: BookingConfirmTextDTO,
   ): Promise<void> {
     return await this.textClient.sendBookingConfirmedText(body);
+  }
+
+  @Post('send-referral-code')
+  public async sendReferralCode(
+    @Body() body: { bookingId: string },
+  ): Promise<void> {
+    return await this.serv.sendReferralCode(body.bookingId);
   }
 }

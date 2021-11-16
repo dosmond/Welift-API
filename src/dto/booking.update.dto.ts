@@ -1,8 +1,4 @@
-import { Lift } from '../model/lifts.entity';
-import { Note } from '../model/note.entity';
-import { AddressDTO } from './address.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
   IsString,
   IsUUID,
@@ -11,9 +7,7 @@ import {
   IsDate,
   IsNumber,
 } from 'class-validator';
-import { Address } from 'src/model/addresses.entity';
 import { Booking } from 'src/model/booking.entity';
-import { Lifter } from 'src/model/lifters.entity';
 import { User } from 'src/user.decorator';
 import { BookingDTO } from './booking.dto';
 
