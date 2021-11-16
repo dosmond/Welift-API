@@ -9,7 +9,9 @@ describe('CompletedLifterBadgeService', () => {
       providers: [CompletedLifterBadgeService],
     }).compile();
 
-    service = module.get<CompletedLifterBadgeService>(CompletedLifterBadgeService);
+    service = module.get<CompletedLifterBadgeService>(
+      CompletedLifterBadgeService,
+    );
   });
 
   it('should be defined', () => {

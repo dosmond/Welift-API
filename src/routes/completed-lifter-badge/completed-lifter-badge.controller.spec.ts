@@ -9,7 +9,9 @@ describe('CompletedLifterBadgeController', () => {
       controllers: [CompletedLifterBadgeController],
     }).compile();
 
-    controller = module.get<CompletedLifterBadgeController>(CompletedLifterBadgeController);
+    controller = module.get<CompletedLifterBadgeController>(
+      CompletedLifterBadgeController,
+    );
   });
 
   it('should be defined', () => {
