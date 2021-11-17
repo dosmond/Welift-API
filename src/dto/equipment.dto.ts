@@ -9,7 +9,6 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { User } from 'src/user.decorator';
 
 export class EquipmentDTO implements Readonly<EquipmentDTO> {
   @ApiProperty()
