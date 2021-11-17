@@ -6,9 +6,17 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class LiftsService {
-  constructor(@InjectRepository(Lift) private readonly repo: Repository<Lift>) { }
+  constructor(
+    @InjectRepository(Lift) private readonly repo: Repository<Lift>,
+  ) {}
 
   public async getAll() {
-    return await this.repo.find({ relations: ['booking', 'booking.startingAddress', 'booking.endingAddress'] });
+    return await this.repo.find({
+      relations: [
+        'booking',
+        'booking.startingAddress',
+        'booking.endingAddress',
+      ],
+    });
   }
 }

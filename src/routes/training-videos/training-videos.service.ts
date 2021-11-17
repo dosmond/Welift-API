@@ -12,7 +12,7 @@ export class TrainingVideosService {
     private readonly repo: Repository<TrainingVideo>,
   ) {}
 
-  public async getAll() {
+  public async getAll(): Promise<TrainingVideoDTO[]> {
     return await this.repo.find().then((videos) => {
       return videos.map((video) => TrainingVideoDTO.fromEntity(video));
     });
@@ -38,6 +38,15 @@ export class TrainingVideosService {
     user: User,
     id: string,
   ): Promise<DeleteResult> {
+    const trainingVideos = await this.repo.find({ where: { id: id } });
+    if (trainingVideos.length > 0) {
+      const promises: Promise<DeleteResult>[] = [];
+      trainingVideos.forEach((video) => {
+        promises.push(this.repo.delete({ id: video.id }));
+      });
+
+      await Promise.all(promises);
+    }
     return await this.repo.delete({ id: id });
   }
 }

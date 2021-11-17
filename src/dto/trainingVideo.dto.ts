@@ -14,10 +14,10 @@ export class TrainingVideoDTO implements Readonly<TrainingVideoDTO> {
   name: string;
 
   public static from(dto: Partial<TrainingVideoDTO>): TrainingVideoDTO {
-    const lift = new TrainingVideoDTO();
-    for (const property in dto) lift[property] = dto[property];
+    const video = new TrainingVideoDTO();
+    for (const property in dto) video[property] = dto[property];
 
-    return lift;
+    return video;
   }
 
   public static fromEntity(entity: TrainingVideo): TrainingVideoDTO {
