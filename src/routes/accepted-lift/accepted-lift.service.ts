@@ -66,7 +66,8 @@ export class AcceptedLiftService {
     const query = this.repo
       .createQueryBuilder('q')
       .leftJoinAndSelect('q.lift', 'lift')
-      .leftJoinAndSelect('lift.booking', 'booking');
+      .leftJoinAndSelect('lift.booking', 'booking')
+      .leftJoinAndSelect('q.lifter', 'lifter');
 
     query.where('lifter_id = :id', { id: lifterId });
     // Time Queries
