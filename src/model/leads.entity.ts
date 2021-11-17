@@ -76,7 +76,7 @@ export class Lead {
     nullable: true,
     length: 128,
   })
-  street_2: string | null;
+  street2: string | null;
 
   @Column('character varying', { name: 'email', nullable: true, length: 128 })
   email: string | null;
@@ -100,7 +100,7 @@ export class Lead {
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })
-  creationDate: string | null;
+  creationDate: Date | null;
 
   @OneToMany(() => Note, (note) => note.lead)
   notes: Note[];

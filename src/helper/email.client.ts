@@ -41,7 +41,7 @@ export class EmailClient {
         process.env.FRONTEND +
         '/lifter-created' +
         `?var=${lifterEncryptedData}`;
-      const data = await renderFile('./assets/newLifterEmail.ejs', {
+      const data = await renderFile('./dist/assets/newLifterEmail.ejs', {
         lifterLink: lifterLink,
       });
 
@@ -80,7 +80,7 @@ export class EmailClient {
         process.env.FRONTEND +
         '/confirm-booking' +
         `?var=${bookingEncryptedData}`;
-      const data = await renderFile('./assets/leadConversionEmail.ejs', {
+      const data = await renderFile('./dist/assets/leadConversionEmail.ejs', {
         bookingLink: bookingLink,
       });
       const emailObject = {
@@ -91,7 +91,7 @@ export class EmailClient {
         attachments: [
           {
             filename: 'logo.png',
-            path: 'logo.png',
+            path: './dist/assets/logo.png',
             cid: 'welift-logo',
           },
         ],
@@ -100,13 +100,13 @@ export class EmailClient {
       return await this.sendMail(emailObject);
     } catch (error) {
       console.log(error);
-      return { error: error };
+      throw error;
     }
   };
 
   sendApplicationNotInNetwork = async (email) => {
     try {
-      const data = await renderFile('./assets/lifterNotInNetwork.ejs');
+      const data = await renderFile('./dist/assets/lifterNotInNetwork.ejs');
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
@@ -135,7 +135,7 @@ export class EmailClient {
 
   sendBookingReferralCode = async (email: string, code: string) => {
     try {
-      const data = await renderFile('./src/assets/bookingReferralCode.ejs', {
+      const data = await renderFile('./dist/assets/bookingReferralCode.ejs', {
         referralCode: code,
       });
       const emailObject = {
@@ -146,7 +146,7 @@ export class EmailClient {
         attachments: [
           {
             filename: 'logo.png',
-            path: './src/assets/logo.png',
+            path: './dist/assets/logo.png',
             cid: 'welift-logo',
           },
         ],
@@ -255,10 +255,9 @@ CEO/Co-Founder</div>
     }
   };
 
-  private async sendMail(email) {
+  private async sendMail(email): Promise<void> {
     try {
       await this.transporter.sendMail(email);
-      return true;
     } catch (err) {
       console.log(err);
       throw err;
