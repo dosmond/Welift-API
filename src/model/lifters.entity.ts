@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AcceptedLift } from './acceptedLift.entity';
@@ -33,7 +34,7 @@ export class Lifter {
   lastName: string;
 
   @Column('uuid', { name: 'address' })
-  address: string;
+  addressId: string;
 
   @Column('boolean', { name: 'passed_bc', default: () => 'false' })
   passedBc: boolean;
@@ -85,7 +86,7 @@ export class Lifter {
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })
-  creationDate: string | null;
+  creationDate: Date | null;
 
   @Column('boolean', {
     name: 'bc_in_progress',
@@ -115,13 +116,13 @@ export class Lifter {
   @OneToMany(() => LifterReview, (lifterReviews) => lifterReviews.lifter)
   lifterReviews: LifterReview[];
 
-  @OneToMany(() => LifterStats, (lifterStats) => lifterStats.lifter)
-  lifterStats: LifterStats[];
+  @OneToOne(() => LifterStats, (lifterStats) => lifterStats.lifter)
+  lifterStats: LifterStats;
 
   @ManyToOne(() => Address, (addresses) => addresses.lifters, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'address', referencedColumnName: 'id' }])
-  address2: Address;
+  address: Address;
 }

@@ -7,6 +7,6 @@ import { PartnerReferralsService } from './partner-referrals.service';
 @Module({
   imports: [TypeOrmModule.forFeature([PartnerReferral])],
   controllers: [PartnerReferralsController],
-  providers: [PartnerReferralsService]
+  providers: [PartnerReferralsService],
 })
-export class PartnerReferralsModule { }
+export class PartnerReferralsModule {}

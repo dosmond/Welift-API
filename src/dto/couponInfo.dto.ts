@@ -7,13 +7,13 @@ export class CouponInfoDTO implements Readonly<CouponInfoDTO> {
   hours: number;
 
   @ApiProperty()
-  customer_name: string;
+  customerName: string;
 
   @ApiProperty()
-  business_name: string;
+  businessName: string;
 
   @ApiProperty()
-  custom_note: string;
+  customNote: string;
 
   @ApiProperty()
   email: string;

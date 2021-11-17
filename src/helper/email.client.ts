@@ -1,3 +1,4 @@
+import { CouponInfoDTO } from './../dto/couponInfo.dto';
 import { Transporter, createTransport } from 'nodemailer';
 import { renderFile } from 'ejs';
 import { Injectable } from '@nestjs/common';
@@ -183,60 +184,48 @@ export class EmailClient {
     }
   };
 
-  sendCouponEmail = async ({
-    customer_name,
-    business_name,
-    hours,
-    custom_note,
-    email,
-  }) => {
+  sendCouponEmail = async (info: CouponInfoDTO) => {
     try {
-      const couponCode = await this.getCouponCode(hours);
+      const couponCode = await this.getCouponCode(info.hours);
 
-      const message = `Hi ${customer_name},<br><br> 
+      const message = `Hi ${info.customerName},<br><br> 
 
     <div>We are so excited to be helping you with your next move.<br>Our main goal at Welift is to change the moving experience. We know that this is a stressful time for you, so take some stress off your shoulders and leave the heavy lifting to us.<br>
-<b>${business_name}</b> has gifted you ${hours} free hour(s) of moving labor with Welift. Visit our website at www.getwelift.com and use this code to redeem your free moving help! <br><br> <b>${couponCode}</b> <br><br>  If you have any questions, please contact us directly at (385)309-3256.</div>
+<b>${info.businessName}</b> has gifted you ${info.hours} free hour(s) of moving labor with Welift. Visit our website at www.getwelift.com and use this code to redeem your free moving help! <br><br> <b>${couponCode}</b> <br><br>  If you have any questions, please contact us directly at (385)309-3256.</div>
 
 <div>Luke Nafrada<br>
 CEO/Co-Founder</div>
 
-<p>${custom_note}</p>
+<p>${info.customNote}</p>
 
-<p>Welift | ${business_name}</p>`;
+<p>Welift | ${info.businessName}</p>`;
 
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
-        to: email,
+        to: info.email,
         subject: 'Welift coupon',
         html: message,
       };
 
       return await this.sendMail(emailObject);
     } catch (e) {
-      console.log(e);
-      return { error: e };
+      throw e;
     }
   };
 
-  sendWholeSaleCouponEmail = async ({
-    business_name,
-    hours,
-    custom_note,
-    email,
-  }) => {
+  sendWholeSaleCouponEmail = async (info: CouponInfoDTO): Promise<void> => {
     try {
-      const couponCode = await this.getCouponCode(hours);
+      const couponCode = await this.getCouponCode(info.hours);
       const data = await renderFile('./assets/wholesaleCoupon.ejs', {
-        company_name: business_name,
-        customMessage: custom_note,
+        company_name: info.businessName,
+        customMessage: info.customNote,
         coupon: couponCode,
-        hours: hours,
+        hours: info.hours,
       });
 
       const emailObject = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
-        to: email,
+        to: info.email,
         subject: 'Welift coupon',
         html: data,
         attachments: [
@@ -250,8 +239,7 @@ CEO/Co-Founder</div>
 
       return await this.sendMail(emailObject);
     } catch (e) {
-      console.log(e);
-      return { error: e };
+      throw e;
     }
   };
 

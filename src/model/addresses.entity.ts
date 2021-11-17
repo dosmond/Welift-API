@@ -40,6 +40,6 @@ export class Address {
   @OneToMany(() => Booking, (booking) => booking.startingAddress)
   bookings2: Booking[];
 
-  @OneToMany(() => Lifter, (lifters) => lifters.address2)
+  @OneToMany(() => Lifter, (lifters) => lifters.address)
   lifters: Lifter[];
 }

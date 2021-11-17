@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PartnerSendCouponDTO } from 'src/dto/partnerSendCoupon.dto';
 import { Partners } from 'src/model/Partners.entity';
@@ -34,11 +34,9 @@ export class PartnersService {
   }
 
   public async getCount(): Promise<number> {
-    const query = this.repo
-      .createQueryBuilder('partner')
-      .select('COUNT(partner)');
-
-    return await query.getRawOne();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, count] = await this.repo.findAndCount();
+    return count;
   }
 
   public async addPartner(
@@ -60,42 +58,34 @@ export class PartnersService {
     return result;
   }
 
-  // router.post('/customer-coupon', auth.requiredWithLogin, async (req, res) => {
-  //   let couponInfo = req.body.couponInfo
-  //   let result = await DBClient.decreasePartnerHours(req.body.partnerId, couponInfo.hours)
-  //   let rollback
+  public async sendCoupon(
+    user: User,
+    body: PartnerSendCouponDTO,
+  ): Promise<void> {
+    const sendCouponInfo = PartnerSendCouponDTO.from(body);
+    const partner = await this.repo.findOne({ id: sendCouponInfo.partnerId });
 
-  //   if (!result.error) {
-  //       if (req.body.isWholesale) {
-  //           result = await EmailClient.sendWholeSaleCouponEmail(couponInfo)
-  //       } else {
-  //           result = await EmailClient.sendCouponEmail(couponInfo)
-  //       }
+    if (partner.totalCredits - sendCouponInfo.couponInfo.hours < 0) {
+      throw new BadRequestException('Insufficient Hours');
+    }
 
-  //       if (result.error) {
-  //           rollback = await DBClient.increasePartnerHours(req.body.partnerId, couponInfo.hours)
+    partner.totalCredits -= sendCouponInfo.couponInfo.hours;
 
-  //           if (rollback.error)
-  //               return eh.handleVitalError(rollback.error, { location: "Customer - Coupon", objects: [req.body] }, res)
-  //       }
-  //   }
+    await this.repo.save(partner);
 
-  //   eh.handleApiResultSingle(result, res)
-  // })
-
-  // public async sendCoupon(
-  //   user: User,
-  //   body: PartnerSendCouponDTO,
-  // ): Promise<string> {
-  //   let rollback
-
-  //   const dto = PartnerSendCouponDTO.from(body);
-  //   const result = PartnerDTO.fromEntity(await this.repo.save(dto.toEntity()));
-
-  //   if(isWholesale) {
-
-  //   }
-  // }
+    try {
+      if (sendCouponInfo.isWholesale) {
+        await this.emailClient.sendWholeSaleCouponEmail(
+          sendCouponInfo.couponInfo,
+        );
+      } else {
+        await this.emailClient.sendCouponEmail(sendCouponInfo.couponInfo);
+      }
+    } catch (err) {
+      partner.totalCredits += sendCouponInfo.couponInfo.hours;
+      await this.repo.save(partner);
+    }
+  }
 
   public async createCheckoutSession(body: {
     hours: number;

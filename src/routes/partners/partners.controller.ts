@@ -31,13 +31,13 @@ export class PartnersController {
     return await this.serv.addPartner(user, body);
   }
 
-  @Post('send-coupon')
-  public async sendCoupon(
-    @User() user: User,
-    @Body() body: PartnerSendCouponDTO,
-  ): Promise<PartnerDTO> {
-    return await this.serv.sendCoupon(user, body);
-  }
+  // @Post('send-coupon')
+  // public async sendCoupon(
+  //   @User() user: User,
+  //   @Body() body: PartnerSendCouponDTO,
+  // ): Promise<PartnerDTO> {
+  //   return await this.serv.sendCoupon(user, body);
+  // }
 
   @Post('create-checkout-session')
   public async createCheckoutSession(
