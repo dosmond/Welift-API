@@ -7,6 +7,6 @@ import { LifterCompletedTrainingVideosService } from './lifter-completed-trainin
 @Module({
   imports: [TypeOrmModule.forFeature([LifterCompletedTrainingVideo])],
   controllers: [LifterCompletedTrainingVideosController],
-  providers: [LifterCompletedTrainingVideosService]
+  providers: [LifterCompletedTrainingVideosService],
 })
-export class LifterCompletedTrainingVideosModule { }
+export class LifterCompletedTrainingVideosModule {}

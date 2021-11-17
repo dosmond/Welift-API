@@ -9,7 +9,9 @@ describe('LifterCompletedTrainingVideosController', () => {
       controllers: [LifterCompletedTrainingVideosController],
     }).compile();
 
-    controller = module.get<LifterCompletedTrainingVideosController>(LifterCompletedTrainingVideosController);
+    controller = module.get<LifterCompletedTrainingVideosController>(
+      LifterCompletedTrainingVideosController,
+    );
   });
 
   it('should be defined', () => {
