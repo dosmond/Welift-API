@@ -1,3 +1,6 @@
+import { Address } from 'src/model/addresses.entity';
+import { AddressDTO } from 'src/dto/address.dto';
+import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { LifterDTO } from './../../dto/lifter.dto';
 import { Lifter } from 'src/model/lifters.entity';
@@ -10,17 +13,43 @@ import { User } from 'src/user.decorator';
 export class LiftersService {
   constructor(
     @InjectRepository(Lifter) private readonly repo: Repository<Lifter>,
+    @InjectRepository(Address)
+    private readonly addressRepo: Repository<Address>,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
     return LifterDTO.fromEntity(
-      await this.repo.findOne({ id: id }, { relations: [''] }),
+      await this.repo.findOne(
+        { id: id },
+        {
+          relations: [
+            'lifterReviews',
+            'lifterStats',
+            'address',
+            'lifterEquipments',
+            'completedLifterBadges',
+            'lifterCompletedTrainingVideos',
+          ],
+        },
+      ),
     );
   }
 
   public async getByUserId(user: User, userId: string): Promise<LifterDTO> {
     return LifterDTO.fromEntity(
-      await this.repo.findOne({ userId: userId }, { relations: [''] }),
+      await this.repo.findOne(
+        { userId: userId },
+        {
+          relations: [
+            'lifterReviews',
+            'lifterStats',
+            'address',
+            'lifterEquipments',
+            'completedLifterBadges',
+            'lifterCompletedTrainingVideos',
+          ],
+        },
+      ),
     );
   }
 
@@ -49,5 +78,31 @@ export class LiftersService {
     return await this.repo
       .find(options)
       .then((items) => items.map((item) => LifterDTO.fromEntity(item)));
+  }
+
+  public async count(): Promise<number> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, count] = await this.repo.findAndCount();
+    return count;
+  }
+
+  public async createBatch(batch: LifterBatchDTO): Promise<LifterDTO> {
+    const lifter = LifterDTO.from(batch.lifter);
+    const address = AddressDTO.from(batch.address);
+
+    const addressResult = await this.addressRepo.save(address.toEntity());
+    lifter.addressId = addressResult.id;
+
+    return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
+  }
+
+  public async updateBatch(batch: LifterBatchDTO): Promise<LifterDTO> {
+    const lifter = LifterDTO.from(batch.lifter);
+    const address = AddressDTO.from(batch.address);
+
+    const addressResult = await this.addressRepo.save(address.toEntity());
+    lifter.addressId = addressResult.id;
+
+    return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
   }
 }
