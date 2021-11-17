@@ -7,6 +7,6 @@ import { LifterEquipmentService } from './lifter-equipment.service';
 @Module({
   imports: [TypeOrmModule.forFeature([LifterEquipment])],
   controllers: [LifterEquipmentController],
-  providers: [LifterEquipmentService]
+  providers: [LifterEquipmentService],
 })
-export class LifterEquipmentModule { }
+export class LifterEquipmentModule {}
