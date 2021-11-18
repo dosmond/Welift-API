@@ -7,6 +7,6 @@ import { PartnerCreditHourPurchasesService } from './partner-credit-hour-purchas
 @Module({
   imports: [TypeOrmModule.forFeature([PartnerCreditHourPurchase])],
   controllers: [PartnerCreditHourPurchasesController],
-  providers: [PartnerCreditHourPurchasesService]
+  providers: [PartnerCreditHourPurchasesService],
 })
-export class PartnerCreditHourPurchasesModule { }
+export class PartnerCreditHourPurchasesModule {}

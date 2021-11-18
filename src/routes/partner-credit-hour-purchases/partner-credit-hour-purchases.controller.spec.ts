@@ -9,7 +9,9 @@ describe('PartnerCreditHourPurchasesController', () => {
       controllers: [PartnerCreditHourPurchasesController],
     }).compile();
 
-    controller = module.get<PartnerCreditHourPurchasesController>(PartnerCreditHourPurchasesController);
+    controller = module.get<PartnerCreditHourPurchasesController>(
+      PartnerCreditHourPurchasesController,
+    );
   });
 
   it('should be defined', () => {
