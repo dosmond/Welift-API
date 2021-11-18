@@ -8,11 +8,7 @@ import { LiftsController } from './lifts.controller';
 import { LiftsService } from './lifts.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Lift]),
-    TypeOrmModule.forFeature([AcceptedLift]),
-    TypeOrmModule.forFeature([Lifter]),
-  ],
+  imports: [TypeOrmModule.forFeature([Lift, AcceptedLift, Lifter])],
   controllers: [LiftsController],
   providers: [LiftsService, AcceptedLiftService],
 })

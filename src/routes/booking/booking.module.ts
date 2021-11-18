@@ -13,11 +13,13 @@ import { BookingService } from './booking.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Booking]),
-    TypeOrmModule.forFeature([PartnerReferral]),
-    TypeOrmModule.forFeature([Partners]),
-    TypeOrmModule.forFeature([Lift]),
-    TypeOrmModule.forFeature([AcceptedLift]),
+    TypeOrmModule.forFeature([
+      Booking,
+      AcceptedLift,
+      PartnerReferral,
+      Partners,
+      Lift,
+    ]),
   ],
   controllers: [BookingController],
   providers: [BookingService, EmailClient, TextClient, GoogleCalendarApiHelper],

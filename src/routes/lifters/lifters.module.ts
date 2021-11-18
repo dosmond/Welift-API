@@ -6,10 +6,7 @@ import { LiftersController } from './lifters.controller';
 import { LiftersService } from './lifters.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Lifter]),
-    TypeOrmModule.forFeature([Address]),
-  ],
+  imports: [TypeOrmModule.forFeature([Lifter, Address])],
   controllers: [LiftersController],
   providers: [LiftersService],
 })

@@ -6,10 +6,7 @@ import { EquipmentService } from './equipment.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Equipment]),
-    TypeOrmModule.forFeature([LifterEquipment]),
-  ],
+  imports: [TypeOrmModule.forFeature([Equipment, LifterEquipment])],
   controllers: [EquipmentController],
   providers: [EquipmentService],
 })

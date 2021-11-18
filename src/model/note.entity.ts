@@ -15,9 +15,6 @@ export class Note {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('character varying', { name: 'street', length: 128 })
-  street: string;
-
   @Column('uuid', { name: 'lead_id' })
   leadId: string;
 
