@@ -13,18 +13,22 @@ export class PartnerUpdateDTO
   id: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   companyName: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   email: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsNumber()
   totalCredits: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   phone: string;
 
@@ -40,36 +44,30 @@ export class PartnerUpdateDTO
 
   public static from(dto: Partial<PartnerUpdateDTO>): PartnerUpdateDTO {
     const partner = new PartnerUpdateDTO();
-    partner.id = dto.id;
-    partner.companyName = dto.companyName;
-    partner.email = dto.email;
-    partner.totalCredits = dto.totalCredits;
-    partner.phone = dto.phone;
-    partner.logo = dto.logo;
-    partner.referralCode = dto.referralCode;
+    for (const property in dto) partner[property] = dto[property];
+
     return partner;
   }
 
   public static fromEntity(entity: Partners): PartnerUpdateDTO {
-    if (entity) {
+    if (entity)
       return this.from({
         id: entity.id,
         companyName: entity.companyName,
         email: entity.email,
-        phone: entity.phone,
         totalCredits: entity.totalCredits,
+        phone: entity.phone,
         logo: entity.logo,
         referralCode: entity.referralCode,
       });
-    }
+
     return null;
   }
 
   public toEntity(user: User = null): Partners {
     const partner = new Partners();
-    for (const property in this as PartnerUpdateDTO) {
+    for (const property in this as PartnerUpdateDTO)
       partner[property] = this[property];
-    }
     return partner;
   }
 }

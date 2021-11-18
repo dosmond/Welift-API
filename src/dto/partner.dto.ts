@@ -58,13 +58,8 @@ export class PartnerDTO implements Readonly<PartnerDTO> {
 
   public toEntity(user: User = null): Partners {
     const partner = new Partners();
-    partner.id = this.id;
-    partner.companyName = this.companyName;
-    partner.email = this.email;
-    partner.totalCredits = this.totalCredits;
-    partner.phone = this.phone;
-    partner.logo = this.logo;
-    partner.referralCode = this.referralCode;
+    for (const property in this as PartnerDTO)
+      partner[property] = this[property];
     return partner;
   }
 }
