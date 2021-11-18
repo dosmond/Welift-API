@@ -79,13 +79,8 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
 
   public toEntity(user: User = null): AcceptedLift {
     const lift = new AcceptedLift();
-    lift.id = this.id;
-    lift.lifterId = this.lifterId ?? null;
-    lift.liftId = this.liftId ?? null;
-    lift.clockInTime = this.clockInTime ?? null;
-    lift.clockOutTime = this.clockOutTime ?? null;
-    lift.payrate = this.payrate ?? null;
-    lift.usePickupTruck = this.usePickupTruck ?? null;
+    for (const property in this as AcceptedLiftDTO)
+      lift[property] = this[property];
     return lift;
   }
 }

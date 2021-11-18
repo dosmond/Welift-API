@@ -1,3 +1,4 @@
+import { LifterEquipmentDTO } from './lifterEquipment.dto';
 import { LifterEquipment } from './../model/lifterEquipment.entity';
 import { Equipment } from './../model/equipment.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -24,8 +25,8 @@ export class EquipmentDTO implements Readonly<EquipmentDTO> {
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => LifterEquipment)
-  lifterEquipment: LifterEquipment[];
+  @Type(() => LifterEquipmentDTO)
+  lifterEquipment: LifterEquipmentDTO[];
 
   public static from(dto: Partial<EquipmentDTO>): EquipmentDTO {
     const badge = new EquipmentDTO();
@@ -39,7 +40,9 @@ export class EquipmentDTO implements Readonly<EquipmentDTO> {
       return this.from({
         id: entity.id,
         name: entity.name,
-        lifterEquipment: entity.lifterEquipments,
+        lifterEquipment: entity.lifterEquipments.map((item) =>
+          LifterEquipmentDTO.fromEntity(item),
+        ),
       });
     }
     return null;

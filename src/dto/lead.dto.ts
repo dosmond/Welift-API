@@ -1,3 +1,4 @@
+import { NoteDTO } from './note.dto';
 import { Note } from './../model/note.entity';
 import { IsDateString } from 'class-validator';
 import { Lead } from './../model/leads.entity';
@@ -109,8 +110,8 @@ export class LeadDTO implements Readonly<LeadDTO> {
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => Note)
-  notes: Note[];
+  @Type(() => NoteDTO)
+  notes: NoteDTO[];
 
   public static from(dto: Partial<LeadDTO>): LeadDTO {
     const badge = new LeadDTO();
@@ -138,6 +139,7 @@ export class LeadDTO implements Readonly<LeadDTO> {
         referralCode: entity.referralCode,
         promoCode: entity.promoCode,
         creationDate: entity.creationDate,
+        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;

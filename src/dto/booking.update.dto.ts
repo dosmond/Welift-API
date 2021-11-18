@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsUUID,
@@ -6,14 +7,17 @@ import {
   IsBoolean,
   IsDate,
   IsNumber,
+  IsDateString,
 } from 'class-validator';
 import { Booking } from 'src/model/booking.entity';
 import { User } from 'src/user.decorator';
+import { AddressDTO } from './address.dto';
 import { BookingDTO } from './booking.dto';
+import { LiftDTO } from './lift.dto';
+import { NoteDTO } from './note.dto';
 
 export class BookingUpdateDTO
-  extends BookingDTO
-  implements Readonly<BookingUpdateDTO>
+  implements Readonly<BookingUpdateDTO>, BookingDTO
 {
   @ApiProperty({ required: true })
   @IsUUID()
@@ -41,16 +45,34 @@ export class BookingUpdateDTO
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  distanceInfo: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  additionalInfo: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  specialItems: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsUUID()
   startingAddressId: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsDate()
+  @IsUUID()
+  endingAddressId: string;
+
+  @ApiProperty()
+  @IsDateString()
   startTime: Date;
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
   lifterCount: number;
 
@@ -66,51 +88,76 @@ export class BookingUpdateDTO
 
   @ApiProperty()
   @IsOptional()
+  @IsDate()
+  creationDate: Date;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   stripeSessionId: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   endTime: Date;
 
   @ApiProperty()
+  @IsOptional()
+  @IsString()
+  referralCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  status: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   timezone: string;
 
-  public static from(dto: Partial<BookingUpdateDTO>): BookingUpdateDTO {
-    const booking = new BookingUpdateDTO();
-    booking.id = dto.id;
-    booking.needsPickupTruck = dto.needsPickupTruck;
-    booking.name = dto.name;
-    booking.phone = dto.phone;
-    booking.email = dto.email;
-    booking.distanceInfo = dto.distanceInfo;
-    booking.additionalInfo = dto.additionalInfo;
-    booking.specialItems = dto.specialItems;
-    booking.startingAddressId = dto.startingAddressId;
-    booking.endingAddressId = dto.endingAddressId;
-    booking.startTime = dto.startTime;
-    booking.endTime = dto.endTime;
-    booking.lifterCount = dto.lifterCount;
-    booking.hoursCount = dto.hoursCount;
-    booking.totalCost = dto.totalCost;
-    booking.creationDate = dto.creationDate;
-    booking.stripeSessionId = dto.stripeSessionId;
-    booking.referralCode = dto.referralCode;
-    booking.status = dto.status;
-    booking.timezone = dto.timezone;
-    booking.calendarEventId = dto.calendarEventId;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  calendarEventId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @Type(() => AddressDTO)
+  startingAddress: AddressDTO;
+
+  @ApiProperty()
+  @IsOptional()
+  @Type(() => AddressDTO)
+  endingAddress: AddressDTO;
+
+  @ApiProperty()
+  @IsOptional()
+  @Type(() => NoteDTO)
+  notes: NoteDTO[];
+
+  @ApiProperty()
+  @IsOptional()
+  @Type(() => LiftDTO)
+  lift: LiftDTO;
+
+  public static from(dto: Partial<BookingDTO>): BookingDTO {
+    const booking = new BookingDTO();
+
+    for (const property in dto) {
+      booking[property] = dto[property];
+    }
+
     return booking;
   }
 
-  public static fromEntity(entity: Booking): BookingUpdateDTO {
+  public static fromEntity(entity: Booking): BookingDTO {
     if (entity) {
       return this.from({
         id: entity.id,
         needsPickupTruck: entity.needsPickupTruck,
         name: entity.name,
-        phone: entity.phone,
+        phone: this.standardizePhoneNumber(entity.phone),
         email: entity.email,
         distanceInfo: entity.distanceInfo,
         additionalInfo: entity.additionalInfo,
@@ -127,6 +174,11 @@ export class BookingUpdateDTO
         referralCode: entity.referralCode,
         status: entity.status,
         timezone: entity.timezone,
+        calendarEventId: entity.calendarEventId,
+        endingAddress: AddressDTO.fromEntity(entity.endingAddress),
+        startingAddress: AddressDTO.fromEntity(entity.startingAddress),
+        lift: LiftDTO.fromEntity(entity.lift),
+        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;
@@ -135,8 +187,17 @@ export class BookingUpdateDTO
   public toEntity(user: User = null): Booking {
     const booking = new Booking();
     for (const property in this as BookingUpdateDTO) {
-      booking[property] = this[property];
+      if (property === 'phone')
+        booking[property] = BookingUpdateDTO.standardizePhoneNumber(
+          this[property],
+        );
+      else booking[property] = this[property];
     }
+
     return booking;
+  }
+
+  public static standardizePhoneNumber(phoneNumber: string): string {
+    return phoneNumber.replace(/[^\d\+]/g, '');
   }
 }

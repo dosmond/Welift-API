@@ -1,5 +1,5 @@
-import { Lift } from './../model/lifts.entity';
-import { Note } from './../model/note.entity';
+import { LiftDTO } from 'src/dto/lift.dto';
+import { NoteDTO } from './note.dto';
 import { AddressDTO } from './address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -14,7 +14,6 @@ import {
 } from 'class-validator';
 import { Booking } from 'src/model/booking.entity';
 import { User } from 'src/user.decorator';
-import { Address } from 'src/model/addresses.entity';
 
 export class BookingDTO implements Readonly<BookingDTO> {
   @ApiProperty({ required: false })
@@ -127,13 +126,13 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsOptional()
-  @Type(() => Note)
-  notes: Note[];
+  @Type(() => NoteDTO)
+  notes: NoteDTO[];
 
   @ApiProperty()
   @IsOptional()
-  @Type(() => Lift)
-  lift: Lift;
+  @Type(() => LiftDTO)
+  lift: LiftDTO;
 
   public static from(dto: Partial<BookingDTO>): BookingDTO {
     const booking = new BookingDTO();
@@ -151,7 +150,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
         id: entity.id,
         needsPickupTruck: entity.needsPickupTruck,
         name: entity.name,
-        phone: entity.phone,
+        phone: BookingDTO.standardizePhoneNumber(entity.phone),
         email: entity.email,
         distanceInfo: entity.distanceInfo,
         additionalInfo: entity.additionalInfo,
@@ -171,8 +170,8 @@ export class BookingDTO implements Readonly<BookingDTO> {
         calendarEventId: entity.calendarEventId,
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
-        lift: entity.lift,
-        notes: entity.notes,
+        lift: LiftDTO.fromEntity(entity.lift),
+        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;
@@ -180,31 +179,16 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   public toEntity(user: User = null): Booking {
     const booking = new Booking();
-    booking.id = this.id;
-    booking.needsPickupTruck = this.needsPickupTruck;
-    booking.name = this.name;
-    booking.phone = this.standardizePhoneNumber(this.phone);
-    booking.email = this.email;
-    booking.distanceInfo = this.distanceInfo;
-    booking.additionalInfo = this.additionalInfo;
-    booking.specialItems = this.specialItems;
-    booking.startingAddressId = this.startingAddressId;
-    booking.endingAddressId = this.endingAddressId;
-    booking.startTime = this.startTime;
-    booking.endTime = this.endTime;
-    booking.lifterCount = this.lifterCount;
-    booking.hoursCount = this.hoursCount;
-    booking.totalCost = this.totalCost;
-    booking.creationDate = this.creationDate;
-    booking.stripeSessionId = this.stripeSessionId;
-    booking.referralCode = this.referralCode;
-    booking.status = this.status;
-    booking.timezone = this.timezone;
-    booking.calendarEventId = this.calendarEventId;
+    for (const property in this as BookingDTO) {
+      if (property === 'phone')
+        booking[property] = BookingDTO.standardizePhoneNumber(this[property]);
+      else booking[property] = this[property];
+    }
+
     return booking;
   }
 
-  private standardizePhoneNumber(phoneNumber: string): string {
+  public static standardizePhoneNumber(phoneNumber: string): string {
     return phoneNumber.replace(/[^\d\+]/g, '');
   }
 }

@@ -1,5 +1,5 @@
-import { Lifter } from 'src/model/lifters.entity';
-import { Badge } from 'src/model/badges.entity';
+import { LifterDTO } from './lifter.dto';
+import { BadgeDTO } from 'src/dto/badge.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional, IsUUID, ValidateNested } from 'class-validator';
@@ -26,15 +26,15 @@ export class CompletedLifterBadgeDTO
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => Badge)
-  badge: Badge;
+  @Type(() => BadgeDTO)
+  badge: BadgeDTO;
 
   @ApiProperty()
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => Lifter)
-  lifter: Lifter;
+  @Type(() => LifterDTO)
+  lifter: LifterDTO;
 
   public static from(
     dto: Partial<CompletedLifterBadgeDTO>,
@@ -53,8 +53,8 @@ export class CompletedLifterBadgeDTO
         id: entity.id,
         lifterId: entity.lifterId,
         badgeId: entity.badgeId,
-        badge: entity.badge,
-        lifter: entity.lifter,
+        badge: BadgeDTO.fromEntity(entity.badge),
+        lifter: LifterDTO.fromEntity(entity.lifter),
       });
     }
     return null;

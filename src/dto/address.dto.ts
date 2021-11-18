@@ -2,8 +2,6 @@ import { LifterDTO } from './lifter.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, IsOptional, ValidateNested } from 'class-validator';
 import { Address } from 'src/model/addresses.entity';
-import { Booking } from 'src/model/booking.entity';
-import { Lifter } from 'src/model/lifters.entity';
 import { User } from 'src/user.decorator';
 import { BookingDTO } from './booking.dto';
 
@@ -73,16 +71,8 @@ export class AddressDTO implements Readonly<AddressDTO> {
   }
 
   public toEntity(user: User = null) {
-    const it = new Address();
-    it.id = this.id;
-    it.street = this.street;
-    it.street2 = this.street2;
-    it.city = this.city;
-    it.state = this.state;
-    it.postalCode = this.postalCode;
-    // it.createDateTime = new Date();
-    // it.createdBy = user ? user.sub : null;
-    // it.lastChangedBy = user ? user.sub : null;
-    return it;
+    const lift = new Address();
+    for (const property in this as AddressDTO) lift[property] = this[property];
+    return lift;
   }
 }
