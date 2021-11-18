@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CouponInfoDTO implements Readonly<CouponInfoDTO> {
   @ApiProperty()
@@ -7,14 +7,18 @@ export class CouponInfoDTO implements Readonly<CouponInfoDTO> {
   hours: number;
 
   @ApiProperty()
+  @IsString()
   customerName: string;
 
   @ApiProperty()
+  @IsString()
   businessName: string;
 
   @ApiProperty()
+  @IsString()
   customNote: string;
 
   @ApiProperty()
+  @IsString()
   email: string;
 }

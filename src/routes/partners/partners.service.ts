@@ -9,6 +9,7 @@ import Stripe from 'stripe';
 import { PartnerDTO } from 'src/dto/partner.dto';
 import { EmailClient } from 'src/helper/email.client';
 import { PartnerUpdateDTO } from 'src/dto/partner.update.dto';
+import { PartnerCreditCheckoutDTO } from 'src/dto/partnerCreditCheckout.dto';
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });
@@ -48,11 +49,12 @@ export class PartnersService {
   }
 
   public async updatePartner(
+    user: User,
     request: PartnerUpdateDTO,
   ): Promise<PartnerUpdateDTO> {
     const dto = PartnerUpdateDTO.from(request);
     const result = PartnerUpdateDTO.fromEntity(
-      await this.repo.save(dto.toEntity()),
+      await this.repo.save(dto.toEntity(user)),
     );
 
     return result;
@@ -84,13 +86,13 @@ export class PartnersService {
     } catch (err) {
       partner.totalCredits += sendCouponInfo.couponInfo.hours;
       await this.repo.save(partner);
+      throw err;
     }
   }
 
-  public async createCheckoutSession(body: {
-    hours: number;
-    perHourCost: number;
-  }): Promise<string> {
+  public async createCheckoutSession(
+    body: PartnerCreditCheckoutDTO,
+  ): Promise<string> {
     const { hours, perHourCost } = body;
 
     try {
@@ -101,7 +103,7 @@ export class PartnersService {
           {
             price: process.env.PARTNER_CREDIT_PRICE_ID,
             name: 'Purchase Credit Hours',
-            amount: perHourCost * 10,
+            amount: parseInt(perHourCost) * 10,
             quantity: hours,
             currency: 'usd',
           },

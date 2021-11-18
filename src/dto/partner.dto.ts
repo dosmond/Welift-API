@@ -6,6 +6,7 @@ import { Partners } from 'src/model/Partners.entity';
 export class PartnerDTO implements Readonly<PartnerDTO> {
   @ApiProperty({ required: false })
   @IsUUID()
+  @IsOptional()
   id: string;
 
   @ApiProperty()
@@ -18,6 +19,7 @@ export class PartnerDTO implements Readonly<PartnerDTO> {
 
   @ApiProperty()
   @IsNumber()
+  @IsOptional()
   totalCredits: number;
 
   @ApiProperty()

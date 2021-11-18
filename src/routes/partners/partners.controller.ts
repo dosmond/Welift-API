@@ -1,16 +1,30 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { PartnerDTO } from 'src/dto/partner.dto';
+import { PartnerUpdateDTO } from 'src/dto/partner.update.dto';
+import { PartnerCreditCheckoutDTO } from 'src/dto/partnerCreditCheckout.dto';
 import { PartnerSendCouponDTO } from 'src/dto/partnerSendCoupon.dto';
 import { User } from 'src/user.decorator';
 import { PartnersService } from './partners.service';
 
-@Controller('partners')
+@Controller('partner')
 export class PartnersController {
   constructor(private serv: PartnersService) {}
 
   @Get()
   public async getById(@Query() query: { id: string }): Promise<PartnerDTO> {
-    return await this.serv.getById(query.id);
+    try {
+      return await this.serv.getById(query.id);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('list')
@@ -23,7 +37,7 @@ export class PartnersController {
     return await this.serv.getCount();
   }
 
-  @Post('add-partner')
+  @Post('create')
   public async addPartner(
     @User() user: User,
     @Body() body: PartnerDTO,
@@ -31,21 +45,34 @@ export class PartnersController {
     return await this.serv.addPartner(user, body);
   }
 
+  @Put('update')
+  public async updatePartner(
+    @User() user: User,
+    @Body() request: PartnerUpdateDTO,
+  ): Promise<PartnerUpdateDTO> {
+    try {
+      return await this.serv.updatePartner(user, request);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
+  }
+
   @Post('send-coupon')
   public async sendCoupon(
     @User() user: User,
     @Body() body: PartnerSendCouponDTO,
   ): Promise<void> {
-    return await this.serv.sendCoupon(user, body);
+    try {
+      return await this.serv.sendCoupon(user, body);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Post('create-checkout-session')
   public async createCheckoutSession(
     @Body()
-    body: {
-      hours: number;
-      perHourCost: number;
-    },
+    body: PartnerCreditCheckoutDTO,
   ): Promise<string> {
     return await this.serv.createCheckoutSession(body);
   }

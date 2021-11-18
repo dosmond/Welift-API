@@ -1,7 +1,12 @@
-import { IsBoolean, IsOptional, IsUUID, ValidateNested } from 'class-validator';
+import {
+  IsBoolean,
+  IsDefined,
+  IsOptional,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CouponInfoDTO } from './couponInfo.dto';
-import { Partners } from 'src/model/Partners.entity';
 import { Type } from 'class-transformer';
 
 export class PartnerSendCouponDTO implements Readonly<PartnerSendCouponDTO> {
@@ -17,6 +22,7 @@ export class PartnerSendCouponDTO implements Readonly<PartnerSendCouponDTO> {
   @ApiProperty()
   @ValidateNested()
   @Type(() => CouponInfoDTO)
+  @IsDefined()
   couponInfo: CouponInfoDTO;
 
   public static from(dto: Partial<PartnerSendCouponDTO>): PartnerSendCouponDTO {

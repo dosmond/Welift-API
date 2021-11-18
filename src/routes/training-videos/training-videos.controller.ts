@@ -1,10 +1,18 @@
-import { Controller, Get, Post, Query, Body, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  Delete,
+  BadRequestException,
+} from '@nestjs/common';
 import { TrainingVideoDTO } from 'src/dto/trainingVideo.dto';
 import { User } from 'src/user.decorator';
 import { DeleteResult } from 'typeorm';
 import { TrainingVideosService } from './training-videos.service';
 
-@Controller('training-videos')
+@Controller('training-video')
 export class TrainingVideosController {
   constructor(private serv: TrainingVideosService) {}
 
@@ -18,10 +26,14 @@ export class TrainingVideosController {
     @User() user: User,
     @Query() query: { id: string },
   ): Promise<TrainingVideoDTO> {
-    return await this.serv.getById(query.id);
+    try {
+      return await this.serv.getById(query.id);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
-  @Post('add-video')
+  @Post('create')
   public async addTrainingVideo(
     @User() user: User,
     @Body() body: TrainingVideoDTO,
@@ -29,7 +41,7 @@ export class TrainingVideosController {
     return await this.serv.addTrainingVideo(user, body);
   }
 
-  @Delete('delete-video')
+  @Delete('delete')
   public async deleteTrainingVideo(
     @User() user: User,
     @Query() query: { id: string },

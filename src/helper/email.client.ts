@@ -258,8 +258,13 @@ CEO/Co-Founder</div>
       max_redemptions: 1,
     };
 
-    const result = await stripe.promotionCodes.create(promotionCode);
-    return result.code;
+    try {
+      const result = await stripe.promotionCodes.create(promotionCode);
+      // console.log(result);
+      return result.code;
+    } catch (e) {
+      throw e;
+    }
   }
 
   private getCouponId(hours: number): string {
