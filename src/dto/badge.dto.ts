@@ -2,7 +2,6 @@ import { CompletedLifterBadge } from './../model/completedLifterBadges.entity';
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Badge } from 'src/model/badges.entity';
-import { User } from 'src/user.decorator';
 
 export class BadgeDTO implements Readonly<BadgeDTO> {
   @ApiProperty({ required: false })
@@ -10,13 +9,11 @@ export class BadgeDTO implements Readonly<BadgeDTO> {
   @IsUUID()
   id: string;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
+  @ApiProperty({ required: true })
   @IsString()
   name: string;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
+  @ApiProperty({ required: true })
   @IsNumber()
   requiredValue: number;
 
@@ -26,9 +23,8 @@ export class BadgeDTO implements Readonly<BadgeDTO> {
 
   public static from(dto: Partial<BadgeDTO>) {
     const badge = new BadgeDTO();
-    for (const property in dto) {
-      badge[property] = dto[property];
-    }
+    for (const property in dto) badge[property] = dto[property];
+
     return badge;
   }
 
@@ -45,13 +41,7 @@ export class BadgeDTO implements Readonly<BadgeDTO> {
 
   public toEntity() {
     const badge = new Badge();
-    badge.id = this.id;
-    badge.name = this.name;
-    badge.requiredValue = this.requiredValue;
-
-    // it.createDateTime = new Date();
-    // it.createdBy = user ? user.sub : null;
-    // it.lastChangedBy = user ? user.sub : null;
+    for (const property in this as BadgeDTO) badge[property] = this[property];
     return badge;
   }
 }

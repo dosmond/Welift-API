@@ -10,8 +10,9 @@ import { Repository } from 'typeorm';
 export class PartnerCreditHourPurchasesService {
   constructor(
     @InjectRepository(PartnerCreditHourPurchase)
-    private readonly partnerRepo: Repository<Partners>,
     private readonly repo: Repository<PartnerCreditHourPurchase>,
+    @InjectRepository(Partners)
+    private readonly partnerRepo: Repository<Partners>,
   ) {}
 
   public async createPurchase(
@@ -26,9 +27,6 @@ export class PartnerCreditHourPurchasesService {
     partner.totalCredits += partnerCreditPurchase.creditsPurchased;
 
     await this.repo.save(partner);
-
-    await PartnerCreditHourPurchaseDTO.fromEntity(
-      await this.repo.save(partnerCreditPurchase.toEntity(user)),
-    );
+    await this.repo.save(partnerCreditPurchase.toEntity(user));
   }
 }

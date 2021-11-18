@@ -1,27 +1,36 @@
-import { CompletedLifterBadge } from '../model/completedLifterBadges.entity';
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Badge } from 'src/model/badges.entity';
-import { User } from 'src/user.decorator';
 import { BadgeDTO } from './badge.dto';
+import { CompletedLifterBadge } from 'src/model/completedLifterBadges.entity';
+import { Badge } from 'src/model/badges.entity';
 
-export class BadgeUpdateDTO
-  extends BadgeDTO
-  implements Readonly<BadgeUpdateDTO>
-{
+export class BadgeUpdateDTO implements Readonly<BadgeUpdateDTO>, BadgeDTO {
   @ApiProperty({ required: true })
   @IsUUID()
   id: string;
 
-  public static from(dto: Partial<BadgeUpdateDTO>) {
-    const badge = new BadgeUpdateDTO();
-    badge.id = dto.id;
-    badge.name = dto.name;
-    badge.requiredValue = dto.requiredValue;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  requiredValue: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  completedLifterBadges: CompletedLifterBadge[];
+
+  public static from(dto: Partial<BadgeDTO>) {
+    const badge = new BadgeDTO();
+    for (const property in dto) badge[property] = dto[property];
+
     return badge;
   }
 
-  public static fromEntity(entity: Badge): BadgeUpdateDTO {
+  public static fromEntity(entity: Badge) {
     if (entity) {
       return this.from({
         id: entity.id,
@@ -34,9 +43,8 @@ export class BadgeUpdateDTO
 
   public toEntity(): Badge {
     const badge = new Badge();
-    for (const property in this as BadgeUpdateDTO) {
+    for (const property in this as BadgeUpdateDTO)
       badge[property] = this[property];
-    }
     return badge;
   }
 }

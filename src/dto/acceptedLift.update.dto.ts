@@ -1,28 +1,66 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { Lifter } from 'src/model/lifters.entity';
+import { Lift } from 'src/model/lifts.entity';
 import { User } from 'src/user.decorator';
 
 export class AcceptedLiftUpdateDTO
-  extends AcceptedLiftDTO
-  implements Readonly<AcceptedLiftUpdateDTO>
+  implements Readonly<AcceptedLiftUpdateDTO>, AcceptedLiftDTO
 {
   @ApiProperty({ required: true })
   @IsUUID()
   id: string;
 
-  public static from(dto: Partial<AcceptedLiftDTO>): AcceptedLiftUpdateDTO {
+  @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  lifterId: string;
+
+  @ApiProperty({ required: false })
+  @IsDate()
+  @IsOptional()
+  clockInTime: Date;
+
+  @ApiProperty({ required: false })
+  @IsDate()
+  @IsOptional()
+  clockOutTime: Date;
+
+  @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  liftId: string;
+
+  @ApiProperty({ required: false })
+  @IsNumber()
+  payrate: number;
+
+  @ApiProperty({ required: false })
+  @IsBoolean()
+  usePickupTruck: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  lift: Lift;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  lifter: Lifter;
+
+  public static from(
+    dto: Partial<AcceptedLiftUpdateDTO>,
+  ): AcceptedLiftUpdateDTO {
     const lift = new AcceptedLiftUpdateDTO();
-    lift.id = dto.id;
-    lift.lifterId = dto.lifterId;
-    lift.liftId = dto.liftId;
-    lift.clockInTime = dto.clockInTime;
-    lift.clockOutTime = dto.clockOutTime;
-    lift.payrate = dto.payrate;
-    lift.usePickupTruck = dto.usePickupTruck;
-    lift.lift = dto.lift;
-    lift.lifter = dto.lifter;
+    for (const property in dto) lift[property] = dto[property];
+
     return lift;
   }
 
@@ -43,11 +81,11 @@ export class AcceptedLiftUpdateDTO
     return null;
   }
 
-  public toUpdateEntity(user: User = null): Partial<AcceptedLift> {
-    const lift = new AcceptedLift();
-    for (const property in this as AcceptedLiftUpdateDTO) {
+  public toEntity(user: User = null): AcceptedLift {
+    const lift = new AcceptedLiftDTO();
+    for (const property in this as AcceptedLiftUpdateDTO)
       lift[property] = this[property];
-    }
+
     return lift;
   }
 }

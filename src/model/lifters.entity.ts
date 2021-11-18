@@ -3,7 +3,6 @@ import {
   Entity,
   Index,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -119,7 +118,7 @@ export class Lifter {
   @OneToOne(() => LifterStats, (lifterStats) => lifterStats.lifter)
   lifterStats: LifterStats;
 
-  @ManyToOne(() => Address, (addresses) => addresses.lifters, {
+  @OneToOne(() => Address, (addresses) => addresses.lifter, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

@@ -1,6 +1,14 @@
 import { AddressDTO } from './../../dto/address.dto';
 import { AddressService } from './address.service';
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { User } from 'src/user.decorator';
 import { AddressMultipleDTO } from 'src/dto/address.multiple.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
@@ -22,7 +30,11 @@ export class AddressController {
     @User() user: User,
     @Body() body: AddressDTO,
   ): Promise<AddressDTO> {
-    return await this.serv.create(user, body);
+    try {
+      return await this.serv.create(user, body);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Post('create-all')
@@ -30,7 +42,11 @@ export class AddressController {
     @User() user: User,
     @Body() body: AddressMultipleDTO,
   ): Promise<AddressDTO[]> {
-    return await this.serv.createMultiple(user, body);
+    try {
+      return await this.serv.createMultiple(user, body);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Put('update')
@@ -38,6 +54,10 @@ export class AddressController {
     @User() user: User,
     @Body() body: AddressUpdateDTO,
   ): Promise<AddressDTO> {
-    return await this.serv.update(user, body);
+    try {
+      return await this.serv.update(user, body);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 }

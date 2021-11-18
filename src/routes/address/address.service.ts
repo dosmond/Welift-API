@@ -33,7 +33,7 @@ export class AddressService {
       const dto = AddressDTO.from(item);
       promises.push(
         this.repo.save(dto.toEntity(user)).then((res) => {
-          returnValue.push(AddressDTO.from(res));
+          returnValue.push(AddressDTO.fromEntity(res));
         }),
       );
     });

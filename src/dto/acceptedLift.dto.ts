@@ -39,12 +39,10 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
 
   @ApiProperty({ required: false })
   @IsNumber()
-  @IsOptional()
   payrate: number;
 
   @ApiProperty({ required: false })
   @IsBoolean()
-  @IsOptional()
   usePickupTruck: boolean;
 
   @ApiProperty({ required: false })

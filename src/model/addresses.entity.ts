@@ -1,9 +1,8 @@
 import {
-  BaseEntity,
   Column,
   Entity,
   Index,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Booking } from './booking.entity';
@@ -34,12 +33,12 @@ export class Address {
   @Column('character varying', { name: 'postal_code', length: 32 })
   postalCode: string;
 
-  @OneToMany(() => Booking, (booking) => booking.endingAddress)
-  bookings: Booking[];
+  @OneToOne(() => Booking, (booking) => booking.endingAddress)
+  bookingEnd: Booking;
 
-  @OneToMany(() => Booking, (booking) => booking.startingAddress)
-  bookings2: Booking[];
+  @OneToOne(() => Booking, (booking) => booking.startingAddress)
+  bookingStart: Booking;
 
-  @OneToMany(() => Lifter, (lifters) => lifters.address)
-  lifters: Lifter[];
+  @OneToOne(() => Lifter, (lifters) => lifters.address)
+  lifter: Lifter;
 }

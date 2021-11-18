@@ -22,7 +22,6 @@ import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
 import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
 
 @Controller('accepted-lift')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AcceptedLiftController {
   constructor(private serv: AcceptedLiftService) {}
 

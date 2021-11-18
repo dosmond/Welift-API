@@ -273,7 +273,7 @@ export class BookingService {
     });
   }
 
-  private async handleUpdateGoogleCalendar(result: Booking) {
+  private async handleUpdateGoogleCalendar(result: BookingDTO) {
     try {
       const resolvedBooking = await this.repo.findOne(
         { id: result.id },

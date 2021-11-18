@@ -3,7 +3,6 @@ import {
   Entity,
   Index,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -118,11 +117,11 @@ export class Booking {
   })
   calendarEventId: string | null;
 
-  @ManyToOne(() => Address, (addresses) => addresses.bookings)
+  @OneToOne(() => Address, (addresses) => addresses.bookingEnd)
   @JoinColumn([{ name: 'ending_address', referencedColumnName: 'id' }])
   endingAddress: Address;
 
-  @ManyToOne(() => Address, (addresses) => addresses.bookings2, {
+  @OneToOne(() => Address, (addresses) => addresses.bookingStart, {
     onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'starting_address', referencedColumnName: 'id' }])

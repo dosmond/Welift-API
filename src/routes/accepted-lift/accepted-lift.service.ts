@@ -98,8 +98,14 @@ export class AcceptedLiftService {
     user: User,
     lift: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
-    const dto = AcceptedLiftDTO.fromEntity(lift);
-    return AcceptedLiftDTO.fromEntity(await this.repo.save(dto.toEntity(user)));
+    try {
+      const dto = AcceptedLiftDTO.fromEntity(lift);
+      return AcceptedLiftDTO.fromEntity(
+        await this.repo.save(dto.toEntity(user)),
+      );
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   public async verifyToken(request: TokenVerificationRequestDTO) {
@@ -128,23 +134,34 @@ export class AcceptedLiftService {
 
     lift.payrate = this.getPayrate(lift);
 
-    const updatedLift = await this.repo.save(lift);
-
-    return AcceptedLiftDTO.fromEntity(updatedLift);
+    try {
+      const updatedLift = await this.repo.save(lift);
+      return AcceptedLiftDTO.fromEntity(updatedLift);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   public async update(
     user: User,
     acceptedLift: AcceptedLiftUpdateDTO,
   ): Promise<AcceptedLiftUpdateDTO> {
-    const dto = AcceptedLiftUpdateDTO.fromEntity(acceptedLift);
-    return AcceptedLiftUpdateDTO.fromEntity(
-      await this.repo.save(dto.toUpdateEntity()),
-    );
+    try {
+      const dto = AcceptedLiftUpdateDTO.fromEntity(acceptedLift);
+      return AcceptedLiftUpdateDTO.fromEntity(
+        await this.repo.save(dto.toEntity()),
+      );
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   public async delete(user: User, id: string): Promise<DeleteResult> {
-    return await this.repo.delete({ id: id });
+    try {
+      return await this.repo.delete({ id: id });
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   private getPayrate(lift: AcceptedLift): number {

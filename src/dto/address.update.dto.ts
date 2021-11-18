@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID, IsOptional } from 'class-validator';
+import { IsString, IsUUID, IsOptional, ValidateNested } from 'class-validator';
 import { Address } from 'src/model/addresses.entity';
 import { Booking } from 'src/model/booking.entity';
 import { Lifter } from 'src/model/lifters.entity';
 import { User } from 'src/user.decorator';
 import { AddressDTO } from './address.dto';
+import { BookingDTO } from './booking.dto';
+import { LifterDTO } from './lifter.dto';
 
 export class AddressUpdateDTO
-  extends AddressDTO
-  implements Readonly<AddressUpdateDTO>
+  implements Readonly<AddressUpdateDTO>, AddressDTO
 {
   @ApiProperty({ required: false })
   @IsUUID()
@@ -39,18 +40,29 @@ export class AddressUpdateDTO
   @IsString()
   postalCode: string;
 
-  public static from(dto: Partial<AddressUpdateDTO>): AddressUpdateDTO {
+  @ApiProperty()
+  @IsOptional()
+  @ValidateNested()
+  bookingStart: BookingDTO;
+
+  @ApiProperty()
+  @IsOptional()
+  @ValidateNested()
+  bookingEnd: BookingDTO;
+
+  @ApiProperty()
+  @IsOptional()
+  @ValidateNested()
+  lifter: LifterDTO;
+
+  public static from(dto: Partial<AddressUpdateDTO>) {
     const address = new AddressUpdateDTO();
-    address.id = dto.id;
-    address.street = dto.street;
-    address.street2 = dto.street2;
-    address.city = dto.city;
-    address.state = dto.state;
-    address.postalCode = dto.postalCode;
+    for (const property in dto) address[property] = dto[property];
+
     return address;
   }
 
-  public static fromEntity(entity: Address): AddressUpdateDTO {
+  public static fromEntity(entity: Address) {
     if (entity) {
       return this.from({
         id: entity.id,
@@ -59,23 +71,19 @@ export class AddressUpdateDTO
         city: entity.city,
         state: entity.state,
         postalCode: entity.postalCode,
+        bookingStart: BookingDTO.fromEntity(entity.bookingStart),
+        bookingEnd: BookingDTO.fromEntity(entity.bookingEnd),
+        lifter: LifterDTO.fromEntity(entity.lifter),
       });
     }
     return null;
   }
 
-  public override toEntity(user: User = null): Address {
+  public toEntity(user: User = null) {
     const address = new Address();
-
-    for (const property in this as AddressUpdateDTO) {
+    for (const property in this as AddressUpdateDTO)
       address[property] = this[property];
-    }
 
-    // if (this.postalCode)
-    //   address.postalCode = this.postalCode;
-    // it.createDateTime = new Date();
-    // it.createdBy = user ? user.sub : null;
-    // it.lastChangedBy = user ? user.sub : null;
     return address;
   }
 }

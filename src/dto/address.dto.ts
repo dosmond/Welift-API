@@ -1,9 +1,11 @@
+import { LifterDTO } from './lifter.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID, IsOptional } from 'class-validator';
+import { IsString, IsUUID, IsOptional, ValidateNested } from 'class-validator';
 import { Address } from 'src/model/addresses.entity';
 import { Booking } from 'src/model/booking.entity';
 import { Lifter } from 'src/model/lifters.entity';
 import { User } from 'src/user.decorator';
+import { BookingDTO } from './booking.dto';
 
 export class AddressDTO implements Readonly<AddressDTO> {
   @ApiProperty({ required: false })
@@ -32,16 +34,19 @@ export class AddressDTO implements Readonly<AddressDTO> {
   postalCode: string;
 
   @ApiProperty()
+  @ValidateNested()
   @IsOptional()
-  bookings: Booking[];
+  bookingStart: BookingDTO;
 
   @ApiProperty()
+  @ValidateNested()
   @IsOptional()
-  bookings2: Booking[];
+  bookingEnd: BookingDTO;
 
   @ApiProperty()
+  @ValidateNested()
   @IsOptional()
-  lifters: Lifter[];
+  lifter: LifterDTO;
 
   public static from(dto: Partial<AddressDTO>) {
     const address = new AddressDTO();
@@ -59,6 +64,9 @@ export class AddressDTO implements Readonly<AddressDTO> {
         city: entity.city,
         state: entity.state,
         postalCode: entity.postalCode,
+        bookingStart: BookingDTO.fromEntity(entity.bookingStart),
+        bookingEnd: BookingDTO.fromEntity(entity.bookingEnd),
+        lifter: LifterDTO.fromEntity(entity.lifter),
       });
     }
     return null;
