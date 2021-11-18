@@ -11,6 +11,7 @@ import {
   IsDate,
   IsNumber,
   IsDateString,
+  ValidateNested,
 } from 'class-validator';
 import { Booking } from 'src/model/booking.entity';
 import { User } from 'src/user.decorator';
@@ -116,21 +117,25 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @ValidateNested()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO;
 
   @ApiProperty()
   @IsOptional()
+  @ValidateNested()
   @Type(() => AddressDTO)
   endingAddress: AddressDTO;
 
   @ApiProperty()
   @IsOptional()
+  @ValidateNested({ each: true })
   @Type(() => NoteDTO)
   notes: NoteDTO[];
 
   @ApiProperty()
   @IsOptional()
+  @ValidateNested()
   @Type(() => LiftDTO)
   lift: LiftDTO;
 
@@ -171,7 +176,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),
-        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
+        notes: entity.notes?.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;
@@ -189,6 +194,6 @@ export class BookingDTO implements Readonly<BookingDTO> {
   }
 
   public static standardizePhoneNumber(phoneNumber: string): string {
-    return phoneNumber.replace(/[^\d\+]/g, '');
+    return phoneNumber?.replace(/[^\d\+]/g, '');
   }
 }

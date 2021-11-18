@@ -37,7 +37,7 @@ export class AddressController {
     }
   }
 
-  @Post('create-all')
+  @Post('create-batch')
   public async createMultiple(
     @User() user: User,
     @Body() body: AddressMultipleDTO,

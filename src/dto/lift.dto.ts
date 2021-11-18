@@ -74,7 +74,7 @@ export class LiftDTO implements Readonly<LiftDTO> {
         completionToken: entity.completionToken,
         liftStatus: entity.liftStatus,
         hasPickupTruck: entity.hasPickupTruck,
-        acceptedLifts: entity.acceptedLifts.map((item) =>
+        acceptedLifts: entity.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
         booking: BookingDTO.fromEntity(entity.booking),

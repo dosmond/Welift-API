@@ -69,10 +69,12 @@ export class BookingUpdateDTO
   endingAddressId: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsDateString()
   startTime: Date;
 
   @ApiProperty()
+  @IsOptional()
   @IsNumber()
   lifterCount: number;
 

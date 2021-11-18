@@ -40,7 +40,7 @@ export class EquipmentDTO implements Readonly<EquipmentDTO> {
       return this.from({
         id: entity.id,
         name: entity.name,
-        lifterEquipment: entity.lifterEquipments.map((item) =>
+        lifterEquipment: entity.lifterEquipments?.map((item) =>
           LifterEquipmentDTO.fromEntity(item),
         ),
       });

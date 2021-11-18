@@ -14,7 +14,12 @@ export class AddressService {
   ) {}
 
   public async getById(user: User, id: string): Promise<AddressDTO> {
-    return AddressDTO.fromEntity(await this.repo.findOne({ id: id }));
+    return AddressDTO.fromEntity(
+      await this.repo.findOne(
+        { id: id },
+        { relations: ['bookingStart', 'bookingEnd', 'lifter'] },
+      ),
+    );
   }
 
   public async create(user: User, address: AddressDTO): Promise<AddressDTO> {

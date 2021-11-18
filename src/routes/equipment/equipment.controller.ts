@@ -1,6 +1,7 @@
 import { EquipmentUpdateDTO } from './../../dto/equipment.update.dto';
 import { EquipmentService } from './equipment.service';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -18,7 +19,11 @@ export class EquipmentController {
 
   @Get()
   public async getById(@Query() query: { id: string }): Promise<EquipmentDTO> {
-    return await this.serv.getById(query.id);
+    try {
+      return await this.serv.getById(query.id);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('list')
@@ -28,12 +33,22 @@ export class EquipmentController {
 
   @Post('create')
   public async create(@Body() body: EquipmentDTO): Promise<EquipmentDTO> {
-    return await this.serv.create(body);
+    try {
+      return await this.serv.create(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Put('update')
   public async update(@Body() body: EquipmentUpdateDTO): Promise<EquipmentDTO> {
-    return await this.serv.update(body);
+    try {
+      return await this.serv.update(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Delete('delete')
