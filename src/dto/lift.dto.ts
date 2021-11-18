@@ -84,8 +84,8 @@ export class LiftDTO implements Readonly<LiftDTO> {
   }
 
   public toEntity(): Lift {
-    const badge = new Lift();
-    for (const property in this as LiftDTO) badge[property] = this[property];
-    return badge;
+    const lift = new Lift();
+    for (const property in this as LiftDTO) lift[property] = this[property];
+    return lift;
   }
 }

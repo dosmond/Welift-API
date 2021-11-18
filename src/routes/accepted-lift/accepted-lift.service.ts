@@ -67,6 +67,8 @@ export class AcceptedLiftService {
       .createQueryBuilder('q')
       .leftJoinAndSelect('q.lift', 'lift')
       .leftJoinAndSelect('lift.booking', 'booking')
+      .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
+      .leftJoinAndSelect('booking.endingAddress', 'endingAddress')
       .leftJoinAndSelect('q.lifter', 'lifter');
 
     query.where('lifter_id = :id', { id: lifterId });

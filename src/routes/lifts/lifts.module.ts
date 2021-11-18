@@ -1,4 +1,3 @@
-import { TwoWayMap } from './../../helper/twoWayMap.helper';
 import { Lifter } from 'src/model/lifters.entity';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
