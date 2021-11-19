@@ -4,7 +4,7 @@ import { User } from 'src/user.decorator';
 import { DeleteResult } from 'typeorm';
 import { LifterCompletedTrainingVideosService } from './lifter-completed-training-videos.service';
 
-@Controller('lifter-completed-training-videos')
+@Controller('completed-training-videos')
 export class LifterCompletedTrainingVideosController {
   constructor(private readonly serv: LifterCompletedTrainingVideosService) {}
 
@@ -15,7 +15,7 @@ export class LifterCompletedTrainingVideosController {
     return await this.serv.getById(query.id);
   }
 
-  @Get('lifter-completed')
+  @Get('lifter')
   public async getLifterCompleted(
     @Query() query: { lifterId: string },
   ): Promise<LifterCompletedTrainingVideoDTO[]> {

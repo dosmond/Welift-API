@@ -1,9 +1,6 @@
 import { NoteDTO } from './note.dto';
-import { Note } from './../model/note.entity';
 import { IsDateString } from 'class-validator';
 import { Lead } from './../model/leads.entity';
-import { LifterEquipment } from '../model/lifterEquipment.entity';
-import { Equipment } from '../model/equipment.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -13,7 +10,8 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { User } from 'src/user.decorator';
+import { LeadThumbtackDTO } from './lead.thumbtack.dto';
+import { LeadLandingDTO } from './lead.landing.dto';
 
 export class LeadDTO implements Readonly<LeadDTO> {
   @ApiProperty()
@@ -120,6 +118,40 @@ export class LeadDTO implements Readonly<LeadDTO> {
     return badge;
   }
 
+  public static fromThumbtack(dto: Partial<LeadThumbtackDTO>): LeadDTO {
+    if (dto) {
+      return this.from({
+        ttLeadId: dto.leadID,
+        title: dto.request.title,
+        description: dto.request.description,
+        schedule: dto.request.schedule,
+        city: dto.request.location.city,
+        state: dto.request.location.state,
+        postalCode: dto.request.location.zipCode,
+        name: dto.customer.name,
+        phone: dto.customer.phone,
+        businessName: dto.business.name,
+      });
+    }
+  }
+
+  public static fromLanding(dto: Partial<LeadLandingDTO>): LeadDTO {
+    if (dto) {
+      return this.from({
+        name: dto.name,
+        phone: dto.phone,
+        email: dto.email,
+        city: dto.address.city,
+        street: dto.address.street,
+        street2: dto.address.street2,
+        state: dto.address.state,
+        postalCode: dto.address.postalCode,
+        referralCode: dto.referralCode,
+        promoCode: dto.promoCode,
+      });
+    }
+  }
+
   public static fromEntity(entity: Lead): LeadDTO {
     if (entity) {
       return this.from({
@@ -139,7 +171,7 @@ export class LeadDTO implements Readonly<LeadDTO> {
         referralCode: entity.referralCode,
         promoCode: entity.promoCode,
         creationDate: entity.creationDate,
-        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
+        notes: entity.notes?.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;

@@ -6,6 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository, Between } from 'typeorm';
 import { LeadDTO } from 'src/dto/lead.dto';
 import { LeadUpdateDTO } from 'src/dto/lead.update.dto';
+import { LeadThumbtackDTO } from 'src/dto/lead.thumbtack.dto';
+import { LeadLandingDTO } from 'src/dto/lead.landing.dto';
 
 @Injectable()
 export class LeadsService {
@@ -30,7 +32,7 @@ export class LeadsService {
     if (start && end) options.where = { creationDate: Between(start, end) };
     if (start) options.where = { creationDate: Between(start, new Date()) };
 
-    options.order = { startTime: order };
+    options.order = { creationDate: order };
 
     // Pagination
     if (page && pageSize) {
@@ -49,8 +51,13 @@ export class LeadsService {
     return count;
   }
 
-  public async create(lead: LeadDTO): Promise<LeadDTO> {
-    const dto = LeadDTO.from(lead);
+  public async createThumbtack(lead: LeadThumbtackDTO): Promise<LeadDTO> {
+    const dto = LeadDTO.fromThumbtack(lead);
+    return LeadDTO.fromEntity(await this.repo.save(dto.toEntity()));
+  }
+
+  public async createLanding(lead: LeadLandingDTO): Promise<LeadDTO> {
+    const dto = LeadDTO.fromLanding(lead);
     return LeadDTO.fromEntity(await this.repo.save(dto.toEntity()));
   }
 

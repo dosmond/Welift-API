@@ -38,6 +38,7 @@ export class LifterDTO implements Readonly<LifterDTO> {
   lastName: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsUUID()
   addressId: string;
 
@@ -187,19 +188,20 @@ export class LifterDTO implements Readonly<LifterDTO> {
         currentBonus: entity.currentBonus,
         creationDate: entity.creationDate,
         bcInProgress: entity.bcInProgress,
-        acceptedLifts: entity.acceptedLifts.map((item) =>
+        acceptedLifts: entity.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
-        completedLifterBadges: entity.completedLifterBadges.map((item) =>
+        completedLifterBadges: entity.completedLifterBadges?.map((item) =>
           CompletedLifterBadgeDTO.fromEntity(item),
         ),
-        lifterCompletedTrainingVideos: entity.lifterCompletedTrainingVideos.map(
-          (item) => LifterCompletedTrainingVideoDTO.fromEntity(item),
-        ),
-        lifterEquiupments: entity.lifterEquipments.map((item) =>
+        lifterCompletedTrainingVideos:
+          entity.lifterCompletedTrainingVideos?.map((item) =>
+            LifterCompletedTrainingVideoDTO.fromEntity(item),
+          ),
+        lifterEquiupments: entity.lifterEquipments?.map((item) =>
           LifterEquipmentDTO.fromEntity(item),
         ),
-        lifterReviews: entity.lifterReviews.map((item) =>
+        lifterReviews: entity.lifterReviews?.map((item) =>
           LifterReviewDTO.fromEntity(item),
         ),
         lifterStats: LifterStatsDTO.fromEntity(entity.lifterStats),

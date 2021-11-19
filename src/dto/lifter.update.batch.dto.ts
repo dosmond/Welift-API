@@ -1,10 +1,10 @@
 import { AddressDTO } from 'src/dto/address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDefined, IsObject, ValidateNested } from 'class-validator';
-import { LifterDTO } from './lifter.dto';
+import { IsDefined, ValidateNested } from 'class-validator';
+import { LifterUpdateDTO } from './lifter.update.dto';
 
-export class LifterBatchDTO implements Readonly<LifterBatchDTO> {
+export class LifterUpdateBatchDTO implements Readonly<LifterUpdateBatchDTO> {
   @ApiProperty()
   @ValidateNested()
   @Type(() => AddressDTO)
@@ -13,7 +13,7 @@ export class LifterBatchDTO implements Readonly<LifterBatchDTO> {
 
   @ApiProperty()
   @ValidateNested()
-  @Type(() => LifterDTO)
+  @Type(() => LifterUpdateDTO)
   @IsDefined()
-  lifter: LifterDTO;
+  lifter: LifterUpdateDTO;
 }

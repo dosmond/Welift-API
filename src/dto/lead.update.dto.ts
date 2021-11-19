@@ -135,7 +135,7 @@ export class LeadUpdateDTO implements Readonly<LeadUpdateDTO>, LeadDTO {
         referralCode: entity.referralCode,
         promoCode: entity.promoCode,
         creationDate: entity.creationDate,
-        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
+        notes: entity.notes?.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;

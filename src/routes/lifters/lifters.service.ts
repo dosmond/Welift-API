@@ -1,3 +1,4 @@
+import { LifterUpdateBatchDTO } from './../../dto/lifter.update.batch.dto';
 import { Address } from 'src/model/addresses.entity';
 import { AddressDTO } from 'src/dto/address.dto';
 import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
@@ -8,6 +9,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository, Between } from 'typeorm';
 import { User } from 'src/user.decorator';
+import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
+import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 
 @Injectable()
 export class LiftersService {
@@ -67,7 +70,7 @@ export class LiftersService {
       options.where = { creationDate: Between(start, new Date()) };
     }
 
-    options.order = { startTime: order };
+    options.order = { creationDate: order };
 
     // Pagination
     if (page && pageSize) {
@@ -96,9 +99,9 @@ export class LiftersService {
     return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
   }
 
-  public async updateBatch(batch: LifterBatchDTO): Promise<LifterDTO> {
-    const lifter = LifterDTO.from(batch.lifter);
-    const address = AddressDTO.from(batch.address);
+  public async updateBatch(batch: LifterUpdateBatchDTO): Promise<LifterDTO> {
+    const lifter = LifterUpdateDTO.from(batch.lifter);
+    const address = AddressUpdateDTO.from(batch.address);
 
     const addressResult = await this.addressRepo.save(address.toEntity());
     lifter.addressId = addressResult.id;
