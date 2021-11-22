@@ -159,7 +159,7 @@ export class LiftsService {
     );
 
     query.andWhere(
-      '(UPPER(booking.startingAddress.state) LIKE UPPER(:state) OR UPPER(booking.startingAddress.state) LIKE UPPER(:stateMap))',
+      '(UPPER(startingAddress.state) LIKE UPPER(:state) OR UPPER(startingAddress.state) LIKE UPPER(:stateMap))',
       {
         state: lifterAddress.address.state,
         stateMap: this.stateMap.get(lifterAddress.address.state.toUpperCase()),

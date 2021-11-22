@@ -72,17 +72,18 @@ export class AcceptedLiftService {
       .leftJoinAndSelect('lift.booking', 'booking')
       .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
       .leftJoinAndSelect('booking.endingAddress', 'endingAddress')
-      .leftJoinAndSelect('q.lifter', 'lifter');
+      .leftJoin('q.lifter', 'lifter');
 
     query.where('lifter_id = :id', { id: lifterId });
+
     // Time Queries
     if (start && end)
-      query.where('booking.startTime between :start and :end', {
+      query.andWhere('booking.startTime between :start and :end', {
         start: start,
         end: end,
       });
     else if (start)
-      query.where('booking.startTime between :start and :end', {
+      query.andWhere('booking.startTime between :start and :end', {
         start: start,
         end: new Date(),
       });
@@ -104,7 +105,7 @@ export class AcceptedLiftService {
     try {
       return await getManager().transaction('SERIALIZABLE', async (manager) => {
         const liftToUpdate = await this.liftRepo.findOne(
-          { id: lift.id },
+          { id: lift.liftId },
           { relations: ['booking'] },
         );
 
@@ -179,7 +180,25 @@ export class AcceptedLiftService {
 
   public async delete(user: User, id: string): Promise<DeleteResult> {
     try {
-      return await this.repo.delete({ id: id });
+      return await getManager().transaction('SERIALIZABLE', async (manager) => {
+        const accepted = await manager.findOne(AcceptedLift, id, {
+          relations: ['lift'],
+        });
+
+        const liftToUpdate = await this.liftRepo.findOne(
+          { id: accepted.lift.id },
+          { relations: ['booking'] },
+        );
+
+        if (liftToUpdate.currentLifterCount - 1 < 0) {
+          throw new BadRequestException('Cannot have less than 0 lifters');
+        }
+
+        liftToUpdate.currentLifterCount -= 1;
+
+        await manager.save(liftToUpdate);
+        return await manager.delete(AcceptedLift, { id: id });
+      });
     } catch (err) {
       throw new BadRequestException(err.message);
     }
