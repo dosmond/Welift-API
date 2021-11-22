@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - pip install --upgrade awscli
+      - yarn
+
+  build:
+    commands:
+      - yarn build
+
+  post_build:
+    commands:
+      - ls -la
+      - ls client -la
+
+artifacts:
+  files:
+    - '**/*'
