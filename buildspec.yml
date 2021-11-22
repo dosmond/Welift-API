@@ -13,7 +13,6 @@ phases:
   post_build:
     commands:
       - ls -la
-      - ls client -la
 
 artifacts:
   files:
