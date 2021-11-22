@@ -1,3 +1,4 @@
+import { LifterStats } from './../../model/lifterStats.entity';
 import { LifterUpdateBatchDTO } from './../../dto/lifter.update.batch.dto';
 import { Address } from 'src/model/addresses.entity';
 import { AddressDTO } from 'src/dto/address.dto';
@@ -18,6 +19,8 @@ export class LiftersService {
     @InjectRepository(Lifter) private readonly repo: Repository<Lifter>,
     @InjectRepository(Address)
     private readonly addressRepo: Repository<Address>,
+    @InjectRepository(LifterStats)
+    private readonly statsRepo: Repository<LifterStats>,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
@@ -93,10 +96,20 @@ export class LiftersService {
     const lifter = LifterDTO.from(batch.lifter);
     const address = AddressDTO.from(batch.address);
 
+    // Create Address
     const addressResult = await this.addressRepo.save(address.toEntity());
     lifter.addressId = addressResult.id;
 
-    return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
+    // Create Lifter
+    const result = LifterDTO.fromEntity(
+      await this.repo.save(lifter.toEntity()),
+    );
+
+    // Create Lifter Stats row
+    const lifterStats = new LifterStats();
+    lifterStats.lifterId = result.id;
+    await this.statsRepo.save(lifterStats);
+    return result;
   }
 
   public async updateBatch(batch: LifterUpdateBatchDTO): Promise<LifterDTO> {

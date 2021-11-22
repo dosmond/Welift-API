@@ -1,3 +1,4 @@
+import { Lift } from 'src/model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
 import {
   Injectable,
@@ -10,7 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
 import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
 import { User } from 'src/user.decorator';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, getManager } from 'typeorm';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
 import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
@@ -20,6 +21,8 @@ export class AcceptedLiftService {
   constructor(
     @InjectRepository(AcceptedLift)
     private readonly repo: Repository<AcceptedLift>,
+    @InjectRepository(Lift)
+    private readonly liftRepo: Repository<Lift>,
   ) {}
 
   public async getAll(details: PaginatedDTO) {
@@ -99,10 +102,28 @@ export class AcceptedLiftService {
     lift: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
     try {
-      const dto = AcceptedLiftDTO.fromEntity(lift);
-      return AcceptedLiftDTO.fromEntity(
-        await this.repo.save(dto.toEntity(user)),
-      );
+      return await getManager().transaction('SERIALIZABLE', async (manager) => {
+        const liftToUpdate = await this.liftRepo.findOne(
+          { id: lift.id },
+          { relations: ['booking'] },
+        );
+
+        if (
+          liftToUpdate.currentLifterCount + 1 >
+          liftToUpdate.booking.lifterCount
+        ) {
+          throw new BadRequestException('Cannot exceed maximum lifter count');
+        }
+
+        liftToUpdate.currentLifterCount += 1;
+
+        await manager.save(liftToUpdate);
+
+        const dto = AcceptedLiftDTO.fromEntity(lift);
+        return AcceptedLiftDTO.fromEntity(
+          await manager.save(dto.toEntity(user)),
+        );
+      });
     } catch (err) {
       throw new BadRequestException(err.message);
     }

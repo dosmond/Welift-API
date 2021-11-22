@@ -24,7 +24,7 @@ export class LifterStatsDTO implements Readonly<LifterStatsDTO> {
   @ApiProperty()
   @IsOptional()
   @IsInt()
-  completedMoved: number;
+  completedMoves: number;
 
   @ApiProperty()
   @IsOptional()
@@ -50,7 +50,7 @@ export class LifterStatsDTO implements Readonly<LifterStatsDTO> {
       return this.from({
         id: entity.id,
         lifterId: entity.lifterId,
-        completedMoved: entity.completedMoves,
+        completedMoves: entity.completedMoves,
         totalEarnedMoney: entity.totalEarnedMoney,
         lifter: entity.lifter,
       });

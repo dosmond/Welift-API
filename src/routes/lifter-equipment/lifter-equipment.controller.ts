@@ -1,5 +1,13 @@
 import { LifterEquipmentService } from './lifter-equipment.service';
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { LifterEquipmentDTO } from 'src/dto/lifterEquipment.dto';
 import { User } from 'src/user.decorator';
 import { DeleteResult } from 'typeorm';
@@ -12,7 +20,12 @@ export class LifterEquipmentController {
   public async getLifterEquipment(
     @Query() query: { lifterId: string },
   ): Promise<LifterEquipmentDTO[]> {
-    return await this.serv.getLifterEquipment(query.lifterId);
+    try {
+      return await this.serv.getLifterEquipment(query.lifterId);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Post('create')
@@ -20,7 +33,12 @@ export class LifterEquipmentController {
     @User() user: User,
     @Body() body: LifterEquipmentDTO,
   ): Promise<LifterEquipmentDTO> {
-    return await this.serv.create(user, body);
+    try {
+      return await this.serv.create(user, body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Delete('delete')
@@ -28,6 +46,11 @@ export class LifterEquipmentController {
     @User() user: User,
     @Query() query: { id: string },
   ): Promise<DeleteResult> {
-    return await this.serv.delete(user, query.id);
+    try {
+      return await this.serv.delete(user, query.id);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 }

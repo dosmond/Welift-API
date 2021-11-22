@@ -16,18 +16,18 @@ export class LifterStatsUpdateDTO
   implements Readonly<LifterStatsUpdateDTO>, LifterStatsDTO
 {
   @ApiProperty()
+  @IsOptional()
   @IsUUID()
   id: string;
 
   @ApiProperty()
-  @IsOptional()
   @IsUUID()
   lifterId: string;
 
   @ApiProperty()
   @IsOptional()
   @IsInt()
-  completedMoved: number;
+  completedMoves: number;
 
   @ApiProperty()
   @IsOptional()
@@ -53,7 +53,7 @@ export class LifterStatsUpdateDTO
       return this.from({
         id: entity.id,
         lifterId: entity.lifterId,
-        completedMoved: entity.completedMoves,
+        completedMoves: entity.completedMoves,
         totalEarnedMoney: entity.totalEarnedMoney,
         lifter: entity.lifter,
       });

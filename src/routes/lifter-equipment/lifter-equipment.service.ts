@@ -16,7 +16,7 @@ export class LifterEquipmentService {
     lifterId: string,
   ): Promise<LifterEquipmentDTO[]> {
     return await this.repo
-      .find({ where: { lifterId: lifterId } })
+      .find({ where: { lifterId: lifterId }, relations: ['equipment'] })
       .then((items) =>
         items.map((item) => LifterEquipmentDTO.fromEntity(item)),
       );

@@ -6,13 +6,10 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { AcceptedLiftService } from './accepted-lift.service';
 import { User } from 'src/user.decorator';
 import { DeleteResult } from 'typeorm';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/enum/roles.enum';
 import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';

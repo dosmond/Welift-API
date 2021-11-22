@@ -14,7 +14,7 @@ export class LifterCompletedTrainingVideosService {
 
   public async getById(id: string): Promise<LifterCompletedTrainingVideoDTO> {
     return LifterCompletedTrainingVideoDTO.fromEntity(
-      await this.repo.findOne({ id: id }),
+      await this.repo.findOne({ id: id }, { relations: ['video'] }),
     );
   }
 
@@ -22,7 +22,7 @@ export class LifterCompletedTrainingVideosService {
     lifterId: string,
   ): Promise<LifterCompletedTrainingVideoDTO[]> {
     return await this.repo
-      .find({ where: { lifterId: lifterId } })
+      .find({ relations: ['video'], where: { lifterId: lifterId } })
       .then((items) =>
         items.map((item) => LifterCompletedTrainingVideoDTO.fromEntity(item)),
       );

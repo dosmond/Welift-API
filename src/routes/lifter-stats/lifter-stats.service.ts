@@ -19,7 +19,9 @@ export class LifterStatsService {
   }
 
   public async update(stats: LifterStatsUpdateDTO): Promise<LifterStatsDTO> {
-    const dto = LifterStatsDTO.from(stats);
+    const lifterStats = await this.repo.findOne({ lifterId: stats.lifterId });
+    const dto = LifterStatsUpdateDTO.from(stats);
+    dto.id = lifterStats.id;
     return LifterStatsDTO.fromEntity(await this.repo.save(dto.toEntity()));
   }
 }

@@ -1,3 +1,4 @@
+import { LifterCompletedTrainingVideo } from './../../model/lifterCompletedTrainingVideos.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TrainingVideoDTO } from 'src/dto/trainingVideo.dto';
@@ -10,6 +11,8 @@ export class TrainingVideosService {
   constructor(
     @InjectRepository(TrainingVideo)
     private readonly repo: Repository<TrainingVideo>,
+    @InjectRepository(LifterCompletedTrainingVideo)
+    private readonly completedRepo: Repository<LifterCompletedTrainingVideo>,
   ) {}
 
   public async getAll(): Promise<TrainingVideoDTO[]> {
@@ -38,15 +41,15 @@ export class TrainingVideosService {
     user: User,
     id: string,
   ): Promise<DeleteResult> {
-    const trainingVideos = await this.repo.find({ where: { id: id } });
-    if (trainingVideos.length > 0) {
-      const promises: Promise<DeleteResult>[] = [];
-      trainingVideos.forEach((video) => {
-        promises.push(this.repo.delete({ id: video.id }));
-      });
+    const trainingVideos = await this.completedRepo.find({
+      where: { videoId: id },
+    });
+    const promises: Promise<DeleteResult>[] = [];
+    trainingVideos.forEach((video) => {
+      promises.push(this.completedRepo.delete({ id: video.id }));
+    });
 
-      await Promise.all(promises);
-    }
+    await Promise.all(promises);
     return await this.repo.delete({ id: id });
   }
 }

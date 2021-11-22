@@ -4,6 +4,7 @@ import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { LiftsService } from './lifts.service';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -21,45 +22,80 @@ export class LiftsController {
 
   @Get()
   public async getById(@Query() query: { id: string }): Promise<LiftDTO> {
-    return await this.serv.getById(query.id);
+    try {
+      return await this.serv.getById(query.id);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('list')
   public async getAll(@Query() query: PaginatedDTO): Promise<LiftDTO[]> {
-    return await this.serv.getAll(query);
+    try {
+      return await this.serv.getAll(query);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('list-available')
   public async getAllAvailableLifts(
     @Query() query: PaginatedDTO,
   ): Promise<LiftDTO[]> {
-    return await this.serv.getAllAvailableLifts(query);
+    try {
+      return await this.serv.getAllAvailableLifts(query);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('list-lifter-available')
   public async getLifterAvailable(
     @Query() query: LifterPaginatedDTO,
   ): Promise<LiftDTO[]> {
-    return await this.serv.getLifterAvailable(query);
+    try {
+      return await this.serv.getLifterAvailable(query);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('current')
   public async current(
     @Query() query: { lifterId: string },
   ): Promise<LiftDTO[]> {
-    return await this.serv.currentLifts(query);
+    try {
+      return await this.serv.currentLifts(query);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get('lifters')
   public async getLiftersByLift(
     @Query() query: { liftId: string },
   ): Promise<AcceptedLiftDTO[]> {
-    return await this.serv.getLiftersByLift(query.liftId);
+    try {
+      return await this.serv.getLiftersByLift(query.liftId);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Post('create')
   public async create(@Body() body: LiftDTO): Promise<LiftDTO> {
-    return await this.serv.create(body);
+    try {
+      return await this.serv.create(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Put('increment')
@@ -67,7 +103,12 @@ export class LiftsController {
     @Query() query: { liftId: string },
     @TransactionRepository(Lift) liftRepo: Repository<Lift>,
   ): Promise<void> {
-    return await this.serv.incrementLifterCount(query.liftId, liftRepo);
+    try {
+      return await this.serv.incrementLifterCount(query.liftId, liftRepo);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Put('decrement')
@@ -75,16 +116,31 @@ export class LiftsController {
     @Query() query: { liftId: string },
     @TransactionRepository(Lift) liftRepo: Repository<Lift>,
   ): Promise<void> {
-    return await this.serv.decrementLifterCount(query.liftId, liftRepo);
+    try {
+      return await this.serv.decrementLifterCount(query.liftId, liftRepo);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Put('update')
   public async update(@Body() body: LiftDTO): Promise<LiftDTO> {
-    return await this.serv.update(body);
+    try {
+      return await this.serv.update(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Delete('delete')
   public async delete(@Query() query: { id: string }): Promise<DeleteResult> {
-    return await this.serv.delete(query.id);
+    try {
+      return await this.serv.delete(query.id);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 }
