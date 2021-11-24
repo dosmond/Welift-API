@@ -12,15 +12,22 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { LiftDTO } from 'src/dto/lift.dto';
 import { DeleteResult, Repository, TransactionRepository } from 'typeorm';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/enum/roles.enum';
 
 @Controller('lift')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class LiftsController {
   constructor(private serv: LiftsService) {}
 
   @Get()
+  @Roles(Role.Lifter)
   public async getById(@Query() query: { id: string }): Promise<LiftDTO> {
     try {
       return await this.serv.getById(query.id);
@@ -31,6 +38,7 @@ export class LiftsController {
   }
 
   @Get('list')
+  @Roles(Role.Admin)
   public async getAll(@Query() query: PaginatedDTO): Promise<LiftDTO[]> {
     try {
       return await this.serv.getAll(query);
@@ -41,6 +49,7 @@ export class LiftsController {
   }
 
   @Get('list-available')
+  @Roles(Role.Admin)
   public async getAllAvailableLifts(
     @Query() query: PaginatedDTO,
   ): Promise<LiftDTO[]> {
@@ -53,6 +62,7 @@ export class LiftsController {
   }
 
   @Get('list-lifter-available')
+  @Roles(Role.Lifter)
   public async getLifterAvailable(
     @Query() query: LifterPaginatedDTO,
   ): Promise<LiftDTO[]> {
@@ -65,6 +75,7 @@ export class LiftsController {
   }
 
   @Get('current')
+  @Roles(Role.Lifter)
   public async current(
     @Query() query: { lifterId: string },
   ): Promise<LiftDTO[]> {
@@ -77,6 +88,7 @@ export class LiftsController {
   }
 
   @Get('lifters')
+  @Roles(Role.Admin)
   public async getLiftersByLift(
     @Query() query: { liftId: string },
   ): Promise<AcceptedLiftDTO[]> {
@@ -89,6 +101,7 @@ export class LiftsController {
   }
 
   @Post('create')
+  @Roles(Role.Admin)
   public async create(@Body() body: LiftDTO): Promise<LiftDTO> {
     try {
       return await this.serv.create(body);
@@ -99,6 +112,7 @@ export class LiftsController {
   }
 
   @Put('increment')
+  @Roles(Role.Lifter)
   public async incrementLifterCount(
     @Query() query: { liftId: string },
     @TransactionRepository(Lift) liftRepo: Repository<Lift>,
@@ -112,6 +126,7 @@ export class LiftsController {
   }
 
   @Put('decrement')
+  @Roles(Role.Lifter)
   public async decrementLifterCount(
     @Query() query: { liftId: string },
     @TransactionRepository(Lift) liftRepo: Repository<Lift>,
@@ -125,6 +140,7 @@ export class LiftsController {
   }
 
   @Put('update')
+  @Roles(Role.Admin)
   public async update(@Body() body: LiftDTO): Promise<LiftDTO> {
     try {
       return await this.serv.update(body);
@@ -135,6 +151,7 @@ export class LiftsController {
   }
 
   @Delete('delete')
+  @Roles(Role.Admin)
   public async delete(@Query() query: { id: string }): Promise<DeleteResult> {
     try {
       return await this.serv.delete(query.id);

@@ -7,12 +7,19 @@ import {
   Post,
   Query,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { LifterEquipmentDTO } from 'src/dto/lifterEquipment.dto';
 import { User } from 'src/user.decorator';
 import { DeleteResult } from 'typeorm';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/enum/roles.enum';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
 
 @Controller('lifter-equipment')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles(Role.Lifter)
 export class LifterEquipmentController {
   constructor(private readonly serv: LifterEquipmentService) {}
 

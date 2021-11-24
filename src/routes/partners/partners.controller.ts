@@ -6,19 +6,26 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
 import { PartnerDTO } from 'src/dto/partner.dto';
 import { PartnerUpdateDTO } from 'src/dto/partner.update.dto';
 import { PartnerCreditCheckoutDTO } from 'src/dto/partnerCreditCheckout.dto';
 import { PartnerSendCouponDTO } from 'src/dto/partnerSendCoupon.dto';
+import { Role } from 'src/enum/roles.enum';
 import { User } from 'src/user.decorator';
 import { PartnersService } from './partners.service';
 
 @Controller('partner')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class PartnersController {
   constructor(private serv: PartnersService) {}
 
   @Get()
+  @Roles(Role.Partner)
   public async getById(@Query() query: { id: string }): Promise<PartnerDTO> {
     try {
       return await this.serv.getById(query.id);
@@ -28,16 +35,19 @@ export class PartnersController {
   }
 
   @Get('list')
+  @Roles(Role.Admin)
   public async getAll(): Promise<PartnerDTO[]> {
     return await this.serv.getAll();
   }
 
   @Get('count')
+  @Roles(Role.Admin)
   public async getCount(): Promise<number> {
     return await this.serv.getCount();
   }
 
   @Post('create')
+  @Roles(Role.Admin)
   public async addPartner(
     @User() user: User,
     @Body() body: PartnerDTO,
@@ -46,6 +56,7 @@ export class PartnersController {
   }
 
   @Put('update')
+  @Roles(Role.Partner)
   public async updatePartner(
     @User() user: User,
     @Body() request: PartnerUpdateDTO,
@@ -58,6 +69,7 @@ export class PartnersController {
   }
 
   @Post('send-coupon')
+  @Roles(Role.Partner)
   public async sendCoupon(
     @User() user: User,
     @Body() body: PartnerSendCouponDTO,
@@ -70,6 +82,7 @@ export class PartnersController {
   }
 
   @Post('create-checkout-session')
+  @Roles(Role.Partner)
   public async createCheckoutSession(
     @Body()
     body: PartnerCreditCheckoutDTO,

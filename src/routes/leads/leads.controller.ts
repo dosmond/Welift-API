@@ -1,3 +1,4 @@
+import { Roles } from 'src/auth/roles/roles.decorator';
 import { LeadLandingDTO } from './../../dto/lead.landing.dto';
 import { LeadUpdateDTO } from 'src/dto/lead.update.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
@@ -11,14 +12,20 @@ import {
   Put,
   Query,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { LeadThumbtackDTO } from 'src/dto/lead.thumbtack.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { Role } from 'src/enum/roles.enum';
 
 @Controller('lead')
 export class LeadsController {
   constructor(private readonly serv: LeadsService) {}
 
   @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Admin)
   public async getById(@Query() query: { id: string }): Promise<LeadDTO> {
     try {
       return await this.serv.getById(query.id);
@@ -29,11 +36,15 @@ export class LeadsController {
   }
 
   @Get('list')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Admin)
   public async getAll(@Query() query: PaginatedDTO): Promise<LeadDTO[]> {
     return await this.serv.getAll(query);
   }
 
   @Get('count')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Admin)
   public async count(): Promise<number> {
     try {
       return await this.serv.count();
@@ -54,6 +65,8 @@ export class LeadsController {
   }
 
   @Post('create-landing')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Landing)
   public async createLanding(@Body() body: LeadLandingDTO): Promise<LeadDTO> {
     try {
       return await this.serv.createLanding(body);
@@ -64,6 +77,8 @@ export class LeadsController {
   }
 
   @Post('send-booking-email')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Admin)
   public async sendBookingConfirmEmail(
     @Body() body: { email: string; data: string },
   ): Promise<void> {
@@ -76,6 +91,8 @@ export class LeadsController {
   }
 
   @Put('update')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Admin)
   public async update(@Body() body: LeadUpdateDTO): Promise<LeadDTO> {
     try {
       return await this.serv.update(body);

@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AcceptedLiftService } from './accepted-lift.service';
 import { User } from 'src/user.decorator';
@@ -17,8 +18,11 @@ import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
 import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
 import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
 
 @Controller('accepted-lift')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AcceptedLiftController {
   constructor(private serv: AcceptedLiftService) {}
 
@@ -45,6 +49,7 @@ export class AcceptedLiftController {
   }
 
   @Post('create')
+  @Roles(Role.Lifter)
   public async create(
     @User() user: User,
     @Body() body: AcceptedLiftDTO,
@@ -53,6 +58,7 @@ export class AcceptedLiftController {
   }
 
   @Post('verify-completion-token')
+  @Roles(Role.Lifter)
   public async verifyToken(
     @Body() verificationRequest: TokenVerificationRequestDTO,
   ): Promise<AcceptedLiftDTO> {
@@ -60,6 +66,7 @@ export class AcceptedLiftController {
   }
 
   @Put('update')
+  @Roles(Role.Lifter)
   public async update(
     @User() user: User,
     @Body() acceptedLift: AcceptedLiftUpdateDTO,
@@ -68,6 +75,7 @@ export class AcceptedLiftController {
   }
 
   @Delete('delete')
+  @Roles(Role.Lifter)
   public async delete(
     @User() user: User,
     @Query() query: { id: string },

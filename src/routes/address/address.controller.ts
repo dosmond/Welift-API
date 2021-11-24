@@ -8,16 +8,23 @@ import {
   Put,
   Query,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { User } from 'src/user.decorator';
 import { AddressMultipleDTO } from 'src/dto/address.multiple.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/enum/roles.enum';
 
 @Controller('address')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AddressController {
   constructor(private serv: AddressService) {}
 
   @Get()
+  @Roles(Role.Lifter)
   public async getById(
     @User() user: User,
     @Query() query: { id: string },
@@ -26,6 +33,7 @@ export class AddressController {
   }
 
   @Post('create')
+  @Roles(Role.Lifter)
   public async create(
     @User() user: User,
     @Body() body: AddressDTO,
@@ -38,6 +46,7 @@ export class AddressController {
   }
 
   @Post('create-batch')
+  @Roles(Role.Lifter)
   public async createMultiple(
     @User() user: User,
     @Body() body: AddressMultipleDTO,
@@ -50,6 +59,7 @@ export class AddressController {
   }
 
   @Put('update')
+  @Roles(Role.Lifter)
   public async update(
     @User() user: User,
     @Body() body: AddressUpdateDTO,

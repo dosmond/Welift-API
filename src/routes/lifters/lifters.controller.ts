@@ -10,15 +10,22 @@ import {
   Put,
   Query,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { LifterDTO } from 'src/dto/lifter.dto';
 import { User } from 'src/user.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/enum/roles.enum';
 
 @Controller('lifter')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class LiftersController {
   constructor(private readonly serv: LiftersService) {}
 
   @Get()
+  @Roles(Role.Lifter)
   public async getById(
     @User() user: User,
     @Query() query: { id: string; userId: string },
@@ -33,6 +40,7 @@ export class LiftersController {
   }
 
   @Get('list')
+  @Roles(Role.Admin)
   public async getAll(@Query() query: PaginatedDTO): Promise<LifterDTO[]> {
     try {
       return await this.serv.getAll(query);
@@ -43,6 +51,7 @@ export class LiftersController {
   }
 
   @Get('count')
+  @Roles(Role.Admin)
   public async count(): Promise<number> {
     try {
       return await this.serv.count();
@@ -53,6 +62,7 @@ export class LiftersController {
   }
 
   @Post('create-batch')
+  @Roles(Role.Lifter)
   public async createBatch(@Body() body: LifterBatchDTO): Promise<LifterDTO> {
     try {
       return await this.serv.createBatch(body);
@@ -63,6 +73,7 @@ export class LiftersController {
   }
 
   @Put('upsert')
+  @Roles(Role.Lifter)
   public async updateBatch(
     @Body() body: LifterUpdateBatchDTO,
   ): Promise<LifterDTO> {
