@@ -13,6 +13,8 @@ phases:
   post_build:
     commands:
       - ls -la
+      - cd node_modules
+      - ls -la
 
 artifacts:
   files:
