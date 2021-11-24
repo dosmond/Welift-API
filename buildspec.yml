@@ -4,12 +4,11 @@ phases:
   pre_build:
     commands:
       - pip install --upgrade awscli
-      - yarn global add npx
-      - yarn
+      - npm install
 
   build:
     commands:
-      - yarn build
+      - npm run build
 
   post_build:
     commands:
