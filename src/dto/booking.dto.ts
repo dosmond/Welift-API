@@ -90,6 +90,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   stripeSessionId: string;
 
   @ApiProperty()

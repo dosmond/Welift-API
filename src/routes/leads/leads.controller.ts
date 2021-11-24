@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { LeadThumbtackDTO } from 'src/dto/lead.thumbtack.dto';
 
-@Controller('leads')
+@Controller('lead')
 export class LeadsController {
   constructor(private readonly serv: LeadsService) {}
 
@@ -57,6 +57,18 @@ export class LeadsController {
   public async createLanding(@Body() body: LeadLandingDTO): Promise<LeadDTO> {
     try {
       return await this.serv.createLanding(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Post('send-booking-email')
+  public async sendBookingConfirmEmail(
+    @Body() body: { email: string; data: string },
+  ): Promise<void> {
+    try {
+      return await this.serv.sendBookingConvertEmail(body.email, body.data);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);

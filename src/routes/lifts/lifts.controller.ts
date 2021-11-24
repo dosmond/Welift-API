@@ -16,7 +16,7 @@ import {
 import { LiftDTO } from 'src/dto/lift.dto';
 import { DeleteResult, Repository, TransactionRepository } from 'typeorm';
 
-@Controller('lifts')
+@Controller('lift')
 export class LiftsController {
   constructor(private serv: LiftsService) {}
 
