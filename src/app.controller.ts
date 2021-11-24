@@ -19,6 +19,6 @@ export class AppController {
   @Get('admin/retrieve')
   @Roles(Role.Lifter)
   public retrieve(@Body() body: { secrets: string[] }): string {
-    return this.appService.retrieveSecrests(body.secrets);
+    return this.appService.retrieveSecrets(body.secrets);
   }
 }
