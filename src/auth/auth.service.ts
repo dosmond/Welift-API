@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import {
   AuthenticationDetails,
+  CognitoRefreshToken,
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
@@ -31,7 +32,7 @@ export class AuthService {
     };
   }
 
-  registerUser(registerRequest: {
+  public registerUser(registerRequest: {
     username: string;
     email: string;
     password: string;
@@ -59,7 +60,36 @@ export class AuthService {
     });
   }
 
-  authenticateUser(request: {
+  public async refresh(
+    refreshToken: string,
+    appName: string,
+    username: string,
+  ) {
+    const userPool = this.userPools[appName];
+
+    if (!userPool) {
+      throw new BadRequestException(`App name: ${appName} does not exist`);
+    }
+
+    const user = new CognitoUser({
+      Username: username,
+      Pool: userPool,
+    });
+
+    const refresh = new CognitoRefreshToken({ RefreshToken: refreshToken });
+
+    return new Promise((resolve, reject) => {
+      return user.refreshSession(refresh, (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
+  }
+
+  public authenticateUser(request: {
     username: string;
     password: string;
     appName: string;

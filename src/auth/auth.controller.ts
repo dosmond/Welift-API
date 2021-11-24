@@ -33,4 +33,15 @@ export class AuthController {
       throw new BadRequestException(e.message);
     }
   }
+
+  @Post('refresh')
+  async refresh(
+    @Body() body: { refreshToken: string; appName: string; username: string },
+  ) {
+    return await this.authService.refresh(
+      body.refreshToken,
+      body.appName,
+      body.username,
+    );
+  }
 }
