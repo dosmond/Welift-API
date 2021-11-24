@@ -116,8 +116,10 @@ export class LiftersService {
     const lifter = LifterUpdateDTO.from(batch.lifter);
     const address = AddressUpdateDTO.from(batch.address);
 
-    const addressResult = await this.addressRepo.save(address.toEntity());
-    lifter.addressId = addressResult.id;
+    if (batch.address) {
+      const addressResult = await this.addressRepo.save(address.toEntity());
+      lifter.addressId = addressResult.id;
+    }
 
     return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
   }

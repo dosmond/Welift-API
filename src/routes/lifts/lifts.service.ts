@@ -43,6 +43,7 @@ export class LiftsService {
             'booking.startingAddress',
             'booking.endingAddress',
             'acceptedLifts',
+            'acceptedLifts.lifter',
           ],
         },
       ),
