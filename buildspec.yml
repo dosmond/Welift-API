@@ -15,7 +15,7 @@ phases:
       - ls -la
       - cd node_modules
       - ls -la
-      - cd .bin
+      - cd ts-node/dist
       - ls -la
 
 artifacts:
