@@ -17,7 +17,6 @@ export class Lead {
     name: 'tt_lead_id',
     nullable: true,
     length: 64,
-    default: () => 'uuid_generate_v4()',
   })
   ttLeadId: string | null;
 

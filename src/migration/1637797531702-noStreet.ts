@@ -26,7 +26,7 @@ export class noStreet1637797531702 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "leads" ALTER COLUMN "tt_lead_id" DROP DEFAULT`,
     );
-    await queryRunner.query(`DROP SEQUENCE "leads_tt_lead_id_seq"`);
+    await queryRunner.query(`DROP SEQUENCE IF EXISTS "leads_tt_lead_id_seq"`);
     await queryRunner.query(
       `ALTER TABLE "leads" ALTER COLUMN "tt_lead_id" SET DEFAULT uuid_generate_v4()`,
     );
