@@ -26,6 +26,7 @@ import { LifterStatsDTO } from './lifterStats.dto';
 
 export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
   @ApiProperty()
+  @IsOptional()
   @IsUUID()
   id: string;
 
