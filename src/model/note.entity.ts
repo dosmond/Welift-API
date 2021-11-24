@@ -15,10 +15,10 @@ export class Note {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('uuid', { name: 'lead_id' })
+  @Column('uuid', { name: 'lead_id', nullable: true })
   leadId: string;
 
-  @Column('uuid', { name: 'booking_id' })
+  @Column('uuid', { name: 'booking_id', nullable: true })
   bookingId: string;
 
   @Column('character varying', {
