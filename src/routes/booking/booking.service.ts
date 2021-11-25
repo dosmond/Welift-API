@@ -1,3 +1,4 @@
+import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { Partners } from './../../model/Partners.entity';
@@ -5,7 +6,7 @@ import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { EmailClient } from '../../helper/email.client';
 import { Booking } from './../../model/booking.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   getConnection,
@@ -168,6 +169,49 @@ export class BookingService {
       booking.email,
       booking.referralCode,
     );
+  }
+
+  public async checkPromoCode(code: string): Promise<void> {
+    const result = await stripe.promotionCodes.list({
+      code: code,
+    });
+
+    if (result.data.length === 0)
+      throw new BadRequestException('Promo code does not exist');
+  }
+
+  public async createCheckoutSession(
+    request: CheckoutSessionDTO,
+  ): Promise<{ id: string }> {
+    const { customerName, total, cancelUrl, ...rest } = request;
+
+    let url = cancelUrl;
+    if (!cancelUrl) url = 'book-a-lift';
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Welift Booking for ${customerName}`,
+            },
+            unit_amount: total * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND}/${url}`,
+      //allow_promotion_codes: true,
+      metadata: {
+        ...rest,
+      },
+    });
+
+    return { id: session.id };
   }
 
   public async update(request: BookingUpdateDTO): Promise<BookingDTO> {
