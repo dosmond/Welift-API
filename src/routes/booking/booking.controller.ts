@@ -39,6 +39,12 @@ export class BookingController {
     return await this.serv.getAll(query);
   }
 
+  @Get('count')
+  @Roles(Role.Admin)
+  public async count(): Promise<number> {
+    return await this.serv.count();
+  }
+
   @Get('total-earnings')
   @Roles(Role.Admin)
   public async getTotalEarnings(@Query() query: PaginatedDTO): Promise<number> {

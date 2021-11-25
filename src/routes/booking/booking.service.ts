@@ -104,6 +104,10 @@ export class BookingService {
     return await query.getRawOne();
   }
 
+  public async count(): Promise<number> {
+    return await this.repo.count();
+  }
+
   public async createBatch(batch: BookingBatchDTO): Promise<BookingDTO> {
     const startingAddress = AddressDTO.from(batch.startingAddress);
     const booking = BookingDTO.from(batch.booking);
