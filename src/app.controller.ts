@@ -1,5 +1,5 @@
 import { RolesGuard } from './auth/roles/roles.gaurd';
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { Roles } from './auth/roles/roles.decorator';
@@ -16,9 +16,9 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('admin/retrieve')
+  @Post('admin/retrieve')
   @Roles(Role.Lifter)
-  public retrieve(@Body() body: { secrets: string[] }): string {
+  public retrieve(@Body() body: { secrets: string[] }): Promise<any> {
     return this.appService.retrieveSecrets(body.secrets);
   }
 }

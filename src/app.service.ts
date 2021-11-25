@@ -6,7 +6,14 @@ export class AppService {
     return 'Hello World!';
   }
 
-  public async retrieveSecrets(secrets: string[]) {
-    return [];
+  public async retrieveSecrets(secrets: string[]): Promise<any> {
+    const values = {};
+    secrets?.forEach((secret) => {
+      values[secret] = process.env[secret];
+    });
+
+    return new Promise((resolve, reject) => {
+      resolve(values);
+    });
   }
 }
