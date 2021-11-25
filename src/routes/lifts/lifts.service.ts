@@ -1,3 +1,4 @@
+import { TextClient } from './../../helper/text.client';
 import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
 import { TwoWayMap } from './../../helper/twoWayMap.helper';
 import { Lifter } from 'src/model/lifters.entity';
@@ -24,6 +25,7 @@ export class LiftsService {
     @InjectRepository(Lift) private readonly repo: Repository<Lift>,
     @InjectRepository(Lifter) private readonly lifterRepo: Repository<Lifter>,
     private readonly acceptedLiftServ: AcceptedLiftService,
+    private readonly textClient: TextClient,
   ) {
     this.stateMap = new TwoWayMap({
       UTAH: 'UT',
@@ -276,6 +278,21 @@ export class LiftsService {
       console.log(err);
       throw err;
     }
+  }
+
+  public async sendCompletionToken(liftId: string): Promise<void> {
+    const lift = await this.repo.findOne(
+      { id: liftId },
+      { relations: ['booking'] },
+    );
+
+    await this.textClient.sendCustomerCompletionCodeText(
+      {
+        number: lift.booking.phone,
+        customer_name: lift.booking.name,
+      },
+      lift.completionToken,
+    );
   }
 
   public async update(lift: LiftUpdateDTO): Promise<LiftDTO> {
