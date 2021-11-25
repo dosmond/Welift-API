@@ -10,6 +10,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookingController } from './booking.controller';
 import { BookingService } from './booking.service';
+import { Note } from 'src/model/note.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BookingService } from './booking.service';
       PartnerReferral,
       Partners,
       Lift,
+      Note,
     ]),
   ],
   controllers: [BookingController],

@@ -197,7 +197,7 @@ export class AcceptedLiftService {
         liftToUpdate.currentLifterCount -= 1;
 
         await manager.save(liftToUpdate);
-        return await manager.delete(AcceptedLift, { id: id });
+        return await manager.delete(AcceptedLift, id);
       });
     } catch (err) {
       throw new BadRequestException(err.message);

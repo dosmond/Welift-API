@@ -143,13 +143,13 @@ export class LiftsService {
 
     lifterAcceptedLifts.forEach((item) => {
       query.andWhere('booking.startTime not between :start and :end', {
-        start: item.lift.booking.startTime,
-        end: item.lift.booking.endTime,
+        start: new Date(item.lift.booking.startTime).toISOString(),
+        end: new Date(item.lift.booking.endTime).toISOString(),
       });
 
       query.andWhere(
         ':start not between booking.startTime and booking.endTime',
-        { start: item.lift.booking.startTime },
+        { start: new Date(item.lift.booking.startTime).toISOString() },
       );
     });
 

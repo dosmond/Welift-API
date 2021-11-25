@@ -1,3 +1,4 @@
+import { Note } from 'src/model/note.entity';
 import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
@@ -43,6 +44,8 @@ export class BookingService {
     private readonly liftRepo: Repository<Lift>,
     @InjectRepository(AcceptedLift)
     private readonly acceptedLiftRepo: Repository<AcceptedLift>,
+    @InjectRepository(Note)
+    private readonly noteRepo: Repository<Note>,
     private emailClient: EmailClient,
     private googleHelper: GoogleCalendarApiHelper,
   ) {}
@@ -236,12 +239,12 @@ export class BookingService {
   ): Promise<DeleteResult> {
     const booking = await this.repo.findOne(
       { id: id },
-      { relations: ['lift', 'lift.acceptedLifts'] },
+      { relations: ['lift', 'lift.acceptedLifts', 'notes'] },
     );
 
     // Step 1: Delete Accepted Lifts
-    if (booking.lift.acceptedLifts.length > 0) {
-      let deletePromises: Promise<DeleteResult>[];
+    if (booking.lift?.acceptedLifts.length > 0) {
+      const deletePromises: Promise<DeleteResult>[] = [];
       booking.lift?.acceptedLifts?.forEach((acceptedLift) => {
         deletePromises.push(this.acceptedLiftRepo.delete(acceptedLift));
       });
@@ -250,9 +253,19 @@ export class BookingService {
     }
 
     // Step 2: Delete Lift
-    await this.liftRepo.delete({ id: booking.lift.id });
+    await this.liftRepo.delete({ id: booking.lift?.id });
 
-    // Step 3: Delete Booking
+    // Step 3: Delete Notes
+    if (booking.notes.length > 0) {
+      const deletePromises: Promise<DeleteResult>[] = [];
+      booking.notes.forEach((item) => {
+        deletePromises.push(this.noteRepo.delete({ id: item.id }));
+      });
+
+      await Promise.all(deletePromises);
+    }
+
+    // Step 4: Delete Booking
     const result = this.repo.delete({ id: booking.id });
 
     if (process.env.NODE_ENV === 'production' && state && eventId) {
