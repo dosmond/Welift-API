@@ -1,3 +1,5 @@
+import { LeadDTO } from 'src/dto/lead.dto';
+import { BookingDTO } from 'src/dto/booking.dto';
 import { Lead } from './../model/leads.entity';
 import { Booking } from 'src/model/booking.entity';
 import { Note } from './../model/note.entity';
@@ -39,15 +41,15 @@ export class NoteDTO implements Readonly<NoteDTO> {
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => Booking)
-  booking: Booking;
+  @Type(() => BookingDTO)
+  booking: BookingDTO;
 
   @ApiProperty()
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => Lead)
-  lead: Lead;
+  @Type(() => LeadDTO)
+  lead: LeadDTO;
 
   public static from(dto: Partial<NoteDTO>): NoteDTO {
     const note = new NoteDTO();
@@ -60,6 +62,12 @@ export class NoteDTO implements Readonly<NoteDTO> {
     if (entity) {
       return this.from({
         id: entity.id,
+        leadId: entity.leadId,
+        bookingId: entity.bookingId,
+        note: entity.note,
+        author: entity.author,
+        booking: BookingDTO.fromEntity(entity.booking),
+        lead: LeadDTO.fromEntity(entity.lead),
       });
     }
     return null;

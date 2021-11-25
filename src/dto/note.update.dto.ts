@@ -1,3 +1,5 @@
+import { LeadDTO } from 'src/dto/lead.dto';
+import { BookingDTO } from 'src/dto/booking.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -42,15 +44,15 @@ export class NoteUpdateDTO implements Readonly<NoteUpdateDTO>, NoteDTO {
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => Booking)
-  booking: Booking;
+  @Type(() => BookingDTO)
+  booking: BookingDTO;
 
   @ApiProperty()
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => Lead)
-  lead: Lead;
+  @Type(() => LeadDTO)
+  lead: LeadDTO;
 
   public static from(dto: Partial<NoteUpdateDTO>): NoteUpdateDTO {
     const note = new NoteUpdateDTO();
@@ -63,6 +65,12 @@ export class NoteUpdateDTO implements Readonly<NoteUpdateDTO>, NoteDTO {
     if (entity) {
       return this.from({
         id: entity.id,
+        leadId: entity.leadId,
+        bookingId: entity.bookingId,
+        note: entity.note,
+        author: entity.author,
+        booking: BookingDTO.fromEntity(entity.booking),
+        lead: LeadDTO.fromEntity(entity.lead),
       });
     }
     return null;
