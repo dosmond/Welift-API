@@ -1,3 +1,4 @@
+import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { TextClient } from '../../helper/text.client';
 import { BookingDTO } from 'src/dto/booking.dto';
@@ -38,10 +39,24 @@ export class BookingController {
     return await this.serv.getAll(query);
   }
 
+  @Get('count')
+  @Roles(Role.Admin)
+  public async count(): Promise<number> {
+    return await this.serv.count();
+  }
+
   @Get('total-earnings')
   @Roles(Role.Admin)
   public async getTotalEarnings(@Query() query: PaginatedDTO): Promise<number> {
     return await this.serv.getTotalEarnings(query.start, query.end);
+  }
+
+  @Get('check-promo-code')
+  @Roles(Role.Admin)
+  public async checkPromoCode(
+    @Query() query: { promoCode: string },
+  ): Promise<void> {
+    return await this.serv.checkPromoCode(query.promoCode);
   }
 
   @Post('create-batch')
@@ -64,6 +79,14 @@ export class BookingController {
     @Body() body: { bookingId: string },
   ): Promise<void> {
     return await this.serv.sendReferralCode(body.bookingId);
+  }
+
+  @Post('create-checkout-session')
+  @Roles(Role.Admin)
+  public async createCheckoutSession(
+    @Body() body: CheckoutSessionDTO,
+  ): Promise<{ id: string }> {
+    return await this.serv.createCheckoutSession(body);
   }
 
   @Put('update')

@@ -28,6 +28,12 @@ export class PartnersService {
       .then((partner) => PartnerDTO.fromEntity(partner));
   }
 
+  public async getByEmail(email: string): Promise<PartnerDTO> {
+    return await this.repo
+      .findOne({ email: email })
+      .then((partner) => PartnerDTO.fromEntity(partner));
+  }
+
   public async getAll(): Promise<PartnerDTO[]> {
     return await this.repo.find().then((partners) => {
       return partners.map((partner) => PartnerDTO.fromEntity(partner));

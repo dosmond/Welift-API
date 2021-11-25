@@ -26,9 +26,12 @@ export class PartnersController {
 
   @Get()
   @Roles(Role.Partner)
-  public async getById(@Query() query: { id: string }): Promise<PartnerDTO> {
+  public async getById(
+    @Query() query: { id: string; email: string },
+  ): Promise<PartnerDTO> {
     try {
-      return await this.serv.getById(query.id);
+      if (query.id) return await this.serv.getById(query.id);
+      if (query.email) return await this.serv.getByEmail(query.email);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
