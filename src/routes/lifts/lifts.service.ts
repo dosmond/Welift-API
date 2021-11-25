@@ -68,9 +68,8 @@ export class LiftsService {
         end: end,
       });
     else if (start)
-      query.where('booking.startTime between :start and :end', {
+      query.where('booking.startTime >= :start', {
         start: start,
-        end: new Date(),
       });
 
     query.orderBy('booking.startTime', order);
