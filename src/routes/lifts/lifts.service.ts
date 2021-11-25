@@ -190,7 +190,7 @@ export class LiftsService {
       query.where('lifter.id = :id', { id: lifterId });
 
       query.andWhere(
-        ':now between booking.startTime - INTERVAL "15 min" and booking.endTime',
+        ":now between booking.startTime - INTERVAL '15 min' and booking.endTime",
         {
           now: new Date().toISOString(),
         },
@@ -199,7 +199,7 @@ export class LiftsService {
       query.andWhere('acceptedLifts.clockOutTime IS NULL');
     } else {
       query.where(
-        ':now between booking.startTime - INTERVAL "15 min" and booking.endTime',
+        ":now between booking.startTime - INTERVAL '15 min' and booking.endTime",
         {
           now: new Date().toISOString(),
         },
