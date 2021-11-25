@@ -139,6 +139,17 @@ export class LiftsController {
     }
   }
 
+  @Post('send-completion-token')
+  @Roles(Role.Admin)
+  public async sendToken(@Query() query: { liftId: string }): Promise<void> {
+    try {
+      return await this.serv.sendCompletionToken(query.liftId);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
   @Put('update')
   @Roles(Role.Admin)
   public async update(@Body() body: LiftDTO): Promise<LiftDTO> {
