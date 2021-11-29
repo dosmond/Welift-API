@@ -185,14 +185,13 @@ export class LiftsService {
       .leftJoinAndSelect('q.booking', 'booking')
       .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
       .leftJoinAndSelect('booking.endingAddress', 'endingAddress');
-
+    console.log(this.getCurrentPostgresTimestamp());
     if (lifterId) {
       query.where('lifter.id = :id', { id: lifterId });
-      console.log(lifterId);
       query.andWhere(
         ":now between booking.startTime - INTERVAL '15 min' and booking.endTime",
         {
-          now: new Date(Date.now()),
+          now: this.getCurrentPostgresTimestamp(),
         },
       );
 
@@ -201,12 +200,10 @@ export class LiftsService {
       query.where(
         ":now between booking.startTime - INTERVAL '15 min' and booking.endTime",
         {
-          now: new Date(Date.now()),
+          now: this.getCurrentPostgresTimestamp(),
         },
       );
     }
-
-    console.log(query.getQueryAndParameters);
 
     return await query
       .getMany()
@@ -301,5 +298,11 @@ export class LiftsService {
 
   public async delete(id: string): Promise<DeleteResult> {
     return await this.repo.delete({ id: id });
+  }
+
+  private getCurrentPostgresTimestamp(): string {
+    return (
+      new Date(Date.now()).toISOString().split('.')[0].replace('T', ' ') + '+00'
+    );
   }
 }
