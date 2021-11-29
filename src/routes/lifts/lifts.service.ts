@@ -188,11 +188,11 @@ export class LiftsService {
 
     if (lifterId) {
       query.where('lifter.id = :id', { id: lifterId });
-
+      console.log(lifterId);
       query.andWhere(
         ":now between booking.startTime - INTERVAL '15 min' and booking.endTime",
         {
-          now: new Date().toISOString(),
+          now: new Date(Date.now()),
         },
       );
 
@@ -201,10 +201,12 @@ export class LiftsService {
       query.where(
         ":now between booking.startTime - INTERVAL '15 min' and booking.endTime",
         {
-          now: new Date().toISOString(),
+          now: new Date(Date.now()),
         },
       );
     }
+
+    console.log(query.getQuery());
 
     return await query
       .getMany()
