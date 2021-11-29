@@ -82,7 +82,7 @@ export class BookingController {
   }
 
   @Post('create-checkout-session')
-  @Roles(Role.Admin)
+  @Roles(Role.Landing)
   public async createCheckoutSession(
     @Body() body: CheckoutSessionDTO,
   ): Promise<{ id: string }> {

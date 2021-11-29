@@ -210,8 +210,8 @@ export class BookingService {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND}/${url}`,
+      success_url: `${process.env.LANDING_FRONTEND}/booking-confirmed?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.LANDING_FRONTEND}/${url}`,
       //allow_promotion_codes: true,
       metadata: {
         ...rest,

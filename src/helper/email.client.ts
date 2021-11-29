@@ -39,7 +39,7 @@ export class EmailClient {
   ) {
     try {
       const lifterLink =
-        process.env.FRONTEND +
+        process.env.LANDING_FRONTEND +
         '/lifter-created' +
         `?var=${lifterEncryptedData}`;
       const data = await renderFile('./dist/assets/newLifterEmail.ejs', {
@@ -78,7 +78,7 @@ export class EmailClient {
   ) => {
     try {
       const bookingLink =
-        process.env.FRONTEND +
+        process.env.LANDING_FRONTEND +
         '/confirm-booking' +
         `?var=${bookingEncryptedData}`;
       const data = await renderFile('./dist/assets/leadConversionEmail.ejs', {
