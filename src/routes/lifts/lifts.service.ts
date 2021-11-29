@@ -206,7 +206,7 @@ export class LiftsService {
       );
     }
 
-    console.log(query.getQueryAndParameters);
+    console.log(query.getQueryAndParameters());
 
     return await query
       .getMany()
