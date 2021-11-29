@@ -8,7 +8,7 @@ export class TwoWayMap {
 
     for (const key in map) {
       const value = map[key];
-      this.reverseMap[value] = key;
+      this.map[value] = key;
     }
   }
 
