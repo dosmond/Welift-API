@@ -142,7 +142,6 @@ export class LiftsService {
     query.andWhere('q.currentLifterCount != booking.lifterCount');
 
     lifterAcceptedLifts.forEach((item) => {
-      console.log(item);
       query.andWhere('booking.startTime not between :start and :end', {
         start: new Date(item.lift.booking.startTime).toISOString(),
         end: new Date(item.lift.booking.endTime).toISOString(),
@@ -157,11 +156,6 @@ export class LiftsService {
     const lifterAddress = await this.lifterRepo.findOne(
       { id: lifterId },
       { relations: ['address'] },
-    );
-
-    console.log(
-      lifterAddress.address.state,
-      this.stateMap.get(lifterAddress.address.state),
     );
 
     query.andWhere(
