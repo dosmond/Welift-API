@@ -15,7 +15,12 @@ export class AuthController {
       appName: string;
     },
   ) {
-    return await this.authService.registerUser(registerRequest);
+    try {
+      return await this.authService.registerUser(registerRequest);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Post('login')
@@ -38,10 +43,15 @@ export class AuthController {
   async refresh(
     @Body() body: { refreshToken: string; appName: string; username: string },
   ) {
-    return await this.authService.refresh(
-      body.refreshToken,
-      body.appName,
-      body.username,
-    );
+    try {
+      return await this.authService.refresh(
+        body.refreshToken,
+        body.appName,
+        body.username,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 }
