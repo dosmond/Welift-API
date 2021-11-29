@@ -1,5 +1,3 @@
-import { Injectable } from '@nestjs/common';
-
 export class TwoWayMap {
   private readonly map: Map<string, string>;
   private readonly reverseMap: Map<string, string>;
@@ -10,7 +8,7 @@ export class TwoWayMap {
 
     for (const key in map) {
       const value = map[key];
-      this.map[value] = key;
+      this.reverseMap[value] = key;
     }
   }
 
