@@ -9,8 +9,9 @@ if (process.env.NODE_ENV == 'local') {
     process.env.AWS_CRED_SECRET,
   );
   config.credentials = creds;
-  config.update({ region: 'us-east-1' });
 }
+
+config.update({ region: 'us-east-1' });
 
 @Injectable()
 export class TextClient {
