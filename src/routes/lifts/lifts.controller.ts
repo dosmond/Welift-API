@@ -140,7 +140,7 @@ export class LiftsController {
   }
 
   @Post('send-completion-token')
-  @Roles(Role.Admin)
+  @Roles(Role.Lifter)
   public async sendToken(@Query() query: { liftId: string }): Promise<void> {
     try {
       return await this.serv.sendCompletionToken(query.liftId);
