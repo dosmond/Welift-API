@@ -1,11 +1,6 @@
+import { IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsDate,
-  IsNumber,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsUUID } from 'class-validator';
 import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { Lifter } from 'src/model/lifters.entity';
@@ -25,12 +20,12 @@ export class AcceptedLiftUpdateDTO
   lifterId: string;
 
   @ApiProperty({ required: false })
-  @IsDate()
+  @IsDateString()
   @IsOptional()
   clockInTime: Date;
 
   @ApiProperty({ required: false })
-  @IsDate()
+  @IsDateString()
   @IsOptional()
   clockOutTime: Date;
 
@@ -40,10 +35,12 @@ export class AcceptedLiftUpdateDTO
   liftId: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsNumber()
   payrate: number;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsBoolean()
   usePickupTruck: boolean;
 
