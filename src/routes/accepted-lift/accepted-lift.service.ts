@@ -131,9 +131,11 @@ export class AcceptedLiftService {
       const dto = AcceptedLiftDTO.fromEntity(lift);
       const result = await queryRunner.manager.save(dto.toEntity(user));
       await queryRunner.commitTransaction();
+      await queryRunner.release();
       return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       throw new BadRequestException(err.message);
     }
   }
