@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID } from 'class-validator';
+import { IsBoolean, IsOptional, IsUUID } from 'class-validator';
 import { PaginatedDTO } from './base.paginated.dto';
 
 export class LifterPaginatedDTO
@@ -9,4 +9,9 @@ export class LifterPaginatedDTO
   @ApiProperty()
   @IsUUID()
   lifterId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  hideCompleted: boolean;
 }

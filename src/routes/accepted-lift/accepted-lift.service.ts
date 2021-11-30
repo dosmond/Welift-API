@@ -64,7 +64,8 @@ export class AcceptedLiftService {
   public async getLifterAccepted(
     details: LifterPaginatedDTO,
   ): Promise<AcceptedLiftDTO[]> {
-    const { lifterId, start, end, order, page, pageSize } = details;
+    const { lifterId, start, end, order, page, pageSize, hideCompleted } =
+      details;
 
     const query = this.repo
       .createQueryBuilder('q')
@@ -75,6 +76,10 @@ export class AcceptedLiftService {
       .leftJoin('q.lifter', 'lifter');
 
     query.where('lifter_id = :id', { id: lifterId });
+
+    if (hideCompleted) {
+      query.andWhere('q.clockOutTime is null');
+    }
 
     // Time Queries
     if (start && end)
