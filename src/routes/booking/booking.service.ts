@@ -135,13 +135,18 @@ export class BookingService {
       booking.startingAddressId = starting.id;
       booking.endingAddressId = ending?.id;
 
-      // Create Booking
-      const result = await queryRunner.manager.save(booking.toEntity());
-
       // Create google calendar event
       if (process.env.NODE_ENV === 'production') {
-        await this.handleCreateGoogleCalendar(starting, result);
+        const { data } = await this.handleCreateGoogleCalendar(
+          starting,
+          booking.toEntity(),
+        );
+
+        booking.calendarEventId = data.id;
       }
+
+      // Create Booking
+      const result = await queryRunner.manager.save(booking.toEntity());
 
       // Create new lift
       const newLift = new Lift();
@@ -325,7 +330,7 @@ export class BookingService {
     booking: Booking,
   ) {
     const formattedAddress = `${starting.street} ${starting.street2}\n${starting.city} ${starting.state}, ${starting.postalCode}`;
-    await this.googleHelper.createGoogleCalendarEvent({
+    return await this.googleHelper.createGoogleCalendarEvent({
       state: starting.state,
       description: `${formattedAddress}\n\n${booking.additionalInfo}\n${booking.specialItems}`,
       title: booking.name,

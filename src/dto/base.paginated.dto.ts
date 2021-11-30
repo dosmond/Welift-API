@@ -35,5 +35,5 @@ export class PaginatedDTO implements Readonly<PaginatedDTO> {
   })
   @IsOptional()
   @IsEnum(Order)
-  order?: Order = Order.ASC;
+  order?: Order = Order.DESC;
 }
