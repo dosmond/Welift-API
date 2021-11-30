@@ -133,7 +133,10 @@ export class AcceptedLiftService {
       const newPaginatedDTO = new LifterPaginatedDTO();
       newPaginatedDTO.lifterId = lift.lifterId;
       await queryRunner.commitTransaction();
-      console.log(await this.getLifterAccepted(newPaginatedDTO));
+      console.log(
+        await this.getLifterAccepted(newPaginatedDTO),
+        new Date().toISOString(),
+      );
       await queryRunner.release();
       return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
