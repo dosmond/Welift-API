@@ -131,7 +131,7 @@ export class AcceptedLiftService {
 
       const dto = AcceptedLiftDTO.fromEntity(lift);
       const result = await queryRunner.manager.save(dto.toEntity(user));
-      queryRunner.commitTransaction();
+      await queryRunner.commitTransaction();
       return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
       throw new BadRequestException(err.message);
