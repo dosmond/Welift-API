@@ -11,7 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
 import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
 import { User } from 'src/user.decorator';
-import { DeleteResult, getManager } from 'typeorm';
+import { DeleteResult, getConnection, getManager } from 'typeorm';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
 import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
@@ -108,28 +108,31 @@ export class AcceptedLiftService {
     lift: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
     try {
-      return await getManager().transaction('SERIALIZABLE', async (manager) => {
-        const liftToUpdate = await this.liftRepo.findOne(
-          { id: lift.liftId },
-          { relations: ['booking'] },
-        );
+      const queryRunner = getConnection().createQueryRunner();
+      await queryRunner.connect();
 
-        if (
-          liftToUpdate.currentLifterCount + 1 >
-          liftToUpdate.booking.lifterCount
-        ) {
-          throw new BadRequestException('Cannot exceed maximum lifter count');
-        }
+      await queryRunner.startTransaction();
 
-        liftToUpdate.currentLifterCount += 1;
+      const liftToUpdate = await this.liftRepo.findOne(
+        { id: lift.liftId },
+        { relations: ['booking'] },
+      );
 
-        await manager.save(liftToUpdate);
+      if (
+        liftToUpdate.currentLifterCount + 1 >
+        liftToUpdate.booking.lifterCount
+      ) {
+        throw new BadRequestException('Cannot exceed maximum lifter count');
+      }
 
-        const dto = AcceptedLiftDTO.fromEntity(lift);
-        return AcceptedLiftDTO.fromEntity(
-          await manager.save(dto.toEntity(user)),
-        );
-      });
+      liftToUpdate.currentLifterCount += 1;
+
+      await queryRunner.manager.save(liftToUpdate);
+
+      const dto = AcceptedLiftDTO.fromEntity(lift);
+      const result = await queryRunner.manager.save(dto.toEntity(user));
+      queryRunner.commitTransaction();
+      return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
