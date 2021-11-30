@@ -107,12 +107,11 @@ export class AcceptedLiftService {
     user: User,
     lift: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
+    const queryRunner = getConnection().createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      const queryRunner = getConnection().createQueryRunner();
-      await queryRunner.connect();
-
-      await queryRunner.startTransaction();
-
       const liftToUpdate = await this.liftRepo.findOne(
         { id: lift.liftId },
         { relations: ['booking'] },
@@ -134,6 +133,7 @@ export class AcceptedLiftService {
       await queryRunner.commitTransaction();
       return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
+      await queryRunner.rollbackTransaction();
       throw new BadRequestException(err.message);
     }
   }
