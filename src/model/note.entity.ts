@@ -35,6 +35,13 @@ export class Note {
   })
   author: string;
 
+  @Column('date', {
+    name: 'creation_date',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  creationDate: Date;
+
   @ManyToOne(() => Booking, (booking) => booking.notes)
   @JoinColumn([{ name: 'booking_id', referencedColumnName: 'id' }])
   booking: Booking;

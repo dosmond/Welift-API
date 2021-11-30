@@ -33,7 +33,7 @@ export class Lead {
   @Column('character varying', {
     name: 'schedule',
     nullable: true,
-    length: 128,
+    length: 1024,
   })
   schedule: string | null;
 
