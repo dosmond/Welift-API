@@ -46,7 +46,9 @@ export class AcceptedLiftController {
     @Query() query: LifterPaginatedDTO,
   ): Promise<AcceptedLiftDTO[]> {
     console.log('CALLING GET LIFTER ACCEPTED', new Date().toISOString());
-    return await this.serv.getLifterAccepted(query);
+    const result = await this.serv.getLifterAccepted(query);
+    console.log('GET LIFTER ACCEPTED RESULT: ', result);
+    return result;
   }
 
   @Post('create')
