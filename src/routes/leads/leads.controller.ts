@@ -1,3 +1,4 @@
+import { SlackHelper } from './../../helper/slack.helper';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { LeadLandingDTO } from './../../dto/lead.landing.dto';
 import { LeadUpdateDTO } from 'src/dto/lead.update.dto';
@@ -21,7 +22,10 @@ import { Role } from 'src/enum/roles.enum';
 
 @Controller('lead')
 export class LeadsController {
-  constructor(private readonly serv: LeadsService) {}
+  constructor(
+    private readonly serv: LeadsService,
+    private readonly slackHelper: SlackHelper,
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -69,7 +73,15 @@ export class LeadsController {
   @Roles(Role.Landing)
   public async createLanding(@Body() body: LeadLandingDTO): Promise<LeadDTO> {
     try {
-      return await this.serv.createLanding(body);
+      const result = await this.serv.createLanding(body);
+      this.slackHelper.sendBasicSucessSlackMessage(
+        this.slackHelper.prepareBasicSuccessSlackMessage({
+          type: 'Lift Request',
+          objects: [body],
+          sendBasic: true,
+        }),
+      );
+      return result;
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
