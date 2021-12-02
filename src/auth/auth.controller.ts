@@ -30,6 +30,7 @@ export class AuthController {
       username: string;
       password: string;
       appName: string;
+      newPassword: string;
     },
   ) {
     try {

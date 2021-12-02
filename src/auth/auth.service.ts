@@ -93,8 +93,9 @@ export class AuthService {
     username: string;
     password: string;
     appName: string;
+    newPassword: string;
   }) {
-    const { username, password, appName } = request;
+    const { username, password, appName, newPassword } = request;
 
     const authenticationDetails = new AuthenticationDetails({
       Username: username,
@@ -120,6 +121,20 @@ export class AuthService {
         },
         onFailure: (err) => {
           reject(err);
+        },
+        newPasswordRequired: (userAttributes) => {
+          delete userAttributes.email_verified;
+          delete userAttributes.phone_number_verified;
+
+          userAttributes.name = authenticationDetails.getUsername();
+          newUser.completeNewPasswordChallenge(newPassword, userAttributes, {
+            onSuccess: (result) => {
+              resolve(result);
+            },
+            onFailure: (err) => {
+              reject(err);
+            },
+          });
         },
       });
     });
