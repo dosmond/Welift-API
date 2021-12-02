@@ -25,7 +25,7 @@ export class LiftersController {
   constructor(private readonly serv: LiftersService) {}
 
   @Get()
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Rep)
   public async getById(
     @User() user: User,
     @Query() query: { id: string; userId: string },
@@ -40,7 +40,7 @@ export class LiftersController {
   }
 
   @Get('list')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Rep)
   public async getAll(@Query() query: PaginatedDTO): Promise<LifterDTO[]> {
     try {
       return await this.serv.getAll(query);
