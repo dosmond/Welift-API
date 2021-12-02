@@ -1,3 +1,4 @@
+import { SlackHelper } from './../../helper/slack.helper';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { Lift } from 'src/model/lifts.entity';
 import { Partners } from './../../model/Partners.entity';
@@ -24,6 +25,12 @@ import { Note } from 'src/model/note.entity';
     ]),
   ],
   controllers: [BookingController],
-  providers: [BookingService, EmailClient, TextClient, GoogleCalendarApiHelper],
+  providers: [
+    BookingService,
+    EmailClient,
+    TextClient,
+    GoogleCalendarApiHelper,
+    SlackHelper,
+  ],
 })
 export class BookingModule {}

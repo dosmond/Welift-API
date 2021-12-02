@@ -1,3 +1,4 @@
+import { SlackHelper } from './../../helper/slack.helper';
 import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { TextClient } from '../../helper/text.client';
@@ -25,7 +26,11 @@ import { Role } from 'src/enum/roles.enum';
 @Controller('booking')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BookingController {
-  constructor(private serv: BookingService, private textClient: TextClient) {}
+  constructor(
+    private serv: BookingService,
+    private textClient: TextClient,
+    private slackHelper: SlackHelper,
+  ) {}
 
   @Get()
   @Roles(Role.Admin)
@@ -62,7 +67,15 @@ export class BookingController {
   @Post('create-batch')
   @Roles(Role.Admin)
   public async createBatch(@Body() body: BookingBatchDTO): Promise<BookingDTO> {
-    return await this.serv.createBatch(body);
+    const result = await this.serv.createBatch(body);
+    this.slackHelper.sendBasicSucessSlackMessage(
+      this.slackHelper.prepareBasicSuccessSlackMessage({
+        type: 'Booking',
+        objects: [body.startingAddress, body.endingAddress, body.booking],
+        sendBasic: true,
+      }),
+    );
+    return result;
   }
 
   @Post('confirm')
