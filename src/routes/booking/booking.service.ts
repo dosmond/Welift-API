@@ -183,13 +183,17 @@ export class BookingService {
     );
   }
 
-  public async checkPromoCode(code: string): Promise<void> {
+  public async checkPromoCode(
+    code: string,
+  ): Promise<Stripe.Response<Stripe.ApiList<Stripe.PromotionCode>>> {
     const result = await stripe.promotionCodes.list({
       code: code,
     });
 
     if (result.data.length === 0)
       throw new BadRequestException('Promo code does not exist');
+
+    return result;
   }
 
   public async createCheckoutSession(
