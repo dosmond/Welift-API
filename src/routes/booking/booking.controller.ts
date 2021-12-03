@@ -22,6 +22,7 @@ import { DeleteResult } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles/roles.gaurd';
 import { Role } from 'src/enum/roles.enum';
+import { Stripe } from 'stripe';
 
 @Controller('booking')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -60,7 +61,7 @@ export class BookingController {
   @Roles(Role.Admin)
   public async checkPromoCode(
     @Query() query: { promoCode: string },
-  ): Promise<void> {
+  ): Promise<Stripe.Response<Stripe.ApiList<Stripe.PromotionCode>>> {
     return await this.serv.checkPromoCode(query.promoCode);
   }
 
