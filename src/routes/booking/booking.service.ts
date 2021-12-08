@@ -165,12 +165,13 @@ export class BookingService {
         }
       }
 
-      queryRunner.commitTransaction();
-
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
       return BookingDTO.fromEntity(result);
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       throw err;
     }
   }
