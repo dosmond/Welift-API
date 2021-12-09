@@ -1,3 +1,4 @@
+import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
 import { LifterUpdateBatchDTO } from './../../dto/lifter.update.batch.dto';
 import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
@@ -11,6 +12,7 @@ import {
   Query,
   BadRequestException,
   UseGuards,
+  ConflictException,
 } from '@nestjs/common';
 import { LifterDTO } from 'src/dto/lifter.dto';
 import { User } from 'src/user.decorator';
@@ -69,6 +71,33 @@ export class LiftersController {
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
+    }
+  }
+
+  @Post('begin-verify-phone-number')
+  @Roles(Role.Landing)
+  public async beginVerifyPhoneNumber(
+    @Body() body: PendingVerificationDTO,
+  ): Promise<void> {
+    try {
+      await this.serv.beginVerifyPhoneNumber(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Post('verify-code')
+  @Roles(Role.Landing)
+  public async verifyCode(@Body() body: PendingVerificationDTO): Promise<void> {
+    try {
+      await this.serv.verifyCode(body);
+    } catch (err) {
+      if (err instanceof ConflictException) {
+        throw err;
+      }
+      console.log(err);
+      throw new ConflictException(err.message);
     }
   }
 
