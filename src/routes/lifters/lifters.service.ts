@@ -15,6 +15,7 @@ import { User } from 'src/user.decorator';
 import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 import { PendingVerification } from 'src/model/pendingVerification.entity';
+import { text } from 'stream/consumers';
 
 @Injectable()
 export class LiftersService {
@@ -124,18 +125,22 @@ export class LiftersService {
     const dto = PendingVerificationDTO.from(request);
     const result = await this.verificationRepo.findOne({ user: dto.user });
 
+    const textObject = {
+      phoneNumber: dto.user,
+      code: null,
+    };
+
     if (result) {
       result.code = this.generateVerificationCode();
       await this.verificationRepo.save(result);
+      textObject.code = result.code;
     } else {
       dto.code = this.generateVerificationCode();
       await this.verificationRepo.save(dto.toEntity());
+      textObject.code = dto.code;
     }
 
-    await this.textClient.sendPhoneVerificationText({
-      phoneNumber: dto.user,
-      code: dto.code,
-    });
+    await this.textClient.sendPhoneVerificationText(textObject);
   }
 
   public async verifyCode(request: PendingVerificationDTO): Promise<void> {
