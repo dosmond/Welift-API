@@ -122,13 +122,24 @@ export class LiftersService {
     request: PendingVerificationDTO,
   ): Promise<void> {
     const dto = PendingVerificationDTO.from(request);
-    dto.code = this.generateVerificationCode();
-    await this.verificationRepo.save(dto.toEntity());
+    const result = await this.verificationRepo.findOne({ user: dto.user });
 
-    await this.textClient.sendPhoneVerificationText({
+    const textObject = {
       phoneNumber: dto.user,
-      code: dto.code,
-    });
+      code: null,
+    };
+
+    if (result) {
+      result.code = this.generateVerificationCode();
+      await this.verificationRepo.save(result);
+      textObject.code = result.code;
+    } else {
+      dto.code = this.generateVerificationCode();
+      await this.verificationRepo.save(dto.toEntity());
+      textObject.code = dto.code;
+    }
+
+    await this.textClient.sendPhoneVerificationText(textObject);
   }
 
   public async verifyCode(request: PendingVerificationDTO): Promise<void> {
