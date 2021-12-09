@@ -15,7 +15,6 @@ import { User } from 'src/user.decorator';
 import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 import { PendingVerification } from 'src/model/pendingVerification.entity';
-import { text } from 'stream/consumers';
 
 @Injectable()
 export class LiftersService {
