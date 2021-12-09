@@ -1,3 +1,5 @@
+import { TextClient } from './../../helper/text.client';
+import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { LifterUpdateBatchDTO } from './../../dto/lifter.update.batch.dto';
 import { Address } from 'src/model/addresses.entity';
@@ -6,12 +8,13 @@ import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { LifterDTO } from './../../dto/lifter.dto';
 import { Lifter } from 'src/model/lifters.entity';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository, Between } from 'typeorm';
 import { User } from 'src/user.decorator';
 import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
+import { PendingVerification } from 'src/model/pendingVerification.entity';
 
 @Injectable()
 export class LiftersService {
@@ -21,6 +24,9 @@ export class LiftersService {
     private readonly addressRepo: Repository<Address>,
     @InjectRepository(LifterStats)
     private readonly statsRepo: Repository<LifterStats>,
+    @InjectRepository(PendingVerification)
+    private readonly verificationRepo: Repository<PendingVerification>,
+    private readonly textClient: TextClient,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
@@ -112,6 +118,29 @@ export class LiftersService {
     return result;
   }
 
+  public async beginVerifyPhoneNumber(
+    request: PendingVerificationDTO,
+  ): Promise<void> {
+    const dto = PendingVerificationDTO.from(request);
+    dto.code = this.generateVerificationCode();
+    await this.verificationRepo.save(dto.toEntity());
+
+    await this.textClient.sendPhoneVerificationText({
+      phoneNumber: dto.user,
+      code: dto.code,
+    });
+  }
+
+  public async verifyCode(request: PendingVerificationDTO): Promise<void> {
+    const dto = PendingVerificationDTO.from(request);
+    const result = await this.verificationRepo.findOne({ user: dto.user });
+
+    if (result?.code !== dto.code)
+      throw new ConflictException('Code is incorrect');
+
+    await this.verificationRepo.delete({ id: result.id });
+  }
+
   public async updateBatch(batch: LifterUpdateBatchDTO): Promise<LifterDTO> {
     const lifter = LifterUpdateDTO.from(batch.lifter);
     const address = AddressUpdateDTO.from(batch.address);
@@ -122,5 +151,11 @@ export class LiftersService {
     }
 
     return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
+  }
+
+  private generateVerificationCode(): string {
+    return (
+      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
+    ).toString();
   }
 }

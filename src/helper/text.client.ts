@@ -100,6 +100,22 @@ If you have any issues, please reach out to 385-309-3256`;
     }
   };
 
+  sendPhoneVerificationText = async ({ phoneNumber, code }) => {
+    try {
+      const params: SNS.PublishInput = {
+        Message: `Your Welift confirmation code is: 
+    
+  ${code}`,
+        PhoneNumber: phoneNumber,
+      };
+
+      await new SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
+
   private async cleanUpSubscriptions(subscriptions): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const promises: Promise<{ $response: AWS.Response<{}, AWS.AWSError> }>[] =
