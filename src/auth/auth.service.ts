@@ -33,12 +33,23 @@ export class AuthService {
   }
 
   public registerUser(registerRequest: {
+    firstName: string;
+    lastName: string;
     username: string;
     email: string;
     password: string;
     appName: string;
+    phoneNumber: string;
   }) {
-    const { username, email, password, appName } = registerRequest;
+    const {
+      username,
+      email,
+      password,
+      appName,
+      phoneNumber,
+      firstName,
+      lastName,
+    } = registerRequest;
 
     return new Promise((res, rej) => {
       const userPool = this.userPools[appName];
@@ -50,7 +61,22 @@ export class AuthService {
       return userPool.signUp(
         username,
         password,
-        [new CognitoUserAttribute({ Name: 'email', Value: email })],
+        [
+          new CognitoUserAttribute({ Name: 'email', Value: email }),
+          new CognitoUserAttribute({
+            Name: 'phone_number',
+            Value: phoneNumber,
+          }),
+          new CognitoUserAttribute({
+            Name: 'family_name',
+            Value: lastName,
+          }),
+          new CognitoUserAttribute({
+            Name: 'name',
+            Value: firstName,
+          }),
+        ],
+
         null,
         (error, result) => {
           if (!result) rej(error);

@@ -9,8 +9,11 @@ export class AuthController {
   async register(
     @Body()
     registerRequest: {
+      firstName: string;
+      lastName: string;
       username: string;
       password: string;
+      phoneNumber: string;
       email: string;
       appName: string;
     },
