@@ -27,7 +27,7 @@ export class LiftsController {
   constructor(private serv: LiftsService) {}
 
   @Get()
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Rep)
   public async getById(@Query() query: { id: string }): Promise<LiftDTO> {
     try {
       return await this.serv.getById(query.id);
@@ -38,7 +38,7 @@ export class LiftsController {
   }
 
   @Get('list')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Rep)
   public async getAll(@Query() query: PaginatedDTO): Promise<LiftDTO[]> {
     try {
       return await this.serv.getAll(query);
@@ -49,7 +49,7 @@ export class LiftsController {
   }
 
   @Get('list-available')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Rep)
   public async getAllAvailableLifts(
     @Query() query: PaginatedDTO,
   ): Promise<LiftDTO[]> {
@@ -62,7 +62,7 @@ export class LiftsController {
   }
 
   @Get('list-lifter-available')
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Rep)
   public async getLifterAvailable(
     @Query() query: LifterPaginatedDTO,
   ): Promise<LiftDTO[]> {
@@ -75,7 +75,7 @@ export class LiftsController {
   }
 
   @Get('current')
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Rep)
   public async current(
     @Query() query: { lifterId: string },
   ): Promise<LiftDTO[]> {
@@ -88,7 +88,7 @@ export class LiftsController {
   }
 
   @Get('lifters')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Rep)
   public async getLiftersByLift(
     @Query() query: { liftId: string },
   ): Promise<AcceptedLiftDTO[]> {
@@ -140,7 +140,7 @@ export class LiftsController {
   }
 
   @Post('send-completion-token')
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Rep)
   public async sendToken(@Query() query: { liftId: string }): Promise<void> {
     try {
       return await this.serv.sendCompletionToken(query.liftId);
