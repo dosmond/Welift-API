@@ -64,7 +64,7 @@ export class LiftersController {
   }
 
   @Post('create-batch')
-  @Roles(Role.Lifter)
+  @Roles(Role.Landing)
   public async createBatch(@Body() body: LifterBatchDTO): Promise<LifterDTO> {
     try {
       return await this.serv.createBatch(body);
