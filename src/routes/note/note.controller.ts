@@ -23,7 +23,7 @@ export class NoteController {
   constructor(private readonly serv: NoteService) {}
 
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Rep)
   public async getById(
     @Query() query: { bookingId: string; leadId: string },
   ): Promise<NoteDTO[]> {
@@ -32,7 +32,7 @@ export class NoteController {
   }
 
   @Post('create')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Rep)
   public async create(@Body() body: NoteDTO): Promise<NoteDTO> {
     return await this.serv.create(body);
   }
