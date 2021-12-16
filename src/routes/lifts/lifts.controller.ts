@@ -30,7 +30,9 @@ export class LiftsController {
   @Roles(Role.Lifter, Role.Rep)
   public async getById(@Query() query: { id: string }): Promise<LiftDTO> {
     try {
-      return await this.serv.getById(query.id);
+      const result = await this.serv.getById(query.id);
+      console.log('got lift by id');
+      return result;
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);

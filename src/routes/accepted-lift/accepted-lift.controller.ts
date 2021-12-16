@@ -57,7 +57,9 @@ export class AcceptedLiftController {
     @User() user: User,
     @Body() body: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
-    return await this.serv.create(user, body);
+    const result = await this.serv.create(user, body);
+    console.log('Created new accepted lift');
+    return result;
   }
 
   @Post('verify-completion-token')
