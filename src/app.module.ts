@@ -50,13 +50,6 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     NoteModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    RolesGuard,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
-  ],
+  providers: [AppService, RolesGuard],
 })
 export class AppModule {}
