@@ -45,10 +45,7 @@ export class AcceptedLiftController {
   public async getLifterAccepted(
     @Query() query: LifterPaginatedDTO,
   ): Promise<AcceptedLiftDTO[]> {
-    console.log('CALLING GET LIFTER ACCEPTED', new Date().toISOString());
-    const result = await this.serv.getLifterAccepted(query);
-    console.log('GET LIFTER ACCEPTED RESULT: ', result);
-    return result;
+    return await this.serv.getLifterAccepted(query);
   }
 
   @Post('create')
@@ -57,9 +54,7 @@ export class AcceptedLiftController {
     @User() user: User,
     @Body() body: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
-    const result = await this.serv.create(user, body);
-    console.log('Created new accepted lift');
-    return result;
+    return await this.serv.create(user, body);
   }
 
   @Post('verify-completion-token')

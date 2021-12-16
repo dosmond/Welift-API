@@ -107,36 +107,35 @@ export class AcceptedLiftService {
     user: User,
     lift: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
-    const liftToUpdate = await this.liftRepo.findOne(
-      { id: lift.liftId },
-      { relations: ['booking'] },
-    );
-
-    if (
-      liftToUpdate.currentLifterCount + 1 >
-      liftToUpdate.booking.lifterCount
-    ) {
-      throw new BadRequestException('Cannot exceed maximum lifter count');
-    }
-
-    liftToUpdate.currentLifterCount += 1;
+    const queryRunner = getConnection().createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
     try {
-      await this.liftRepo.save(liftToUpdate);
-    } catch (err) {
-      console.log(err);
-      throw new BadRequestException(err.message);
-    }
-
-    try {
-      const dto = AcceptedLiftDTO.fromEntity(lift);
-      return AcceptedLiftDTO.fromEntity(
-        await this.repo.save(dto.toEntity(user)),
+      const liftToUpdate = await this.liftRepo.findOne(
+        { id: lift.liftId },
+        { relations: ['booking'] },
       );
+
+      if (
+        liftToUpdate.currentLifterCount + 1 >
+        liftToUpdate.booking.lifterCount
+      ) {
+        throw new BadRequestException('Cannot exceed maximum lifter count');
+      }
+
+      liftToUpdate.currentLifterCount += 1;
+
+      await queryRunner.manager.save(liftToUpdate);
+
+      const dto = AcceptedLiftDTO.fromEntity(lift);
+      const result = await queryRunner.manager.save(dto.toEntity(user));
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+      return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
-      console.log(err);
-      liftToUpdate.currentLifterCount -= 1;
-      await this.liftRepo.save(liftToUpdate);
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       throw new BadRequestException(err.message);
     }
   }
