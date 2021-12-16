@@ -165,4 +165,57 @@ export class AuthService {
       });
     });
   }
+
+  public forgotPassword(request: { username: string; appName: string }) {
+    const { username, appName } = request;
+
+    const userPool = this.userPools[appName];
+
+    const userData = {
+      Username: username,
+      Pool: userPool,
+    };
+
+    const user = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      return user.forgotPassword({
+        onSuccess: (result) => {
+          resolve(result);
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  public confirmPassword(request: {
+    code: string;
+    username: string;
+    password: string;
+    appName: string;
+  }) {
+    const { code, username, password, appName } = request;
+
+    const userPool = this.userPools[appName];
+
+    const userData = {
+      Username: username,
+      Pool: userPool,
+    };
+
+    const user = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      return user.confirmPassword(code, password, {
+        onSuccess: (result) => {
+          resolve(result);
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
 }

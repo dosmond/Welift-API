@@ -58,4 +58,32 @@ export class AuthController {
       throw new BadRequestException(err.message);
     }
   }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: { username: string; appName: string }) {
+    try {
+      return await this.authService.forgotPassword(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('confirm-password')
+  async confirmPassword(
+    @Body()
+    body: {
+      username: string;
+      password: string;
+      code: string;
+      appName: string;
+    },
+  ) {
+    try {
+      return await this.authService.confirmPassword(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err);
+    }
+  }
 }
