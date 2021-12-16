@@ -107,9 +107,9 @@ export class AcceptedLiftService {
     user: User,
     lift: AcceptedLiftDTO,
   ): Promise<AcceptedLiftDTO> {
-    const queryRunner = getConnection().createQueryRunner();
+    const queryRunner = getConnection().createQueryRunner('master');
     await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await queryRunner.startTransaction('SERIALIZABLE');
 
     try {
       const liftToUpdate = await this.liftRepo.findOne(
@@ -130,8 +130,6 @@ export class AcceptedLiftService {
 
       const dto = AcceptedLiftDTO.fromEntity(lift);
       const result = await queryRunner.manager.save(dto.toEntity(user));
-      const newPaginatedDTO = new LifterPaginatedDTO();
-      newPaginatedDTO.lifterId = lift.lifterId;
       await queryRunner.commitTransaction();
       await queryRunner.release();
       return AcceptedLiftDTO.fromEntity(result);
