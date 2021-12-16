@@ -23,14 +23,17 @@ import { Address } from './addresses.entity';
 @Index('lifters_user_id_key', ['userId'], { unique: true })
 @Entity('lifters', { schema: 'public' })
 export class Lifter {
-  @Column('character varying', { name: 'first_name', length: 64 })
-  firstName: string;
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column('character varying', { name: 'first_name', length: 64 })
+  firstName: string;
+
   @Column('character varying', { name: 'last_name', length: 64 })
   lastName: string;
+
+  @Column('character varying', { name: 'alias', length: 128, nullable: true })
+  alias: string;
 
   @Column('uuid', { name: 'address' })
   addressId: string;

@@ -38,6 +38,11 @@ export class LifterDTO implements Readonly<LifterDTO> {
   lastName: string;
 
   @ApiProperty()
+  @IsString()
+  @IsOptional()
+  alias: string;
+
+  @ApiProperty()
   @IsOptional()
   @IsUUID()
   addressId: string;
@@ -173,6 +178,7 @@ export class LifterDTO implements Readonly<LifterDTO> {
         id: entity.id,
         firstName: entity.firstName,
         lastName: entity.lastName,
+        alias: entity.alias,
         addressId: entity.addressId,
         passedBc: entity.passedBc,
         email: entity.email,
