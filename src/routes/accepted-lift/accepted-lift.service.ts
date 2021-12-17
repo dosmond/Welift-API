@@ -256,30 +256,33 @@ export class AcceptedLiftService {
     const diff = (endTime.getTime() - startTime.getTime()) / 1000 / 3600;
     const totalTime = Math.abs(diff);
 
-    const payrate = totalTime <= 1 ? 20.0 : lift.usePickupTruck ? 35.0 : 25.0;
+    // Change payrate if you have a truck
+    const payrate = lift.usePickupTruck ? 35.0 : 20.0;
 
+    // Anything in first hour is guaranteed the payrate
+    if (totalTime <= 1) {
+      return [payrate, payrate];
+    }
+
+    // Calculate the completed hours
+    // and get the remainder
     const fullHours = Math.floor(totalTime);
 
     const partHours = totalTime % 1;
 
-    // Prorate every 15 minutes
-    if (partHours >= 0.75) {
+    // Prorate every 15 minutes. Round up
+    if (partHours > 0.75) {
+      return [payrate, (fullHours + 1) * payrate];
+    }
+
+    if (partHours > 0.5) {
       return [payrate, fullHours * payrate + 0.75 * payrate];
     }
 
-    if (partHours >= 0.5) {
+    if (partHours > 0.25) {
       return [payrate, fullHours * payrate + 0.5 * payrate];
     }
 
-    if (partHours >= 0.25) {
-      return [payrate, fullHours * payrate + 0.25 * payrate];
-    }
-
-    // If you worked but it was less than 15 minutes get paid for 15 minutes.
-    // This may need to be changed
-    if (fullHours === 0 && partHours <= 0.25)
-      return [payrate, fullHours * payrate + 0.25 * payrate];
-
-    return [payrate, fullHours * payrate];
+    return [payrate, fullHours * payrate + 0.25 * payrate];
   }
 }
