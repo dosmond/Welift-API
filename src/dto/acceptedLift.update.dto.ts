@@ -41,6 +41,11 @@ export class AcceptedLiftUpdateDTO
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsNumber()
+  totalPay: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsBoolean()
   usePickupTruck: boolean;
 
@@ -70,6 +75,7 @@ export class AcceptedLiftUpdateDTO
         clockInTime: entity.clockInTime,
         clockOutTime: entity.clockOutTime,
         payrate: entity.payrate,
+        totalPay: entity.totalPay,
         usePickupTruck: entity.usePickupTruck,
         lift: entity.lift,
         lifter: entity.lifter,

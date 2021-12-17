@@ -64,8 +64,16 @@ export class AcceptedLiftService {
   public async getLifterAccepted(
     details: LifterPaginatedDTO,
   ): Promise<AcceptedLiftDTO[]> {
-    const { lifterId, start, end, order, page, pageSize, hideCompleted } =
-      details;
+    const {
+      lifterId,
+      start,
+      end,
+      order,
+      page,
+      pageSize,
+      hideCompleted,
+      hideUncompleted,
+    } = details;
 
     const query = this.repo
       .createQueryBuilder('q')
@@ -77,12 +85,16 @@ export class AcceptedLiftService {
 
     query.where('lifter_id = :id', { id: lifterId });
 
-    if (hideCompleted) {
+    if (hideCompleted && !hideUncompleted) {
       query.andWhere('q.clockOutTime is null');
     }
 
-    // Time Queries
+    if (hideUncompleted && !hideCompleted) {
+      query.andWhere('q.clockOutTime is not null');
+    }
+
     if (start && end)
+      // Time Queries
       query.andWhere('booking.startTime between :start and :end', {
         start: start,
         end: end,
@@ -164,7 +176,7 @@ export class AcceptedLiftService {
 
     lift.clockOutTime = new Date();
 
-    lift.payrate = this.getPayrate(lift);
+    [lift.payrate, lift.totalPay] = this.getPayrateAndTotalPay(lift);
 
     try {
       const updatedLift = await this.repo.save(lift);
@@ -186,6 +198,27 @@ export class AcceptedLiftService {
     } catch (err) {
       throw new BadRequestException(err.message);
     }
+  }
+
+  // This will be used to update all
+  // previously completed lifts totalPay column.
+  public async updateAllLiftTotalPay(): Promise<void> {
+    const lifts = await this.repo
+      .createQueryBuilder('q')
+      .where('q.clockOutTime is not null')
+      .getMany();
+
+    const updates: Promise<AcceptedLift>[] = [];
+
+    for (let i = 0; i < lifts.length; i++) {
+      [lifts[i].payrate, lifts[i].totalPay] = this.getPayrateAndTotalPay(
+        lifts[i],
+      );
+
+      updates.push(this.repo.save(lifts[i]));
+    }
+
+    await Promise.all(updates);
   }
 
   public async delete(user: User, id: string): Promise<DeleteResult> {
@@ -214,16 +247,34 @@ export class AcceptedLiftService {
     }
   }
 
-  private getPayrate(lift: AcceptedLift): number {
+  private getPayrateAndTotalPay(lift: AcceptedLift): number[] {
     const startTime = new Date(lift.clockInTime);
     const endTime = new Date(lift.clockOutTime);
 
-    let diff = (endTime.getTime() - startTime.getTime()) / 1000;
-    diff /= 60 * 60;
-    const totalTime = Math.abs(Math.ceil(diff));
+    // Diff / 1000 = Total seconds
+    // Total seconds / 3600 = Total Hours
+    const diff = (endTime.getTime() - startTime.getTime()) / 1000 / 3600;
+    const totalTime = Math.abs(diff);
 
-    if (totalTime <= 1) return 20.0;
+    const payrate = totalTime <= 1 ? 20.0 : lift.usePickupTruck ? 35.0 : 25.0;
 
-    return 25.0;
+    const fullHours = Math.floor(totalTime);
+
+    const partHours = totalTime % 1;
+
+    // Prorate every 15 minutes
+    if (partHours >= 0.75) {
+      return [payrate, fullHours * payrate + 0.75 * payrate];
+    }
+
+    if (partHours >= 0.5) {
+      return [payrate, fullHours * payrate + 0.5 * payrate];
+    }
+
+    if (partHours >= 0.25) {
+      return [payrate, fullHours * payrate + 0.25 * payrate];
+    }
+
+    return [payrate, fullHours * payrate];
   }
 }

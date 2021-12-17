@@ -40,6 +40,12 @@ export class AcceptedLift {
   })
   payrate: number;
 
+  @Column('double precision', {
+    name: 'total_pay',
+    default: () => '0.0',
+  })
+  totalPay: number;
+
   @Column('boolean', { name: 'use_pickup_truck', default: () => 'false' })
   usePickupTruck: boolean;
 

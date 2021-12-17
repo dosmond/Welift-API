@@ -42,6 +42,11 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
   payrate: number;
 
   @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  totalPay: number;
+
+  @ApiProperty({ required: false })
   @IsBoolean()
   usePickupTruck: boolean;
 
@@ -69,6 +74,7 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
         clockInTime: entity.clockInTime,
         clockOutTime: entity.clockOutTime,
         payrate: entity.payrate,
+        totalPay: entity.totalPay,
         usePickupTruck: entity.usePickupTruck,
         lift: entity.lift,
         lifter: entity.lifter,

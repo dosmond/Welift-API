@@ -14,4 +14,9 @@ export class LifterPaginatedDTO
   @IsOptional()
   @IsBooleanString()
   hideCompleted: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBooleanString()
+  hideUncompleted: boolean;
 }

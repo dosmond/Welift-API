@@ -74,6 +74,12 @@ export class AcceptedLiftController {
     return await this.serv.update(user, acceptedLift);
   }
 
+  @Put('update-all-lift-total-pay')
+  @Roles(Role.Admin)
+  public async updateAllLiftTotalPay() {
+    return await this.serv.updateAllLiftTotalPay();
+  }
+
   @Delete('delete')
   @Roles(Role.Lifter)
   public async delete(
