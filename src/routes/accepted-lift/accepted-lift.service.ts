@@ -275,6 +275,11 @@ export class AcceptedLiftService {
       return [payrate, fullHours * payrate + 0.25 * payrate];
     }
 
+    // If you worked but it was less than 15 minutes get paid for 15 minutes.
+    // This may need to be changed
+    if (fullHours === 0 && partHours <= 0.25)
+      return [payrate, fullHours * payrate + 0.25 * payrate];
+
     return [payrate, fullHours * payrate];
   }
 }
