@@ -115,6 +115,51 @@ export class AcceptedLiftService {
       .then((lifts) => lifts.map((lift) => AcceptedLiftDTO.fromEntity(lift)));
   }
 
+  public async getLifterAcceptedSum(
+    details: LifterPaginatedDTO,
+  ): Promise<number> {
+    const { lifterId, start, end, hideCompleted, hideUncompleted } = details;
+
+    const query = this.repo
+      .createQueryBuilder('q')
+      .leftJoinAndSelect('q.lift', 'lift')
+      .leftJoinAndSelect('lift.booking', 'booking')
+      .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
+      .leftJoinAndSelect('booking.endingAddress', 'endingAddress')
+      .leftJoin('q.lifter', 'lifter');
+
+    query.where('lifter_id = :id', { id: lifterId });
+
+    if (hideCompleted && !hideUncompleted) {
+      query.andWhere('q.clockOutTime is null');
+    }
+
+    if (hideUncompleted && !hideCompleted) {
+      query.andWhere('q.clockOutTime is not null');
+    }
+
+    if (start && end)
+      // Time Queries
+      query.andWhere('booking.startTime between :start and :end', {
+        start: start,
+        end: end,
+      });
+    else if (start)
+      query.andWhere('booking.startTime between :start and :end', {
+        start: start,
+        end: new Date(),
+      });
+
+    const prePagininationResults = await query.getMany();
+
+    const sum = prePagininationResults.reduce(
+      (acc, curr) => acc + curr.totalPay,
+      0,
+    );
+
+    return sum;
+  }
+
   public async create(
     user: User,
     lift: AcceptedLiftDTO,

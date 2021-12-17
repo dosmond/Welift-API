@@ -48,6 +48,14 @@ export class AcceptedLiftController {
     return await this.serv.getLifterAccepted(query);
   }
 
+  @Get('list-lifter-accepted-sum')
+  @Roles(Role.Lifter)
+  public async getLifterAcceptedWithSum(
+    @Query() query: LifterPaginatedDTO,
+  ): Promise<number> {
+    return await this.serv.getLifterAcceptedSum(query);
+  }
+
   @Post('create')
   @Roles(Role.Lifter)
   public async create(
