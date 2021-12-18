@@ -13,11 +13,9 @@ import {
   BadRequestException,
   UseGuards,
   ConflictException,
-  Res,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { LifterDTO } from 'src/dto/lifter.dto';
 import { User } from 'src/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -70,13 +68,9 @@ export class LiftersController {
 
   @Get('profile-picture')
   @Roles(Role.Lifter)
-  public async getProfilePicture(
-    @Res() res: Response,
-    @Query() query: { lifterId: string },
-  ) {
+  public async getProfilePicture(@Query() query: { lifterId: string }) {
     try {
-      res.setHeader('content-type', 'image/png');
-      res.send(await this.serv.getProfilePicture(query.lifterId));
+      return await this.serv.getProfilePicture(query.lifterId);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
