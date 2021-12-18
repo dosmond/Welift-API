@@ -1,3 +1,4 @@
+import { AWSS3Helper } from './../../helper/awss3.helper';
 import { TextClient } from './../../helper/text.client';
 import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
 import { LifterStats } from './../../model/lifterStats.entity';
@@ -27,6 +28,7 @@ export class LiftersService {
     @InjectRepository(PendingVerification)
     private readonly verificationRepo: Repository<PendingVerification>,
     private readonly textClient: TextClient,
+    private readonly s3Helper: AWSS3Helper,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
@@ -96,6 +98,17 @@ export class LiftersService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, count] = await this.repo.findAndCount();
     return count;
+  }
+
+  public async getProfilePicture(lifterId: string) {
+    return await this.s3Helper.getProfilePicture(lifterId);
+  }
+
+  public async uploadProfilePicture(
+    lifterId: string,
+    file: Express.Multer.File,
+  ) {
+    return await this.s3Helper.uploadProfilePicture(lifterId, file);
   }
 
   public async createBatch(batch: LifterBatchDTO): Promise<LifterDTO> {

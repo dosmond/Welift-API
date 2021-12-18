@@ -13,13 +13,18 @@ import {
   BadRequestException,
   UseGuards,
   ConflictException,
+  Res,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { LifterDTO } from 'src/dto/lifter.dto';
 import { User } from 'src/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles/roles.gaurd';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/enum/roles.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('lifter')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -57,6 +62,36 @@ export class LiftersController {
   public async count(): Promise<number> {
     try {
       return await this.serv.count();
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Get('profile-picture')
+  @Roles(Role.Lifter)
+  public async getProfilePicture(
+    @Res() res: Response,
+    @Query() query: { lifterId: string },
+  ) {
+    try {
+      res.setHeader('content-type', 'image/png');
+      res.send(await this.serv.getProfilePicture(query.lifterId));
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Post('upload-profile-picture')
+  @Roles(Role.Lifter)
+  @UseInterceptors(FileInterceptor('file'))
+  public async uploadProfilePicture(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: { lifterId: string },
+  ) {
+    try {
+      return await this.serv.uploadProfilePicture(body.lifterId, file);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
