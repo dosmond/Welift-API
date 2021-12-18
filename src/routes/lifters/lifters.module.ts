@@ -1,3 +1,4 @@
+import { AWSS3Helper } from './../../helper/awss3.helper';
 import { TextClient } from './../../helper/text.client';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { Address } from 'src/model/addresses.entity';
@@ -18,6 +19,6 @@ import { PendingVerification } from 'src/model/pendingVerification.entity';
     ]),
   ],
   controllers: [LiftersController],
-  providers: [LiftersService, TextClient],
+  providers: [LiftersService, TextClient, AWSS3Helper],
 })
 export class LiftersModule {}
