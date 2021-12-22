@@ -3,7 +3,7 @@ import {
   PushNotificationRequest,
 } from './pushNotification.helper';
 import { BookingLocationCountService } from './../routes/booking-location-count/bookingLocationCount.service';
-import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { Injectable } from '@nestjs/common';
 import { BookingLocationCount } from 'src/model/bookingLocationCount.entity';
 
