@@ -1,3 +1,9 @@
+import { Address } from 'src/model/addresses.entity';
+import { LifterStats } from 'src/model/lifterStats.entity';
+import { Lifter } from 'src/model/lifters.entity';
+import { AWSS3Helper } from './helper/awss3.helper';
+import { TextClient } from './helper/text.client';
+import { LiftersService } from './routes/lifters/lifters.service';
 import { BookingLocationCount } from './model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './routes/booking-location-count/bookingLocationCount.service';
 import { PushNotificationHelper } from './helper/pushNotification.helper';
@@ -28,11 +34,18 @@ import { PartnersModule } from './routes/partners/partners.module';
 import { TrainingVideosModule } from './routes/training-videos/training-videos.module';
 import { NoteModule } from './routes/note/note.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { PendingVerification } from './model/pendingVerification.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-    TypeOrmModule.forFeature([BookingLocationCount]),
+    TypeOrmModule.forFeature([
+      Address,
+      BookingLocationCount,
+      Lifter,
+      LifterStats,
+      PendingVerification,
+    ]),
     ScheduleModule.forRoot(),
     CacheModule.register(),
     AddressModule,
@@ -62,6 +75,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     CronHelper,
     PushNotificationHelper,
     BookingLocationCountService,
+    TextClient,
+    AWSS3Helper,
+    LiftersService,
   ],
 })
 export class AppModule {}

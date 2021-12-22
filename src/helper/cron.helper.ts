@@ -1,9 +1,10 @@
+import { LiftersService } from './../routes/lifters/lifters.service';
 import {
   PushNotificationHelper,
   PushNotificationRequest,
 } from './pushNotification.helper';
 import { BookingLocationCountService } from './../routes/booking-location-count/bookingLocationCount.service';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import { Injectable } from '@nestjs/common';
 import { BookingLocationCount } from 'src/model/bookingLocationCount.entity';
 
@@ -13,6 +14,7 @@ export class CronHelper {
     private schedulerReg: SchedulerRegistry,
     private locationService: BookingLocationCountService,
     private pushNotificationHelper: PushNotificationHelper,
+    private lifterService: LiftersService,
   ) {}
 
   // Only Run at 9AM or 5PM
@@ -42,6 +44,29 @@ export class CronHelper {
           this.locationService.upsert(row),
         );
       }
+    });
+
+    await Promise.all(promises);
+  }
+
+  @Cron(CronExpression.EVERY_3_HOURS, {
+    name: 'check_passed_pc',
+  })
+  public async checkPassedBc() {
+    const lifters = await this.lifterService.getAllNotPassedBc();
+
+    const promises: Promise<void>[] = [];
+    lifters.forEach((lifter) => {
+      const request = new PushNotificationRequest({
+        topic: `/topics/${process.env.NODE_ENV}-${lifter.id}`,
+        title: 'Background Check',
+        message:
+          'Complete your background check so you can start earning with Welift today!',
+      });
+
+      promises.push(
+        this.pushNotificationHelper.sendPushNotificationToTopic(request),
+      );
     });
 
     await Promise.all(promises);
