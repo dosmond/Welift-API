@@ -27,10 +27,7 @@ export class CronHelper {
     rows.forEach((row) => {
       if (row.count > 0) {
         // Don't send push notifications to production if you aren't production!
-        const topic =
-          process.env.NODE_ENV !== 'production'
-            ? `/topics/${process.env.NODE_ENV}-${row.state}`
-            : `/topics/${row.state}`;
+        const topic = `/topics/${process.env.NODE_ENV}-${row.state}`;
 
         const request = new PushNotificationRequest({
           topic: topic,
