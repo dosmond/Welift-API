@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsUUID, IsString, IsNumber } from 'class-validator';
 import { User } from 'src/user.decorator';
-import { Partners } from 'src/model/Partners.entity';
+import { Partner } from 'src/model/partner.entity';
 
 export class PartnerDTO implements Readonly<PartnerDTO> {
   @ApiProperty({ required: false })
@@ -43,7 +43,7 @@ export class PartnerDTO implements Readonly<PartnerDTO> {
     return partner;
   }
 
-  public static fromEntity(entity: Partners): PartnerDTO {
+  public static fromEntity(entity: Partner): PartnerDTO {
     if (entity)
       return this.from({
         id: entity.id,
@@ -58,8 +58,8 @@ export class PartnerDTO implements Readonly<PartnerDTO> {
     return null;
   }
 
-  public toEntity(user: User = null): Partners {
-    const partner = new Partners();
+  public toEntity(user: User = null): Partner {
+    const partner = new Partner();
     for (const property in this as PartnerDTO)
       partner[property] = this[property];
     return partner;

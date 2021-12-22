@@ -3,7 +3,7 @@ import { BookingLocationCountService } from './../booking-location-count/booking
 import { SlackHelper } from './../../helper/slack.helper';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { Lift } from 'src/model/lifts.entity';
-import { Partners } from './../../model/Partners.entity';
+import { Partner } from '../../model/partner.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { TextClient } from '../../helper/text.client';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
@@ -22,7 +22,7 @@ import { Note } from 'src/model/note.entity';
       BookingLocationCount,
       AcceptedLift,
       PartnerReferral,
-      Partners,
+      Partner,
       Lift,
       Note,
     ]),

@@ -4,7 +4,7 @@ import { Note } from 'src/model/note.entity';
 import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
-import { Partners } from './../../model/Partners.entity';
+import { Partner } from '../../model/partner.entity';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { EmailClient } from '../../helper/email.client';
@@ -38,8 +38,8 @@ export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private readonly repo: Repository<Booking>,
-    @InjectRepository(Partners)
-    private readonly partnerRepo: Repository<Partners>,
+    @InjectRepository(Partner)
+    private readonly partnerRepo: Repository<Partner>,
     @InjectRepository(PartnerReferral)
     private readonly partnerReferralRepo: Repository<PartnerReferral>,
     @InjectRepository(Lift)

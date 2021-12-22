@@ -48,6 +48,17 @@ export class LiftsController {
     }
   }
 
+  @Get('count')
+  @Roles(Role.Admin)
+  public async count(@Query() query: PaginatedDTO): Promise<number> {
+    try {
+      return await this.serv.count(query);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
   @Get('list-available')
   @Roles(Role.Admin, Role.Rep)
   public async getAllAvailableLifts(
