@@ -1,3 +1,5 @@
+import { BookingLocationCount } from './model/bookingLocationCount.entity';
+import { BookingLocationCountService } from './routes/booking-location-count/bookingLocationCount.service';
 import { PushNotificationHelper } from './helper/pushNotification.helper';
 import { CronHelper } from './helper/cron.helper';
 import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
@@ -30,6 +32,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+    TypeOrmModule.forFeature([BookingLocationCount]),
     ScheduleModule.forRoot(),
     CacheModule.register(),
     AddressModule,
@@ -53,6 +56,12 @@ import { ScheduleModule } from '@nestjs/schedule';
     NoteModule,
   ],
   controllers: [AppController],
-  providers: [AppService, RolesGuard, CronHelper, PushNotificationHelper],
+  providers: [
+    AppService,
+    RolesGuard,
+    CronHelper,
+    PushNotificationHelper,
+    BookingLocationCountService,
+  ],
 })
 export class AppModule {}

@@ -40,4 +40,10 @@ export class PushNotificationRequest
 
   @IsString()
   message: string;
+
+  constructor(request: { topic: string; title: string; message: string }) {
+    this.topic = request.topic;
+    this.title = request.title;
+    this.message = request.message;
+  }
 }

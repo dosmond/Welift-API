@@ -1,3 +1,5 @@
+import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
+import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
 import { Note } from 'src/model/note.entity';
 import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
@@ -48,6 +50,7 @@ export class BookingService {
     private readonly noteRepo: Repository<Note>,
     private emailClient: EmailClient,
     private googleHelper: GoogleCalendarApiHelper,
+    private locationCountService: BookingLocationCountService,
   ) {}
 
   public async getById(id: string): Promise<BookingDTO> {
@@ -164,6 +167,9 @@ export class BookingService {
           await this.handlePartnerReferral(batch, result.id);
         }
       }
+
+      // Update location count for push notification
+      await this.updateLocationCountAmount(starting);
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
@@ -362,6 +368,22 @@ export class BookingService {
       });
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  private async updateLocationCountAmount(address: Address): Promise<void> {
+    const locationCount = await this.locationCountService.getByState(
+      address.state,
+    );
+
+    if (locationCount) {
+      locationCount.count += 1;
+      await this.locationCountService.upsert(locationCount);
+    } else {
+      const location = new BookingLocationCount();
+      location.count = 1;
+      location.state = address.state;
+      await this.locationCountService.upsert(location);
     }
   }
 }

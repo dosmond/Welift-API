@@ -1,3 +1,5 @@
+import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
+import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
 import { SlackHelper } from './../../helper/slack.helper';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { Lift } from 'src/model/lifts.entity';
@@ -17,6 +19,7 @@ import { Note } from 'src/model/note.entity';
   imports: [
     TypeOrmModule.forFeature([
       Booking,
+      BookingLocationCount,
       AcceptedLift,
       PartnerReferral,
       Partners,
@@ -31,6 +34,7 @@ import { Note } from 'src/model/note.entity';
     TextClient,
     GoogleCalendarApiHelper,
     SlackHelper,
+    BookingLocationCountService,
   ],
 })
 export class BookingModule {}
