@@ -67,6 +67,11 @@ export class LiftersService {
     );
   }
 
+  public async getAllNotPassedBc(): Promise<LifterDTO[]> {
+    const result = await this.repo.find({ where: { passedBc: false } });
+    return result.map((item) => LifterDTO.fromEntity(item));
+  }
+
   public async getAll(request: PaginatedDTO): Promise<LifterDTO[]> {
     const { start, end, page, pageSize, order } = request;
 
