@@ -1,3 +1,10 @@
+import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
+import { LifterStatsService } from './../lifter-stats/lifter-stats.service';
+import { LifterReviewsService } from './../lifter-reviews/lifter-reviews.service';
+import { LifterEquipmentService } from './../lifter-equipment/lifter-equipment.service';
+import { LifterCompletedTrainingVideosService } from './../lifter-completed-training-videos/lifter-completed-training-videos.service';
+import { CompletedLifterBadgeService } from './../completed-lifter-badge/completed-lifter-badge.service';
+import { AddressService } from './../address/address.service';
 import { AWSS3Helper } from './../../helper/awss3.helper';
 import { TextClient } from './../../helper/text.client';
 import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
@@ -31,6 +38,13 @@ export class LiftersService {
     private readonly textClient: TextClient,
     private readonly emailClient: EmailClient,
     private readonly s3Helper: AWSS3Helper,
+    private readonly addressService: AddressService,
+    private readonly completedLifterBadgeService: CompletedLifterBadgeService,
+    private readonly completedTrainingVideoService: LifterCompletedTrainingVideosService,
+    private readonly lifterEquipmentService: LifterEquipmentService,
+    private readonly lifterReviewSerivce: LifterReviewsService,
+    private readonly lifterStatsService: LifterStatsService,
+    private readonly acceptedLiftService: AcceptedLiftService,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
@@ -71,6 +85,11 @@ export class LiftersService {
 
   public async getAllNotPassedBc(): Promise<LifterDTO[]> {
     const result = await this.repo.find({ where: { passedBc: false } });
+    return result.map((item) => LifterDTO.fromEntity(item));
+  }
+
+  public async getLiftersFlaggedForDeletion(): Promise<LifterDTO[]> {
+    const result = await this.repo.find({ where: { pendingDeletion: true } });
     return result.map((item) => LifterDTO.fromEntity(item));
   }
 
@@ -214,6 +233,32 @@ export class LiftersService {
     }
 
     return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
+  }
+
+  public async deleteLifter(lifter: Lifter): Promise<void> {
+    // Lifter Stats
+    await this.lifterStatsService.deleteByLifterId(lifter.id);
+
+    // Badges
+    await this.completedLifterBadgeService.deleteByLifterId(lifter.id);
+
+    // Equipment
+    await this.lifterEquipmentService.deleteByLifterId(lifter.id);
+
+    // Address
+    await this.addressService.delete(lifter.addressId);
+
+    // Accepted Lift
+    await this.acceptedLiftService.deleteAllByLifterId(lifter.id);
+
+    // Lifter Reviews
+    await this.lifterReviewSerivce.deleteByLifterId(lifter.id);
+
+    // Training Videos
+    await this.completedTrainingVideoService.deleteByLifterId(lifter.id);
+
+    // Lifter
+    await this.repo.delete({ id: lifter.id });
   }
 
   private generateVerificationCode(): string {

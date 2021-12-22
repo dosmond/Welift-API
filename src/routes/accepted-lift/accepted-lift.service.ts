@@ -292,6 +292,18 @@ export class AcceptedLiftService {
     }
   }
 
+  public async deleteAllByLifterId(lifterId: string) {
+    const request = new LifterPaginatedDTO();
+    request.lifterId = lifterId;
+    const acceptedLifts = await this.getLifterAccepted(request);
+
+    const promises: Promise<DeleteResult>[] = [];
+    acceptedLifts.forEach((acceptedLift) => {
+      promises.push(this.delete(null, acceptedLift.id));
+    });
+    await Promise.all(promises);
+  }
+
   private getPayrateAndTotalPay(lift: AcceptedLift): number[] {
     const startTime = new Date(lift.clockInTime);
     const endTime = new Date(lift.clockOutTime);

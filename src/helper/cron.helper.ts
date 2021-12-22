@@ -71,4 +71,20 @@ export class CronHelper {
 
     await Promise.all(promises);
   }
+
+  @Cron('0 0 * * Mon', {
+    name: 'lifter-deletion',
+    timeZone: 'America/Denver',
+  })
+  public async deleteFlaggedLifters() {
+    const lifters = await this.lifterService.getLiftersFlaggedForDeletion();
+
+    const promises: Promise<void>[] = [];
+
+    lifters.forEach((lifter) => {
+      promises.push(this.lifterService.deleteLifter(lifter.toEntity()));
+    });
+
+    await Promise.all(promises);
+  }
 }

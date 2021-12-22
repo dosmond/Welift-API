@@ -35,4 +35,8 @@ export class LifterEquipmentService {
   public async delete(user: User, id: string): Promise<DeleteResult> {
     return await this.repo.delete({ id: id });
   }
+
+  public async deleteByLifterId(lifterId: string): Promise<DeleteResult> {
+    return await this.repo.delete({ lifterId: lifterId });
+  }
 }
