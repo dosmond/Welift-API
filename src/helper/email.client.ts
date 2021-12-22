@@ -243,6 +243,23 @@ CEO/Co-Founder</div>
     }
   };
 
+  sendEmailVerification = async (info: { email: string; code: string }) => {
+    try {
+      const message = `Your Welift verification code is ${info.code}`;
+
+      const emailObject = {
+        from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
+        to: info.email,
+        subject: 'Welift Email Verification',
+        html: message,
+      };
+
+      return await this.sendMail(emailObject);
+    } catch (e) {
+      throw e;
+    }
+  };
+
   private async sendMail(email): Promise<void> {
     try {
       await this.transporter.sendMail(email);

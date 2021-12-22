@@ -16,6 +16,7 @@ import { User } from 'src/user.decorator';
 import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 import { PendingVerification } from 'src/model/pendingVerification.entity';
+import { EmailClient } from 'src/helper/email.client';
 
 @Injectable()
 export class LiftersService {
@@ -28,6 +29,7 @@ export class LiftersService {
     @InjectRepository(PendingVerification)
     private readonly verificationRepo: Repository<PendingVerification>,
     private readonly textClient: TextClient,
+    private readonly emailClient: EmailClient,
     private readonly s3Helper: AWSS3Helper,
   ) {}
 
@@ -166,6 +168,30 @@ export class LiftersService {
     }
 
     await this.textClient.sendPhoneVerificationText(textObject);
+  }
+
+  public async beginVerifyEmail(
+    request: PendingVerificationDTO,
+  ): Promise<void> {
+    const dto = PendingVerificationDTO.from(request);
+    const result = await this.verificationRepo.findOne({ user: dto.user });
+
+    const emailObject = {
+      email: dto.user,
+      code: null,
+    };
+
+    if (result) {
+      result.code = this.generateVerificationCode();
+      await this.verificationRepo.save(result);
+      emailObject.code = result.code;
+    } else {
+      dto.code = this.generateVerificationCode();
+      await this.verificationRepo.save(dto.toEntity());
+      emailObject.code = dto.code;
+    }
+
+    await this.emailClient.sendEmailVerification(emailObject);
   }
 
   public async verifyCode(request: PendingVerificationDTO): Promise<void> {

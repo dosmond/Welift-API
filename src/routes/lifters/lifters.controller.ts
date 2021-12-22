@@ -116,6 +116,19 @@ export class LiftersController {
     }
   }
 
+  @Post('begin-verify-email')
+  @Roles(Role.Landing, Role.Lifter)
+  public async beginVerifyEmail(
+    @Body() body: PendingVerificationDTO,
+  ): Promise<void> {
+    try {
+      await this.serv.beginVerifyEmail(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
   @Post('verify-code')
   @Roles(Role.Landing, Role.Lifter)
   public async verifyCode(@Body() body: PendingVerificationDTO): Promise<void> {
