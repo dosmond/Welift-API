@@ -1,6 +1,8 @@
+import { PushNotificationHelper } from './helper/pushNotification.helper';
+import { CronHelper } from './helper/cron.helper';
 import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
 import { RolesGuard } from './auth/roles/roles.gaurd';
-import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -23,11 +25,12 @@ import { PartnerReferralsModule } from './routes/partner-referrals/partner-refer
 import { PartnersModule } from './routes/partners/partners.module';
 import { TrainingVideosModule } from './routes/training-videos/training-videos.module';
 import { NoteModule } from './routes/note/note.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+    ScheduleModule.forRoot(),
     CacheModule.register(),
     AddressModule,
     AuthModule,
@@ -50,6 +53,6 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     NoteModule,
   ],
   controllers: [AppController],
-  providers: [AppService, RolesGuard],
+  providers: [AppService, RolesGuard, CronHelper, PushNotificationHelper],
 })
 export class AppModule {}
