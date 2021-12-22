@@ -104,7 +104,7 @@ export class LiftersController {
   }
 
   @Post('begin-verify-phone-number')
-  @Roles(Role.Landing)
+  @Roles(Role.Landing, Role.Lifter)
   public async beginVerifyPhoneNumber(
     @Body() body: PendingVerificationDTO,
   ): Promise<void> {
@@ -117,7 +117,7 @@ export class LiftersController {
   }
 
   @Post('verify-code')
-  @Roles(Role.Landing)
+  @Roles(Role.Landing, Role.Lifter)
   public async verifyCode(@Body() body: PendingVerificationDTO): Promise<void> {
     try {
       await this.serv.verifyCode(body);
