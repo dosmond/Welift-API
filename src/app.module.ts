@@ -1,3 +1,4 @@
+import { EmailClient } from 'src/helper/email.client';
 import { Address } from 'src/model/addresses.entity';
 import { LifterStats } from 'src/model/lifterStats.entity';
 import { Lifter } from 'src/model/lifters.entity';
@@ -78,6 +79,7 @@ import { PendingVerification } from './model/pendingVerification.entity';
     TextClient,
     AWSS3Helper,
     LiftersService,
+    EmailClient,
   ],
 })
 export class AppModule {}
