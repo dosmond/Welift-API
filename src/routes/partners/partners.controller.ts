@@ -11,6 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { PartnerDTO } from 'src/dto/partner.dto';
 import { PartnerUpdateDTO } from 'src/dto/partner.update.dto';
 import { PartnerCreditCheckoutDTO } from 'src/dto/partnerCreditCheckout.dto';
@@ -45,8 +46,13 @@ export class PartnersController {
 
   @Get('count')
   @Roles(Role.Admin)
-  public async getCount(): Promise<number> {
-    return await this.serv.getCount();
+  public async count(@Query() query: PaginatedDTO): Promise<number> {
+    try {
+      return await this.serv.count(query);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Post('create')

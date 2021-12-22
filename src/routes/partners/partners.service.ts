@@ -1,9 +1,10 @@
+import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PartnerSendCouponDTO } from 'src/dto/partnerSendCoupon.dto';
-import { Partners } from 'src/model/Partners.entity';
+import { Partner } from 'src/model/partner.entity';
 import { User } from 'src/user.decorator';
-import { Repository } from 'typeorm';
+import { Between, FindManyOptions, Repository } from 'typeorm';
 
 import Stripe from 'stripe';
 import { PartnerDTO } from 'src/dto/partner.dto';
@@ -17,8 +18,8 @@ const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
 @Injectable()
 export class PartnersService {
   constructor(
-    @InjectRepository(Partners)
-    private readonly repo: Repository<Partners>,
+    @InjectRepository(Partner)
+    private readonly repo: Repository<Partner>,
     private emailClient: EmailClient,
   ) {}
 
@@ -40,9 +41,17 @@ export class PartnersService {
     });
   }
 
-  public async getCount(): Promise<number> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, count] = await this.repo.findAndCount();
+  public async count(request: PaginatedDTO): Promise<number> {
+    const { start, end } = request;
+
+    const options: FindManyOptions = {};
+
+    // Time Queries
+    if (start && end) options.where = { creationDate: Between(start, end) };
+    else if (start)
+      options.where = { creationDate: Between(start, new Date()) };
+
+    const [, count] = await this.repo.findAndCount(options);
     return count;
   }
 

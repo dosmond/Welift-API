@@ -82,6 +82,28 @@ export class LiftsService {
       .then((lifts) => lifts.map((lift) => LiftDTO.fromEntity(lift)));
   }
 
+  public async count(request: PaginatedDTO): Promise<number> {
+    const { start, end } = request;
+
+    const query = this.repo
+      .createQueryBuilder('q')
+      .leftJoinAndSelect('q.booking', 'booking');
+
+    // Time Queries
+    if (start && end)
+      query.where('booking.startTime between :start and :end', {
+        start: start,
+        end: end,
+      });
+    else if (start)
+      query.where('booking.startTime >= :start', {
+        start: start,
+      });
+
+    const count = await query.getCount();
+    return count;
+  }
+
   public async getAllAvailableLifts(request: PaginatedDTO): Promise<LiftDTO[]> {
     const { start, end, page, pageSize, order } = request;
 

@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Partners } from './Partners.entity';
+import { Partner } from './partner.entity';
 
 @Index('partner_credit_hour_purchases_pkey', ['id'], { unique: true })
 @Index('fki_fk_credit_purchase_partner_id', ['partnerId'], {})
@@ -42,7 +42,7 @@ export class PartnerCreditHourPurchase {
   })
   creationDate: Date;
 
-  @ManyToOne(() => Partners, (partners) => partners.partnerCreditHourPurchases)
+  @ManyToOne(() => Partner, (partners) => partners.partnerCreditHourPurchases)
   @JoinColumn([{ name: 'partner_id', referencedColumnName: 'id' }])
-  partner: Partners;
+  partner: Partner;
 }

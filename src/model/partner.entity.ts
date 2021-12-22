@@ -10,7 +10,7 @@ import { PartnerCreditHourPurchase } from './partnerCreditHourPurchases.entity';
 @Index('uq_partner_email', ['email'], { unique: true })
 @Index('partners_pkey', ['id'], { unique: true })
 @Entity('partners', { schema: 'public' })
-export class Partners {
+export class Partner {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -36,6 +36,13 @@ export class Partners {
     default: () => 'generate_random_referral_2()',
   })
   referralCode: string | null;
+
+  @Column('date', {
+    name: 'creation_date',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  creationDate: Date | null;
 
   @OneToMany(
     () => PartnerCreditHourPurchase,

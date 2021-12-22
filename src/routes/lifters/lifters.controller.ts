@@ -57,9 +57,9 @@ export class LiftersController {
 
   @Get('count')
   @Roles(Role.Admin)
-  public async count(): Promise<number> {
+  public async count(@Query() query: PaginatedDTO): Promise<number> {
     try {
-      return await this.serv.count();
+      return await this.serv.count(query);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
