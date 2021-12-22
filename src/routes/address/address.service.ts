@@ -2,7 +2,7 @@ import { AddressDTO } from './../../dto/address.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from '../../model/addresses.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from 'src/user.decorator';
 import { AddressMultipleDTO } from 'src/dto/address.multiple.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
@@ -53,5 +53,9 @@ export class AddressService {
   ): Promise<AddressDTO> {
     const dto = AddressUpdateDTO.from(address);
     return AddressDTO.fromEntity(await this.repo.save(dto.toEntity(user)));
+  }
+
+  public async delete(id: string): Promise<DeleteResult> {
+    return await this.repo.delete({ id: id });
   }
 }

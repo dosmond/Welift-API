@@ -97,6 +97,12 @@ export class Lifter {
   })
   bcInProgress: boolean | null;
 
+  @Column('boolean', {
+    name: 'deletion_pending',
+    default: () => 'false',
+  })
+  deletionPending: boolean | null;
+
   @OneToMany(() => AcceptedLift, (acceptedLift) => acceptedLift.lifter)
   acceptedLifts: AcceptedLift[];
 

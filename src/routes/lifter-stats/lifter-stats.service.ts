@@ -3,7 +3,7 @@ import { LifterStatsDTO } from './../../dto/lifterStats.dto';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class LifterStatsService {
@@ -23,5 +23,13 @@ export class LifterStatsService {
     const dto = LifterStatsUpdateDTO.from(stats);
     dto.id = lifterStats.id;
     return LifterStatsDTO.fromEntity(await this.repo.save(dto.toEntity()));
+  }
+
+  public async delete(id: string): Promise<DeleteResult> {
+    return await this.repo.delete({ id: id });
+  }
+
+  public async deleteByLifterId(lifterId: string): Promise<DeleteResult> {
+    return await this.repo.delete({ lifterId: lifterId });
   }
 }

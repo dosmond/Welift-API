@@ -124,6 +124,11 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  deletionPending: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AcceptedLiftDTO)
@@ -172,10 +177,10 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
   address: AddressDTO;
 
   public static from(dto: Partial<LifterUpdateDTO>): LifterUpdateDTO {
-    const badge = new LifterUpdateDTO();
-    for (const property in dto) badge[property] = dto[property];
+    const lifter = new LifterUpdateDTO();
+    for (const property in dto) lifter[property] = dto[property];
 
-    return badge;
+    return lifter;
   }
 
   public static fromEntity(entity: Lifter): LifterUpdateDTO {
@@ -200,6 +205,7 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         currentBonus: entity.currentBonus,
         creationDate: entity.creationDate,
         bcInProgress: entity.bcInProgress,
+        deletionPending: entity.deletionPending,
         acceptedLifts: entity.acceptedLifts.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
@@ -223,9 +229,9 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
   }
 
   public toEntity(): Lifter {
-    const badge = new Lifter();
+    const lifter = new Lifter();
     for (const property in this as LifterUpdateDTO)
-      badge[property] = this[property];
-    return badge;
+      lifter[property] = this[property];
+    return lifter;
   }
 }

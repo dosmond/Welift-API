@@ -1,3 +1,5 @@
+import { Lift } from 'src/model/lifts.entity';
+import { AcceptedLiftService } from './routes/accepted-lift/accepted-lift.service';
 import { EmailClient } from 'src/helper/email.client';
 import { Address } from 'src/model/addresses.entity';
 import { LifterStats } from 'src/model/lifterStats.entity';
@@ -36,6 +38,17 @@ import { TrainingVideosModule } from './routes/training-videos/training-videos.m
 import { NoteModule } from './routes/note/note.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PendingVerification } from './model/pendingVerification.entity';
+import { LifterReviewsService } from './routes/lifter-reviews/lifter-reviews.service';
+import { AddressService } from './routes/address/address.service';
+import { CompletedLifterBadgeService } from './routes/completed-lifter-badge/completed-lifter-badge.service';
+import { LifterCompletedTrainingVideosService } from './routes/lifter-completed-training-videos/lifter-completed-training-videos.service';
+import { LifterEquipmentService } from './routes/lifter-equipment/lifter-equipment.service';
+import { LifterStatsService } from './routes/lifter-stats/lifter-stats.service';
+import { CompletedLifterBadge } from './model/completedLifterBadges.entity';
+import { LifterCompletedTrainingVideo } from './model/lifterCompletedTrainingVideos.entity';
+import { LifterEquipment } from './model/lifterEquipment.entity';
+import { LifterReview } from './model/lifterReviews.entity';
+import { AcceptedLift } from './model/acceptedLift.entity';
 
 @Module({
   imports: [
@@ -46,6 +59,12 @@ import { PendingVerification } from './model/pendingVerification.entity';
       Lifter,
       LifterStats,
       PendingVerification,
+      CompletedLifterBadge,
+      LifterCompletedTrainingVideo,
+      LifterEquipment,
+      LifterReview,
+      AcceptedLift,
+      Lift,
     ]),
     ScheduleModule.forRoot(),
     CacheModule.register(),
@@ -80,6 +99,13 @@ import { PendingVerification } from './model/pendingVerification.entity';
     AWSS3Helper,
     LiftersService,
     EmailClient,
+    AddressService,
+    LifterStatsService,
+    CompletedLifterBadgeService,
+    LifterCompletedTrainingVideosService,
+    LifterEquipmentService,
+    LifterReviewsService,
+    AcceptedLiftService,
   ],
 })
 export class AppModule {}

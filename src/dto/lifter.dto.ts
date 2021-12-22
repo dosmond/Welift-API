@@ -118,6 +118,11 @@ export class LifterDTO implements Readonly<LifterDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  deletionPending: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AcceptedLiftDTO)
@@ -194,6 +199,7 @@ export class LifterDTO implements Readonly<LifterDTO> {
         currentBonus: entity.currentBonus,
         creationDate: entity.creationDate,
         bcInProgress: entity.bcInProgress,
+        deletionPending: entity.deletionPending,
         acceptedLifts: entity.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
