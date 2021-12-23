@@ -1,3 +1,4 @@
+import { AuthService } from './../../auth/auth.service';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
 import { LifterStatsService } from './../lifter-stats/lifter-stats.service';
 import { LifterReviewsService } from './../lifter-reviews/lifter-reviews.service';
@@ -45,6 +46,8 @@ export class LiftersService {
     private readonly lifterReviewSerivce: LifterReviewsService,
     private readonly lifterStatsService: LifterStatsService,
     private readonly acceptedLiftService: AcceptedLiftService,
+    private readonly authService: AuthService,
+    private readonly awsS3Helper: AWSS3Helper,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
@@ -259,6 +262,15 @@ export class LiftersService {
 
     // Lifter
     await this.repo.delete({ id: lifter.id });
+
+    // Profile Picture
+    await this.awsS3Helper.deleteProfilePicture(lifter.id);
+
+    // Cognito User
+    await this.authService.deleteUser({
+      appName: 'landing',
+      username: lifter.email,
+    });
   }
 
   private generateVerificationCode(): string {
