@@ -26,6 +26,8 @@ export class AWSS3Helper {
         Bucket: 'mobile-profile-pictures-dev',
         Key: `${lifterId}/${lifterId}.png`,
       };
+      // Check file exists first
+      await this.s3.headObject(params).promise();
       return await this.s3.getSignedUrlPromise('getObject', params);
     } catch (err) {
       console.log(err);
@@ -44,8 +46,11 @@ export class AWSS3Helper {
         Body: file.buffer,
       };
 
-      return await this.s3.putObject(params).promise();
-    } catch (err) {}
+      return await this.s3.upload(params).promise();
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 
   public async deleteProfilePicture(lifterId: string) {
