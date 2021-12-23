@@ -144,6 +144,11 @@ export class LiftsService {
       request,
     );
 
+    console.log(lifterAcceptedLifts);
+    lifterAcceptedLifts.forEach((item) => {
+      console.log(item.lift.booking);
+    });
+
     const query = this.repo
       .createQueryBuilder('q')
       .leftJoinAndSelect('q.booking', 'booking')
@@ -152,25 +157,30 @@ export class LiftsService {
 
     // Time Queries
     if (start && end)
-      query.where('booking.startTime between :start and :end', {
-        start: start,
-        end: end,
+      query.where('booking.startTime between :queryStart and :queryEnd', {
+        queryStart: start,
+        queryEnd: end,
       });
     else if (start)
-      query.where('booking.startTime >= :start', {
-        start: start,
+      query.where('booking.startTime >= :queryStart', {
+        queryStart: start,
       });
 
     query.andWhere('q.currentLifterCount != booking.lifterCount');
 
-    lifterAcceptedLifts.forEach((item) => {
-      query.andWhere('booking.startTime not between :start and :end', {
-        start: new Date(item.lift.booking.startTime).toISOString(),
-        end: new Date(item.lift.booking.endTime).toISOString(),
-      });
+    lifterAcceptedLifts.forEach((item, index) => {
+      query.andWhere(
+        `(booking.startTime not between :${index}start and :${index}end)`,
+        {
+          [`${index}start`]: new Date(
+            item.lift.booking.startTime,
+          ).toISOString(),
+          [`${index}end`]: new Date(item.lift.booking.endTime).toISOString(),
+        },
+      );
 
       query.andWhere(
-        ':start not between booking.startTime and booking.endTime',
+        '(:start not between booking.startTime and booking.endTime)',
         { start: new Date(item.lift.booking.startTime).toISOString() },
       );
     });
@@ -178,6 +188,11 @@ export class LiftsService {
     const lifterAddress = await this.lifterRepo.findOne(
       { id: lifterId },
       { relations: ['address'] },
+    );
+
+    console.log(
+      lifterAddress.address.state,
+      this.stateMap.get(lifterAddress.address.state.toUpperCase()),
     );
 
     query.andWhere(
@@ -188,6 +203,8 @@ export class LiftsService {
       },
     );
     query.orderBy('booking.startTime', order);
+
+    console.log(query.getQueryAndParameters());
 
     // Pagination
     if (page && pageSize) query.skip((page - 1) * pageSize).take(pageSize);
