@@ -26,6 +26,8 @@ export class AWSS3Helper {
         Bucket: 'mobile-profile-pictures-dev',
         Key: `${lifterId}/${lifterId}.png`,
       };
+      // Check file exists first
+      await this.s3.headObject(params).promise();
       return await this.s3.getSignedUrlPromise('getObject', params);
     } catch (err) {
       console.log(err);
