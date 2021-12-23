@@ -1,3 +1,4 @@
+import { AuthService } from './../../auth/auth.service';
 import { Lift } from 'src/model/lifts.entity';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
@@ -51,6 +52,7 @@ import { LifterReview } from 'src/model/lifterReviews.entity';
     LifterEquipmentService,
     LifterReviewsService,
     AcceptedLiftService,
+    AuthService,
   ],
 })
 export class LiftersModule {}

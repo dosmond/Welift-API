@@ -218,4 +218,22 @@ export class AuthService {
       });
     });
   }
+
+  public async deleteUser(request: { appName: string; username: string }) {
+    const userPool = this.userPools[request.appName];
+
+    const userData = {
+      Username: request.username,
+      Pool: userPool,
+    };
+
+    const user = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      return user.deleteUser((error, res) => {
+        if (error) reject(error);
+        else resolve(res);
+      });
+    });
+  }
 }

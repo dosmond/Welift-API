@@ -1,3 +1,4 @@
+import { AuthService } from './auth/auth.service';
 import { Lift } from 'src/model/lifts.entity';
 import { AcceptedLiftService } from './routes/accepted-lift/accepted-lift.service';
 import { EmailClient } from 'src/helper/email.client';
@@ -106,6 +107,7 @@ import { AcceptedLift } from './model/acceptedLift.entity';
     LifterEquipmentService,
     LifterReviewsService,
     AcceptedLiftService,
+    AuthService,
   ],
 })
 export class AppModule {}

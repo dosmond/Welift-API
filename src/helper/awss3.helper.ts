@@ -44,7 +44,18 @@ export class AWSS3Helper {
         Body: file.buffer,
       };
 
-      return await this.s3.upload(params).promise();
+      return await this.s3.putObject(params).promise();
+    } catch (err) {}
+  }
+
+  public async deleteProfilePicture(lifterId: string) {
+    try {
+      const params: S3.DeleteObjectRequest = {
+        Bucket: process.env.PROFILE_PICTURE_BUCKET,
+        Key: `${lifterId}/${lifterId}.png`,
+      };
+
+      return await this.s3.deleteObject(params).promise();
     } catch (err) {
       console.log(err);
       throw err;
