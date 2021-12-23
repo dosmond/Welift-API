@@ -17,7 +17,7 @@ export class AppController {
   }
 
   @Post('admin/retrieve')
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Landing)
   public retrieve(@Body() body: { secrets: string[] }): Promise<any> {
     return this.appService.retrieveSecrets(body.secrets);
   }
