@@ -44,8 +44,11 @@ export class AWSS3Helper {
         Body: file.buffer,
       };
 
-      return await this.s3.putObject(params).promise();
-    } catch (err) {}
+      return await this.s3.upload(params).promise();
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 
   public async deleteProfilePicture(lifterId: string) {
