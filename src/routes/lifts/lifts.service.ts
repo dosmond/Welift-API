@@ -144,11 +144,6 @@ export class LiftsService {
       request,
     );
 
-    console.log(lifterAcceptedLifts);
-    lifterAcceptedLifts.forEach((item) => {
-      console.log(item.lift.booking);
-    });
-
     const query = this.repo
       .createQueryBuilder('q')
       .leftJoinAndSelect('q.booking', 'booking')
@@ -188,11 +183,6 @@ export class LiftsService {
     const lifterAddress = await this.lifterRepo.findOne(
       { id: lifterId },
       { relations: ['address'] },
-    );
-
-    console.log(
-      lifterAddress.address.state,
-      this.stateMap.get(lifterAddress.address.state.toUpperCase()),
     );
 
     query.andWhere(
