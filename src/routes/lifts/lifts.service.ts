@@ -175,8 +175,12 @@ export class LiftsService {
       );
 
       query.andWhere(
-        '(:start not between booking.startTime and booking.endTime)',
-        { start: new Date(item.lift.booking.startTime).toISOString() },
+        `(:${index}liftStart not between booking.startTime and booking.endTime)`,
+        {
+          [`${index}liftStart`]: new Date(
+            item.lift.booking.startTime,
+          ).toISOString(),
+        },
       );
     });
 
@@ -193,8 +197,6 @@ export class LiftsService {
       },
     );
     query.orderBy('booking.startTime', order);
-
-    console.log(query.getQueryAndParameters());
 
     // Pagination
     if (page && pageSize) query.skip((page - 1) * pageSize).take(pageSize);
@@ -214,7 +216,7 @@ export class LiftsService {
       .leftJoinAndSelect('q.booking', 'booking')
       .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
       .leftJoinAndSelect('booking.endingAddress', 'endingAddress');
-    console.log(this.getCurrentPostgresTimestamp());
+
     if (lifterId) {
       query.where('lifter.id = :id', { id: lifterId });
       query.andWhere(
