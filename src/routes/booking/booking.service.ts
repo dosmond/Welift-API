@@ -98,9 +98,7 @@ export class BookingService {
         start: start,
         end: end,
       });
-    }
-
-    if (start) {
+    } else if (start) {
       query.where('booking.creationDate between :start and :end', {
         start: start,
         end: new Date(),
