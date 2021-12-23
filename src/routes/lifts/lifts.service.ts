@@ -152,26 +152,35 @@ export class LiftsService {
 
     // Time Queries
     if (start && end)
-      query.where('booking.startTime between :start and :end', {
-        start: start,
-        end: end,
+      query.where('booking.startTime between :queryStart and :queryEnd', {
+        queryStart: start,
+        queryEnd: end,
       });
     else if (start)
-      query.where('booking.startTime >= :start', {
-        start: start,
+      query.where('booking.startTime >= :queryStart', {
+        queryStart: start,
       });
 
     query.andWhere('q.currentLifterCount != booking.lifterCount');
 
-    lifterAcceptedLifts.forEach((item) => {
-      query.andWhere('booking.startTime not between :start and :end', {
-        start: new Date(item.lift.booking.startTime).toISOString(),
-        end: new Date(item.lift.booking.endTime).toISOString(),
-      });
+    lifterAcceptedLifts.forEach((item, index) => {
+      query.andWhere(
+        `(booking.startTime not between :${index}start and :${index}end)`,
+        {
+          [`${index}start`]: new Date(
+            item.lift.booking.startTime,
+          ).toISOString(),
+          [`${index}end`]: new Date(item.lift.booking.endTime).toISOString(),
+        },
+      );
 
       query.andWhere(
-        ':start not between booking.startTime and booking.endTime',
-        { start: new Date(item.lift.booking.startTime).toISOString() },
+        `(:${index}liftStart not between booking.startTime and booking.endTime)`,
+        {
+          [`${index}liftStart`]: new Date(
+            item.lift.booking.startTime,
+          ).toISOString(),
+        },
       );
     });
 
@@ -207,7 +216,7 @@ export class LiftsService {
       .leftJoinAndSelect('q.booking', 'booking')
       .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
       .leftJoinAndSelect('booking.endingAddress', 'endingAddress');
-    console.log(this.getCurrentPostgresTimestamp());
+
     if (lifterId) {
       query.where('lifter.id = :id', { id: lifterId });
       query.andWhere(
