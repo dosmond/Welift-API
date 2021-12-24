@@ -78,7 +78,7 @@ export class LiftersController {
   }
 
   @Post('upload-profile-picture')
-  @Roles(Role.Lifter)
+  @Roles(Role.Lifter, Role.Landing)
   @UseInterceptors(FileInterceptor('file'))
   public async uploadProfilePicture(
     @UploadedFile() file: Express.Multer.File,
