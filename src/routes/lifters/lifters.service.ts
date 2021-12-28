@@ -92,7 +92,7 @@ export class LiftersService {
   }
 
   public async getLiftersFlaggedForDeletion(): Promise<LifterDTO[]> {
-    const result = await this.repo.find({ where: { pendingDeletion: true } });
+    const result = await this.repo.find({ where: { deletionPending: true } });
     return result.map((item) => LifterDTO.fromEntity(item));
   }
 
