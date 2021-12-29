@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsUUID, ValidateNested, IsOptional, IsObject } from 'class-validator';
+import {
+  IsUUID,
+  ValidateNested,
+  IsOptional,
+  IsObject,
+  ArrayMinSize,
+  IsArray,
+} from 'class-validator';
 import {
   Column,
   Entity,
@@ -22,6 +29,7 @@ class Response {
   @IsUUID()
   questionId: string;
 
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Answer)
   answers: Answer[];
@@ -31,6 +39,8 @@ export class SurveyResponseData {
   @IsObject()
   refs: any;
 
+  @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested()
   @Type(() => Response)
   questions: Response[];
@@ -41,6 +51,7 @@ export class SurveyResponseData {
 }
 
 @Index('pk_survey_response', ['id'], { unique: true })
+@Index('fk_survey_id', ['surveyId'], {})
 @Entity('survey_response', { schema: 'public' })
 export class SurveyResponse {
   @PrimaryGeneratedColumn('uuid')
@@ -51,6 +62,13 @@ export class SurveyResponse {
 
   @Column('json', { name: 'data' })
   data: SurveyResponseData;
+
+  @Column('date', {
+    name: 'creation_date',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  creationDate: Date;
 
   @ManyToOne(() => Survey, (survey) => survey.responses)
   @JoinColumn([{ name: 'survey_id', referencedColumnName: 'id' }])

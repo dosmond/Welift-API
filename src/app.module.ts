@@ -1,3 +1,4 @@
+import { SurveyResponseModule } from './routes/survey-response/survey-response.module';
 import { AuthService } from './auth/auth.service';
 import { Lift } from 'src/model/lifts.entity';
 import { AcceptedLiftService } from './routes/accepted-lift/accepted-lift.service';
@@ -88,6 +89,7 @@ import { SurveyModule } from './routes/survey/survey.module';
     PartnerReferralsModule,
     PartnersModule,
     SurveyModule,
+    SurveyResponseModule,
     TrainingVideosModule,
     NoteModule,
   ],

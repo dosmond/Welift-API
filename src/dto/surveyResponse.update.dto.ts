@@ -1,6 +1,11 @@
 import { SurveyResponseDTO } from './surveyResponse.dto';
 import { SurveyResponseData } from '../model/surveyResponse.entity';
-import { IsOptional, IsUUID, ValidateNested } from 'class-validator';
+import {
+  IsDateString,
+  IsOptional,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { SurveyResponse } from 'src/model/surveyResponse.entity';
@@ -26,6 +31,11 @@ export class SurveyResponseUpdateDTO
 
   @ApiProperty()
   @IsOptional()
+  @IsDateString()
+  creationDate: Date;
+
+  @ApiProperty()
+  @IsOptional()
   @ValidateNested()
   @Type(() => Survey)
   survey: Survey;
@@ -43,6 +53,7 @@ export class SurveyResponseUpdateDTO
         id: entity.id,
         surveyId: entity.surveyId,
         data: entity.data,
+        creationDate: entity.creationDate,
         survey: entity.survey,
       });
     }

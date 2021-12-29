@@ -1,5 +1,7 @@
 import {
   IsArray,
+  IsNotEmptyObject,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -21,6 +23,8 @@ export class SurveyDTO implements Readonly<SurveyDTO> {
   name: string;
 
   @ApiProperty({ required: true })
+  @IsObject()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => SurveyData)
   surveyData: SurveyData;

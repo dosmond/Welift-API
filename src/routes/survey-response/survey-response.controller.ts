@@ -1,4 +1,4 @@
-import { SurveyUpdateDTO } from './../../dto/survey.update.dto';
+import { SurveyResponseDTO } from './../../dto/surveyResponse.dto';
 import {
   Controller,
   Get,
@@ -12,22 +12,22 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { SurveyDTO } from 'src/dto/survey.dto';
 import { Role } from 'src/enum/roles.enum';
-import { SurveyService } from './survey.service';
+import { SurveyResponseService } from './survey-response.service';
+import { SurveyResponseUpdateDTO } from 'src/dto/surveyResponse.update.dto';
 
-@Controller('survey')
+@Controller('survey-response')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-export class SurveyController {
-  constructor(private readonly serv: SurveyService) {}
+export class SurveyResponseController {
+  constructor(private readonly serv: SurveyResponseService) {}
 
   @Get()
   @Roles(Role.Admin)
-  public async getSurveyById(
-    @Query() query: { surveyId: string },
-  ): Promise<SurveyDTO> {
+  public async getSurveyResponseById(
+    @Query() query: { responseId: string },
+  ): Promise<SurveyResponseDTO> {
     try {
-      return await this.serv.getSurveyById(query.surveyId);
+      return await this.serv.getSurveyById(query.responseId);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
@@ -36,9 +36,11 @@ export class SurveyController {
 
   @Get('list')
   @Roles(Role.Admin)
-  public async getAllSurveys(): Promise<SurveyDTO[]> {
+  public async getAllSurveyResponses(
+    @Query() query: { surveyId: string },
+  ): Promise<SurveyResponseDTO[]> {
     try {
-      return await this.serv.getAllSurveys();
+      return await this.serv.getAllSurveyResponses(query.surveyId);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);
@@ -47,7 +49,7 @@ export class SurveyController {
 
   @Post('create')
   @Roles(Role.Admin)
-  public create(@Body() body: SurveyDTO): Promise<SurveyDTO> {
+  public create(@Body() body: SurveyResponseDTO): Promise<SurveyResponseDTO> {
     try {
       return this.serv.create(body);
     } catch (err) {
@@ -58,7 +60,9 @@ export class SurveyController {
 
   @Put('update')
   @Roles(Role.Admin)
-  public update(@Body() body: SurveyUpdateDTO): Promise<SurveyUpdateDTO> {
+  public update(
+    @Body() body: SurveyResponseUpdateDTO,
+  ): Promise<SurveyResponseUpdateDTO> {
     try {
       return this.serv.update(body);
     } catch (err) {
