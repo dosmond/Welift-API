@@ -183,6 +183,11 @@ export class AcceptedLiftService {
 
       liftToUpdate.currentLifterCount += 1;
 
+      // Update lift if lifter is using pickup truck.
+      if (lift.usePickupTruck) {
+        liftToUpdate.hasPickupTruck = true;
+      }
+
       await queryRunner.manager.save(liftToUpdate);
 
       const dto = AcceptedLiftDTO.fromEntity(lift);
@@ -275,7 +280,7 @@ export class AcceptedLiftService {
 
         const liftToUpdate = await this.liftRepo.findOne(
           { id: accepted.lift.id },
-          { relations: ['booking'] },
+          { relations: ['booking', 'acceptedLifts'] },
         );
 
         if (liftToUpdate.currentLifterCount - 1 < 0) {
@@ -283,6 +288,22 @@ export class AcceptedLiftService {
         }
 
         liftToUpdate.currentLifterCount -= 1;
+
+        // Determine if we need to change the hasPickupTruck flag
+        if (
+          liftToUpdate?.booking?.needsPickupTruck &&
+          accepted?.usePickupTruck
+        ) {
+          let nowNeedsTruck = true;
+          liftToUpdate.acceptedLifts.forEach((lift) => {
+            if (lift.id !== accepted.id && lift.usePickupTruck)
+              nowNeedsTruck = false;
+          });
+
+          if (nowNeedsTruck) {
+            liftToUpdate.hasPickupTruck = false;
+          }
+        }
 
         await manager.save(liftToUpdate);
         return await manager.delete(AcceptedLift, id);
