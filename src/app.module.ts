@@ -50,6 +50,7 @@ import { LifterCompletedTrainingVideo } from './model/lifterCompletedTrainingVid
 import { LifterEquipment } from './model/lifterEquipment.entity';
 import { LifterReview } from './model/lifterReviews.entity';
 import { AcceptedLift } from './model/acceptedLift.entity';
+import { SurveyModule } from './routes/survey/survey.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { AcceptedLift } from './model/acceptedLift.entity';
     PartnerCreditHourPurchasesModule,
     PartnerReferralsModule,
     PartnersModule,
+    SurveyModule,
     TrainingVideosModule,
     NoteModule,
   ],

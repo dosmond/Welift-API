@@ -43,7 +43,6 @@ export class LiftDTO implements Readonly<LiftDTO> {
   hasPickupTruck: boolean;
 
   @ApiProperty()
-  @ApiProperty()
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
