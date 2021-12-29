@@ -53,7 +53,7 @@ export class SurveyUpdateDTO implements Readonly<SurveyUpdateDTO>, SurveyDTO {
     return null;
   }
 
-  public toEntity() {
+  public toEntity(): Survey {
     const survey = new Survey();
     for (const property in this as SurveyUpdateDTO)
       survey[property] = this[property];

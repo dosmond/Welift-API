@@ -1,3 +1,5 @@
+import { SurveyAnswerType } from './../enum/surveyAnswerType.enum';
+import { SurveyQuestionType } from '../enum/surveyQuestionType.enum';
 import { SurveyResponse } from './surveyResponse.entity';
 import { Type } from 'class-transformer';
 import {
@@ -6,6 +8,10 @@ import {
   IsString,
   IsOptional,
   IsBoolean,
+  IsArray,
+  ArrayMinSize,
+  IsEnum,
+  IsNotEmpty,
 } from 'class-validator';
 import {
   Column,
@@ -20,10 +26,11 @@ class Answer {
   @IsUUID()
   id: string;
 
-  @IsString()
-  type: 'check' | 'text' | 'textarea' | 'number';
+  @IsEnum(SurveyAnswerType)
+  type: SurveyAnswerType;
 
   @IsString()
+  @IsNotEmpty()
   label: string;
 
   @IsOptional()
@@ -35,8 +42,8 @@ class Question {
   @IsUUID()
   id: string;
 
-  @IsString()
-  type: 'multiple' | 'radio';
+  @IsEnum(SurveyQuestionType)
+  type: SurveyQuestionType;
 
   @IsOptional()
   @IsBoolean()
@@ -45,17 +52,20 @@ class Question {
   @IsString()
   questionText: string;
 
+  @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => Answer)
   answers: Answer[];
 }
 
 export class SurveyData {
-  @ValidateNested({ each: true })
-  @Type(() => String)
+  @IsString({ each: true })
   refs: string[];
 
+  @IsArray()
   @ValidateNested()
+  @ArrayMinSize(1)
   @Type(() => Question)
   questions: Question[];
 }
