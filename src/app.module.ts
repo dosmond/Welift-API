@@ -1,3 +1,4 @@
+import { CheckrModule } from './routes/checkr/checkr.module';
 import { SurveyResponseModule } from './routes/survey-response/survey-response.module';
 import { AuthService } from './auth/auth.service';
 import { Lift } from 'src/model/lifts.entity';
@@ -77,6 +78,7 @@ import { SurveyModule } from './routes/survey/survey.module';
     BadgeModule,
     BookingModule,
     CompletedLifterBadgeModule,
+    CheckrModule,
     EquipmentModule,
     LeadsModule,
     LifterCompletedTrainingVideosModule,
