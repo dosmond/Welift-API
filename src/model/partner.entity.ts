@@ -20,7 +20,7 @@ export class Partner {
   @Column('character varying', { name: 'email', unique: true, length: 256 })
   email: string;
 
-  @Column('integer', { name: 'total_credits', default: () => '0' })
+  @Column('integer', { name: 'total_credits', default: 0 })
   totalCredits: number;
 
   @Column('character varying', { name: 'phone', length: 32 })
