@@ -1,3 +1,4 @@
+import { CronJobDescription } from './model/cronjob.entity';
 import { CheckrModule } from './routes/checkr/checkr.module';
 import { SurveyResponseModule } from './routes/survey-response/survey-response.module';
 import { AuthService } from './auth/auth.service';
@@ -53,6 +54,7 @@ import { LifterEquipment } from './model/lifterEquipment.entity';
 import { LifterReview } from './model/lifterReviews.entity';
 import { AcceptedLift } from './model/acceptedLift.entity';
 import { SurveyModule } from './routes/survey/survey.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -60,6 +62,7 @@ import { SurveyModule } from './routes/survey/survey.module';
     TypeOrmModule.forFeature([
       Address,
       BookingLocationCount,
+      CronJobDescription,
       Lifter,
       LifterStats,
       PendingVerification,
@@ -71,6 +74,7 @@ import { SurveyModule } from './routes/survey/survey.module';
       Lift,
     ]),
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     CacheModule.register(),
     AddressModule,
     AuthModule,

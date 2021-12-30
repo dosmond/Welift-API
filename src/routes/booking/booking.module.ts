@@ -1,3 +1,4 @@
+import { CronHelper } from './../../helper/cron.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
 import { SlackHelper } from './../../helper/slack.helper';

@@ -1,3 +1,6 @@
+import { EventNames } from './../enum/eventNames.enum';
+import { ClockOutEvent } from './../events/clockout.event';
+import { CronJobDescription } from './../model/cronjob.entity';
 import { LiftersService } from './../routes/lifters/lifters.service';
 import {
   PushNotificationHelper,
@@ -7,11 +10,18 @@ import { BookingLocationCountService } from './../routes/booking-location-count/
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import { Injectable } from '@nestjs/common';
 import { BookingLocationCount } from 'src/model/bookingLocationCount.entity';
+import { CronJob } from 'cron';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CronHelper {
   constructor(
     private schedulerReg: SchedulerRegistry,
+    @InjectRepository(CronJobDescription)
+    private readonly cronRepo: Repository<CronJobDescription>,
+    private eventEmitter: EventEmitter2,
     private locationService: BookingLocationCountService,
     private pushNotificationHelper: PushNotificationHelper,
     private lifterService: LiftersService,
@@ -86,5 +96,33 @@ export class CronHelper {
     });
 
     await Promise.all(promises);
+  }
+
+  public async addCronJob(data: {
+    cronName: string;
+    params: any[];
+    options: any;
+  }) {
+    const job = new CronJob(data.options.date, () => {
+      this[data.cronName](...data.params);
+    });
+
+    this.schedulerReg.addCronJob(data.options.key, job);
+    job.start();
+
+    const cronJob = new CronJobDescription();
+    cronJob.key = data.options.key;
+    cronJob.data = data;
+    await this.cronRepo.save(cronJob);
+  }
+
+  public async deleteCronJob(key: string) {
+    this.schedulerReg.deleteCronJob(key);
+    await this.cronRepo.delete({ key: key });
+  }
+
+  private autoClockOut(liftId: string) {
+    console.log('emitting autoclockout');
+    this.eventEmitter.emit(EventNames.AutoClockOut, new ClockOutEvent(liftId));
   }
 }
