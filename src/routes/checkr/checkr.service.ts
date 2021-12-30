@@ -9,6 +9,7 @@ export class CheckrService {
   constructor(private readonly lifterService: LiftersService) {}
 
   public async handleBcWebhook(request: any): Promise<void> {
+    console.log(request);
     switch (request.type) {
       case 'report.completed':
         if (request.data.object.status === 'clear') {
