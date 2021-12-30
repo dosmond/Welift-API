@@ -6,7 +6,7 @@ export class CronJobDescription {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('character varying', { name: 'name', length: 256 })
+  @Column('character varying', { name: 'key', length: 256 })
   key: string;
 
   @Column('json')

@@ -1,3 +1,5 @@
+import { CronJobDescription } from './../../model/cronjob.entity';
+import { CronHelper } from './../../helper/cron.helper';
 import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
@@ -21,6 +23,7 @@ import { Note } from 'src/model/note.entity';
     TypeOrmModule.forFeature([
       Booking,
       BookingLocationCount,
+      CronJobDescription,
       AcceptedLift,
       PartnerReferral,
       Partner,
@@ -37,6 +40,7 @@ import { Note } from 'src/model/note.entity';
     SlackHelper,
     BookingLocationCountService,
     PushNotificationHelper,
+    CronHelper,
   ],
 })
 export class BookingModule {}
