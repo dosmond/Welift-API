@@ -57,7 +57,7 @@ export class Lifter {
   @Column('boolean', { name: 'has_pickup_truck', default: () => 'false' })
   hasPickupTruck: boolean;
 
-  @Column('integer', { name: 'lifter_rating', default: () => '0' })
+  @Column('integer', { name: 'lifter_rating', default: 0 })
   lifterRating: number;
 
   @Column('character varying', { name: 'status', length: 128 })
@@ -80,7 +80,7 @@ export class Lifter {
   })
   location: string | null;
 
-  @Column('integer', { name: 'current_bonus', default: () => '0' })
+  @Column('integer', { name: 'current_bonus', default: 0 })
   currentBonus: number;
 
   @Column('date', {
@@ -93,13 +93,13 @@ export class Lifter {
   @Column('boolean', {
     name: 'bc_in_progress',
     nullable: true,
-    default: () => 'false',
+    default: false,
   })
   bcInProgress: boolean | null;
 
   @Column('boolean', {
     name: 'deletion_pending',
-    default: () => 'false',
+    default: false,
   })
   deletionPending: boolean | null;
 

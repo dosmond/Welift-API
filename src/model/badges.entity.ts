@@ -16,7 +16,7 @@ export class Badge {
   @Column('character varying', { name: 'name', length: 128 })
   name: string;
 
-  @Column('integer', { name: 'required_value', default: () => '0' })
+  @Column('integer', { name: 'required_value', default: 0 })
   requiredValue: number;
 
   @OneToMany(

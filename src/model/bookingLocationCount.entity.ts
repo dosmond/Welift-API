@@ -13,6 +13,6 @@ export class BookingLocationCount {
   })
   state: string;
 
-  @Column('integer', { name: 'count', default: () => '0' })
+  @Column('integer', { name: 'count', default: 0 })
   count: number;
 }

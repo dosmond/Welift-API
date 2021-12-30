@@ -21,7 +21,7 @@ export class Lift {
   @Column('uuid', { name: 'booking_id', unique: true })
   bookingId: string;
 
-  @Column('integer', { name: 'current_lifter_count', default: () => '0' })
+  @Column('integer', { name: 'current_lifter_count', default: 0 })
   currentLifterCount: number;
 
   @Column('character varying', { name: 'completion_token', length: 6 })

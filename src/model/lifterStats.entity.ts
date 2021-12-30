@@ -17,7 +17,7 @@ export class LifterStats {
   @Column('uuid', { name: 'lifter_id' })
   lifterId: string;
 
-  @Column('integer', { name: 'completed_moves', default: () => '0' })
+  @Column('integer', { name: 'completed_moves', default: 0 })
   completedMoves: number;
 
   @Column('double precision', {
