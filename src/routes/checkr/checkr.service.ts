@@ -33,15 +33,17 @@ export class CheckrService {
 
             await this.lifterService.updateBatch(dto);
           } catch (err) {
-            console.log(`unable to update lifter: ${err}`);
+            console.error(`unable to update lifter: ${err}`);
           }
 
-          console.log('Report status clear');
+          console.error('Report status clear');
           return;
-        } else console.log('Report status not clear');
+        } else console.error('Report status not clear');
         break;
+      case 'candidate.created':
+        console.info('Checkr Candidate Created');
       default:
-        console.log('Unhandled bc webhook type');
+        console.warn('Unhandled bc webhook type');
         break;
     }
   }
