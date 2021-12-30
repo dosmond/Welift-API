@@ -1,3 +1,5 @@
+import { PushNotificationHelper } from './../../helper/pushNotification.helper';
+import { EventNames } from './../../enum/eventNames.enum';
 import { AuthService } from './../../auth/auth.service';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
 import { LifterStatsService } from './../lifter-stats/lifter-stats.service';
@@ -25,6 +27,8 @@ import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
 import { AddressUpdateDTO } from 'src/dto/address.update.dto';
 import { PendingVerification } from 'src/model/pendingVerification.entity';
 import { EmailClient } from 'src/helper/email.client';
+import { OnEvent } from '@nestjs/event-emitter';
+import { PushNotificationRequest } from 'src/helper/pushNotification.helper';
 
 @Injectable()
 export class LiftersService {
@@ -48,6 +52,7 @@ export class LiftersService {
     private readonly acceptedLiftService: AcceptedLiftService,
     private readonly authService: AuthService,
     private readonly awsS3Helper: AWSS3Helper,
+    private readonly pushNotificationHelper: PushNotificationHelper,
   ) {}
 
   public async getById(user: User, id: string): Promise<LifterDTO> {
@@ -277,5 +282,39 @@ export class LiftersService {
     return (
       Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
     ).toString();
+  }
+
+  @OnEvent(EventNames.CheckPassedBc)
+  private async handleCheckPassedBcEvent() {
+    const lifters = await this.getAllNotPassedBc();
+
+    const promises: Promise<void>[] = [];
+    lifters.forEach((lifter) => {
+      const request = new PushNotificationRequest({
+        topic: `/topics/${process.env.NODE_ENV}-${lifter.id}`,
+        title: 'Background Check',
+        message:
+          'Complete your background check so you can start earning with Welift today!',
+      });
+
+      promises.push(
+        this.pushNotificationHelper.sendPushNotificationToTopic(request),
+      );
+    });
+
+    await Promise.all(promises);
+  }
+
+  @OnEvent(EventNames.DeleteFlaggedLifters)
+  private async handleDeleteFlaggedLifters() {
+    const lifters = await this.getLiftersFlaggedForDeletion();
+
+    const promises: Promise<void>[] = [];
+
+    lifters.forEach((lifter) => {
+      promises.push(this.deleteLifter(lifter.toEntity()));
+    });
+
+    await Promise.all(promises);
   }
 }

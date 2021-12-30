@@ -1,4 +1,4 @@
-import { CronHelper } from './../../helper/cron.helper';
+import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
 import { SlackHelper } from './../../helper/slack.helper';
@@ -36,6 +36,7 @@ import { Note } from 'src/model/note.entity';
     GoogleCalendarApiHelper,
     SlackHelper,
     BookingLocationCountService,
+    PushNotificationHelper,
   ],
 })
 export class BookingModule {}
