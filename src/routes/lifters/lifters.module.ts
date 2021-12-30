@@ -1,3 +1,4 @@
+import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { AuthService } from './../../auth/auth.service';
 import { Lift } from 'src/model/lifts.entity';
 import { AcceptedLift } from 'src/model/acceptedLift.entity';
@@ -53,6 +54,7 @@ import { LifterReview } from 'src/model/lifterReviews.entity';
     LifterReviewsService,
     AcceptedLiftService,
     AuthService,
+    PushNotificationHelper,
   ],
 })
 export class LiftersModule {}
