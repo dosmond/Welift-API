@@ -31,6 +31,7 @@ import { NoteModule } from './routes/note/note.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SurveyModule } from './routes/survey/survey.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { WhatsNewModule } from './routes/whats-new/whats-new.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     NoteModule,
     CronModule,
     EmailModule,
+    WhatsNewModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],

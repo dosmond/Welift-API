@@ -6,7 +6,7 @@ export class WhatsNew {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('json')
+  @Column('json', { name: 'data' })
   data: any;
 
   @Column('date', {
