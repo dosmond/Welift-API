@@ -1,5 +1,4 @@
 import { Partner } from '../../model/partner.entity';
-import { EmailClient } from './../../helper/email.client';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +11,6 @@ import { PartnersService } from './partners.service';
     TypeOrmModule.forFeature([Partner]),
   ],
   controllers: [PartnersController],
-  providers: [PartnersService, EmailClient],
+  providers: [PartnersService],
 })
 export class PartnersModule {}

@@ -1,3 +1,4 @@
+import { EmailModule } from './helper/email.client';
 import { CronModule } from './helper/cron.helper';
 import { BookingLocationCountModule } from './routes/booking-location-count/bookingLocationCount.module';
 import { CheckrModule } from './routes/checkr/checkr.module';
@@ -61,6 +62,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     TrainingVideosModule,
     NoteModule,
     CronModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],
