@@ -1,3 +1,4 @@
+import { CronJobData } from 'src/helper/cron.helper';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Index('pk_cron_job', ['id'], { unique: true })
@@ -10,5 +11,5 @@ export class CronJobDescription {
   key: string;
 
   @Column('json')
-  data: any;
+  data: CronJobData;
 }

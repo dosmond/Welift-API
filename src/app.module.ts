@@ -1,3 +1,5 @@
+import { BookingLocationCountModule } from './routes/booking-location-count/bookingLocationCount.module';
+import { CronModule } from './helper/cron.helper';
 import { CronJobDescription } from './model/cronjob.entity';
 import { CheckrModule } from './routes/checkr/checkr.module';
 import { SurveyResponseModule } from './routes/survey-response/survey-response.module';
@@ -14,7 +16,6 @@ import { LiftersService } from './routes/lifters/lifters.service';
 import { BookingLocationCount } from './model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './routes/booking-location-count/bookingLocationCount.service';
 import { PushNotificationHelper } from './helper/pushNotification.helper';
-import { CronHelper } from './helper/cron.helper';
 import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
 import { RolesGuard } from './auth/roles/roles.gaurd';
 import { CacheModule, Module } from '@nestjs/common';
@@ -81,6 +82,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     AcceptedLiftModule,
     BadgeModule,
     BookingModule,
+    BookingLocationCountModule,
     CompletedLifterBadgeModule,
     CheckrModule,
     EquipmentModule,
@@ -98,12 +100,12 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     SurveyResponseModule,
     TrainingVideosModule,
     NoteModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     RolesGuard,
-    CronHelper,
     PushNotificationHelper,
     BookingLocationCountService,
     TextClient,

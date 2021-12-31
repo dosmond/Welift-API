@@ -10,4 +10,4 @@ import { BookingLocationCountService } from './bookingLocationCount.service';
   controllers: [BookingLocationCountController],
   providers: [BookingLocationCountService, PushNotificationHelper],
 })
-export class BookingModule {}
+export class BookingLocationCountModule {}

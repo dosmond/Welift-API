@@ -169,7 +169,7 @@ export class BookingService {
           params: [lift.id],
           options: new CronJobOptions({
             key: `autoclockout-${lift.id}`,
-            date: booking.endTime,
+            date: new Date(booking.endTime),
           }),
         }),
       );

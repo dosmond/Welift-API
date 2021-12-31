@@ -343,7 +343,6 @@ export class LiftsService {
 
   @OnEvent(EventNames.AutoClockOut)
   private async handleAutoClockOut(payload: ClockOutEvent) {
-    console.log('AutoClockoutEvent being handled');
     const lift = await this.getById(payload.liftId);
 
     const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
