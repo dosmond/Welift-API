@@ -1,9 +1,5 @@
 import { CronJobNames } from './../../enum/cronJobNames.enum';
-import {
-  CronHelper,
-  CronJobData,
-  CronJobOptions,
-} from './../../helper/cron.helper';
+import { CronHelper } from './../../helper/cron.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
 import { Note } from 'src/model/note.entity';
@@ -35,6 +31,7 @@ import Stripe from 'stripe';
 import { Lift } from 'src/model/lifts.entity';
 import { BookingUpdateDTO } from 'src/dto/booking.update.dto';
 import { Address } from 'src/model/addresses.entity';
+import { CronJobData, CronJobOptions } from 'src/model/cronjob.entity';
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });

@@ -1,8 +1,7 @@
-import { Type } from 'class-transformer';
 import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
 import { ClockOutEvent } from './../events/clockout.event';
-import { CronJobDescription } from './../model/cronjob.entity';
+import { CronJobData, CronJobDescription } from './../model/cronjob.entity';
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import {
   Global,
@@ -14,46 +13,6 @@ import { CronJob } from 'cron';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import {
-  IsDate,
-  IsString,
-  IsOptional,
-  IsArray,
-  IsObject,
-  IsNotEmptyObject,
-  ValidateNested,
-} from 'class-validator';
-
-export class CronJobOptions {
-  @IsString()
-  key: string;
-
-  @IsDate()
-  date: Date;
-
-  constructor(init?: Partial<CronJobOptions>) {
-    Object.assign(this, init);
-  }
-}
-
-export class CronJobData {
-  @IsString()
-  cronName: string;
-
-  @IsOptional()
-  @IsArray()
-  params: any[];
-
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => CronJobOptions)
-  options: CronJobOptions;
-
-  constructor(init?: Partial<CronJobData>) {
-    Object.assign(this, init);
-  }
-}
 
 @Injectable()
 export class CronHelper implements OnApplicationBootstrap {
@@ -68,16 +27,13 @@ export class CronHelper implements OnApplicationBootstrap {
   // running and stored in db
   async onApplicationBootstrap() {
     const jobs = await this.cronRepo.find();
-
     jobs.forEach((job) => {
       const newRunTime = new Date(job.data.options.date);
-
       if (newRunTime <= new Date(Date.now())) {
         job.data.options.date = new Date(Date.now() + 10 * 1000);
       } else {
         job.data.options.date = newRunTime;
       }
-
       this.addCronJob(job.data, false);
     });
   }

@@ -1,6 +1,5 @@
-import { BookingLocationCountModule } from './routes/booking-location-count/bookingLocationCount.module';
 import { CronModule } from './helper/cron.helper';
-import { CronJobDescription } from './model/cronjob.entity';
+import { BookingLocationCountModule } from './routes/booking-location-count/bookingLocationCount.module';
 import { CheckrModule } from './routes/checkr/checkr.module';
 import { SurveyResponseModule } from './routes/survey-response/survey-response.module';
 import { AuthService } from './auth/auth.service';
@@ -63,7 +62,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     TypeOrmModule.forFeature([
       Address,
       BookingLocationCount,
-      CronJobDescription,
       Lifter,
       LifterStats,
       PendingVerification,
