@@ -103,6 +103,12 @@ export class Lifter {
   })
   deletionPending: boolean | null;
 
+  @Column('date', {
+    name: 'latest_open',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  latestOpen: Date;
+
   @OneToMany(() => AcceptedLift, (acceptedLift) => acceptedLift.lifter)
   acceptedLifts: AcceptedLift[];
 
