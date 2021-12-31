@@ -1,7 +1,7 @@
 import { CouponInfoDTO } from './../dto/couponInfo.dto';
 import { Transporter, createTransport } from 'nodemailer';
 import { renderFile } from 'ejs';
-import { Injectable } from '@nestjs/common';
+import { Global, Injectable, Module } from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const stripe = require('stripe')(process.env.GATSBY_STRIPE_SECRET_KEY);
 
@@ -311,3 +311,10 @@ CEO/Co-Founder</div>
     }
   }
 }
+
+@Global()
+@Module({
+  providers: [EmailClient],
+  exports: [EmailClient],
+})
+export class EmailModule {}

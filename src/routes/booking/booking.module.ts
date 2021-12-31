@@ -8,7 +8,6 @@ import { Partner } from '../../model/partner.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { TextClient } from '../../helper/text.client';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
-import { EmailClient } from '../../helper/email.client';
 import { Booking } from './../../model/booking.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -31,7 +30,6 @@ import { Note } from 'src/model/note.entity';
   controllers: [BookingController],
   providers: [
     BookingService,
-    EmailClient,
     TextClient,
     GoogleCalendarApiHelper,
     SlackHelper,

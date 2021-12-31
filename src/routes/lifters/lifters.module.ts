@@ -10,7 +10,6 @@ import { LifterCompletedTrainingVideosService } from './../lifter-completed-trai
 import { CompletedLifterBadgeService } from './../completed-lifter-badge/completed-lifter-badge.service';
 import { LifterStatsService } from './../lifter-stats/lifter-stats.service';
 import { AddressService } from './../address/address.service';
-import { EmailClient } from 'src/helper/email.client';
 import { AWSS3Helper } from './../../helper/awss3.helper';
 import { TextClient } from './../../helper/text.client';
 import { LifterStats } from './../../model/lifterStats.entity';
@@ -45,7 +44,6 @@ import { LifterReview } from 'src/model/lifterReviews.entity';
     LiftersService,
     TextClient,
     AWSS3Helper,
-    EmailClient,
     AddressService,
     LifterStatsService,
     CompletedLifterBadgeService,

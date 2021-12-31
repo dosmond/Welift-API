@@ -1,20 +1,8 @@
+import { EmailModule } from './helper/email.client';
 import { CronModule } from './helper/cron.helper';
 import { BookingLocationCountModule } from './routes/booking-location-count/bookingLocationCount.module';
 import { CheckrModule } from './routes/checkr/checkr.module';
 import { SurveyResponseModule } from './routes/survey-response/survey-response.module';
-import { AuthService } from './auth/auth.service';
-import { Lift } from 'src/model/lifts.entity';
-import { AcceptedLiftService } from './routes/accepted-lift/accepted-lift.service';
-import { EmailClient } from 'src/helper/email.client';
-import { Address } from 'src/model/addresses.entity';
-import { LifterStats } from 'src/model/lifterStats.entity';
-import { Lifter } from 'src/model/lifters.entity';
-import { AWSS3Helper } from './helper/awss3.helper';
-import { TextClient } from './helper/text.client';
-import { LiftersService } from './routes/lifters/lifters.service';
-import { BookingLocationCount } from './model/bookingLocationCount.entity';
-import { BookingLocationCountService } from './routes/booking-location-count/bookingLocationCount.service';
-import { PushNotificationHelper } from './helper/pushNotification.helper';
 import { LifterStatsModule } from './routes/lifter-stats/lifter-stats.module';
 import { RolesGuard } from './auth/roles/roles.gaurd';
 import { CacheModule, Module } from '@nestjs/common';
@@ -41,37 +29,12 @@ import { PartnersModule } from './routes/partners/partners.module';
 import { TrainingVideosModule } from './routes/training-videos/training-videos.module';
 import { NoteModule } from './routes/note/note.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { PendingVerification } from './model/pendingVerification.entity';
-import { LifterReviewsService } from './routes/lifter-reviews/lifter-reviews.service';
-import { AddressService } from './routes/address/address.service';
-import { CompletedLifterBadgeService } from './routes/completed-lifter-badge/completed-lifter-badge.service';
-import { LifterCompletedTrainingVideosService } from './routes/lifter-completed-training-videos/lifter-completed-training-videos.service';
-import { LifterEquipmentService } from './routes/lifter-equipment/lifter-equipment.service';
-import { LifterStatsService } from './routes/lifter-stats/lifter-stats.service';
-import { CompletedLifterBadge } from './model/completedLifterBadges.entity';
-import { LifterCompletedTrainingVideo } from './model/lifterCompletedTrainingVideos.entity';
-import { LifterEquipment } from './model/lifterEquipment.entity';
-import { LifterReview } from './model/lifterReviews.entity';
-import { AcceptedLift } from './model/acceptedLift.entity';
 import { SurveyModule } from './routes/survey/survey.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-    TypeOrmModule.forFeature([
-      Address,
-      BookingLocationCount,
-      Lifter,
-      LifterStats,
-      PendingVerification,
-      CompletedLifterBadge,
-      LifterCompletedTrainingVideo,
-      LifterEquipment,
-      LifterReview,
-      AcceptedLift,
-      Lift,
-    ]),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     CacheModule.register(),
@@ -99,25 +62,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     TrainingVideosModule,
     NoteModule,
     CronModule,
+    EmailModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    RolesGuard,
-    PushNotificationHelper,
-    BookingLocationCountService,
-    TextClient,
-    AWSS3Helper,
-    LiftersService,
-    EmailClient,
-    AddressService,
-    LifterStatsService,
-    CompletedLifterBadgeService,
-    LifterCompletedTrainingVideosService,
-    LifterEquipmentService,
-    LifterReviewsService,
-    AcceptedLiftService,
-    AuthService,
-  ],
+  providers: [AppService, RolesGuard],
 })
 export class AppModule {}
