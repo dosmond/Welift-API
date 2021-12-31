@@ -1,21 +1,86 @@
+import { Type } from 'class-transformer';
+import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
 import { ClockOutEvent } from './../events/clockout.event';
 import { CronJobDescription } from './../model/cronjob.entity';
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
-import { Injectable } from '@nestjs/common';
+import {
+  Global,
+  Injectable,
+  OnApplicationBootstrap,
+  Module,
+} from '@nestjs/common';
 import { CronJob } from 'cron';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import {
+  IsDate,
+  IsString,
+  IsOptional,
+  IsArray,
+  IsObject,
+  IsNotEmptyObject,
+  ValidateNested,
+} from 'class-validator';
+
+export class CronJobOptions {
+  @IsString()
+  key: string;
+
+  @IsDate()
+  date: Date;
+
+  constructor(init?: Partial<CronJobOptions>) {
+    Object.assign(this, init);
+  }
+}
+
+export class CronJobData {
+  @IsString()
+  cronName: string;
+
+  @IsOptional()
+  @IsArray()
+  params: any[];
+
+  @IsObject()
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => CronJobOptions)
+  options: CronJobOptions;
+
+  constructor(init?: Partial<CronJobData>) {
+    Object.assign(this, init);
+  }
+}
 
 @Injectable()
-export class CronHelper {
+export class CronHelper implements OnApplicationBootstrap {
   constructor(
     private schedulerReg: SchedulerRegistry,
     @InjectRepository(CronJobDescription)
     private readonly cronRepo: Repository<CronJobDescription>,
     private eventEmitter: EventEmitter2,
   ) {}
+
+  // On system restart, recover all the cron jobs that were
+  // running and stored in db
+  async onApplicationBootstrap() {
+    const jobs = await this.cronRepo.find();
+
+    jobs.forEach((job) => {
+      const newRunTime = new Date(job.data.options.date);
+
+      if (newRunTime <= new Date(Date.now())) {
+        job.data.options.date = new Date(Date.now() + 10 * 1000);
+      } else {
+        job.data.options.date = newRunTime;
+      }
+
+      this.addCronJob(job.data, false);
+    });
+  }
 
   // Only Run at 9AM or 5PM
   @Cron('* * 9,17 * * *', {
@@ -41,31 +106,38 @@ export class CronHelper {
     this.eventEmitter.emit(EventNames.DeleteFlaggedLifters);
   }
 
-  public async addCronJob(data: {
-    cronName: string;
-    params: any[];
-    options: any;
-  }) {
+  public async addCronJob(data: CronJobData, createDbObject = true) {
+    if (data.options.date < new Date(Date.now())) return;
+
     const job = new CronJob(data.options.date, () => {
       this[data.cronName](...data.params);
+      this.deleteCronJobDescription(data.options.key);
     });
 
     this.schedulerReg.addCronJob(data.options.key, job);
     job.start();
 
-    const cronJob = new CronJobDescription();
-    cronJob.key = data.options.key;
-    cronJob.data = data;
-    await this.cronRepo.save(cronJob);
+    if (createDbObject) {
+      const cronJob = new CronJobDescription();
+      cronJob.key = data.options.key;
+      cronJob.data = data;
+      await this.cronRepo.save(cronJob);
+    }
   }
 
-  public async deleteCronJob(key: string) {
-    this.schedulerReg.deleteCronJob(key);
+  public async deleteCronJobDescription(key: string) {
     await this.cronRepo.delete({ key: key });
   }
 
-  private autoClockOut(liftId: string) {
-    console.log('emitting autoclockout');
+  private async [CronJobNames.AutoClockOut](liftId: string) {
     this.eventEmitter.emit(EventNames.AutoClockOut, new ClockOutEvent(liftId));
   }
 }
+
+@Global()
+@Module({
+  imports: [TypeOrmModule.forFeature([CronJobDescription])],
+  providers: [CronHelper],
+  exports: [CronHelper],
+})
+export class CronModule {}

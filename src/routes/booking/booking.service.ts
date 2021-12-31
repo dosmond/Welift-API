@@ -1,3 +1,9 @@
+import { CronJobNames } from './../../enum/cronJobNames.enum';
+import {
+  CronHelper,
+  CronJobData,
+  CronJobOptions,
+} from './../../helper/cron.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
 import { Note } from 'src/model/note.entity';
@@ -51,6 +57,7 @@ export class BookingService {
     private emailClient: EmailClient,
     private googleHelper: GoogleCalendarApiHelper,
     private locationCountService: BookingLocationCountService,
+    private cronHelper: CronHelper,
   ) {}
 
   public async getById(id: string): Promise<BookingDTO> {
@@ -154,7 +161,18 @@ export class BookingService {
       newLift.bookingId = result.id;
       newLift.completionToken = this.generateCompletionToken();
 
-      await queryRunner.manager.save(newLift);
+      const lift = await queryRunner.manager.save(newLift);
+
+      this.cronHelper.addCronJob(
+        new CronJobData({
+          cronName: CronJobNames.AutoClockOut,
+          params: [lift.id],
+          options: new CronJobOptions({
+            key: `autoclockout-${lift.id}`,
+            date: new Date(booking.endTime),
+          }),
+        }),
+      );
 
       // Handle refund if referral code exists
       if (batch.referralCode) {
