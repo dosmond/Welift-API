@@ -15,6 +15,9 @@ import { DeleteResult, getConnection, getManager } from 'typeorm';
 import { PaginatedDTO } from 'src/dto/base.paginated.dto';
 import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
 import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
+import { OnEvent } from '@nestjs/event-emitter';
+import { EventNames } from 'src/enum/eventNames.enum';
+import { ClockOutEvent } from 'src/events/clockout.event';
 
 @Injectable()
 export class AcceptedLiftService {
@@ -321,6 +324,24 @@ export class AcceptedLiftService {
     const promises: Promise<DeleteResult>[] = [];
     acceptedLifts.forEach((acceptedLift) => {
       promises.push(this.delete(null, acceptedLift.id));
+    });
+    await Promise.all(promises);
+  }
+
+  @OnEvent(EventNames.AutoClockOut)
+  private async handleAutoClockOut(payload: ClockOutEvent) {
+    const lift = await this.liftRepo.findOne({ id: payload.liftId });
+
+    const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
+    lift.acceptedLifts.forEach((accepted) => {
+      if (!accepted.clockOutTime) {
+        accepted.clockOutTime = new Date(Date.now());
+        [accepted.payrate, accepted.totalPay] =
+          this.getPayrateAndTotalPay(accepted);
+        promises.push(
+          this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
+        );
+      }
     });
     await Promise.all(promises);
   }

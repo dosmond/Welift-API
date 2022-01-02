@@ -1,5 +1,3 @@
-import { ClockOutEvent } from './../../events/clockout.event';
-import { EventNames } from './../../enum/eventNames.enum';
 import { TextClient } from './../../helper/text.client';
 import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
 import { TwoWayMap } from './../../helper/twoWayMap.helper';
@@ -18,8 +16,6 @@ import {
 } from 'typeorm';
 import { LiftDTO } from 'src/dto/lift.dto';
 import { LiftUpdateDTO } from 'src/dto/lift.update.dto';
-import { OnEvent } from '@nestjs/event-emitter';
-import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
 
 @Injectable()
 export class LiftsService {
@@ -339,24 +335,5 @@ export class LiftsService {
     return (
       new Date(Date.now()).toISOString().split('.')[0].replace('T', ' ') + '+00'
     );
-  }
-
-  @OnEvent(EventNames.AutoClockOut)
-  private async handleAutoClockOut(payload: ClockOutEvent) {
-    const lift = await this.getById(payload.liftId);
-
-    const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
-    lift.acceptedLifts.forEach((accepted) => {
-      if (!accepted.clockOutTime) {
-        accepted.clockOutTime = new Date(Date.now());
-        promises.push(
-          this.acceptedLiftServ.update(
-            null,
-            AcceptedLiftUpdateDTO.fromEntity(accepted),
-          ),
-        );
-      }
-    });
-    await Promise.all(promises);
   }
 }
