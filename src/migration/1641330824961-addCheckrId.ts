@@ -1,9 +1,12 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class alterWhatsNewAndLifter1641323582183 implements MigrationInterface {
-  name = 'alterWhatsNewAndLifter1641323582183';
+export class addCheckrId1641330824961 implements MigrationInterface {
+  name = 'addCheckrId1641330824961';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "lifters" ADD "checkr_id" character varying(1024)`,
+    );
     await queryRunner.query(`ALTER TABLE "lifters" DROP COLUMN "latest_open"`);
     await queryRunner.query(
       `ALTER TABLE "lifters" ADD "latest_open" TIMESTAMP NOT NULL DEFAULT now()`,
@@ -27,5 +30,6 @@ export class alterWhatsNewAndLifter1641323582183 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "lifters" ADD "latest_open" date NOT NULL DEFAULT now()`,
     );
+    await queryRunner.query(`ALTER TABLE "lifters" DROP COLUMN "checkr_id"`);
   }
 }
