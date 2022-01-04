@@ -134,6 +134,11 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  checkrId: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AcceptedLiftDTO)
@@ -212,6 +217,7 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         bcInProgress: entity.bcInProgress,
         deletionPending: entity.deletionPending,
         latestOpen: entity.latestOpen,
+        checkrId: entity.checkrId,
         acceptedLifts: entity.acceptedLifts.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),

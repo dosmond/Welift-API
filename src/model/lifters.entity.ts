@@ -109,6 +109,13 @@ export class Lifter {
   })
   latestOpen: Date;
 
+  @Column('character varying', {
+    name: 'checkr_id',
+    nullable: true,
+    length: 1024,
+  })
+  checkrId: string | null;
+
   @OneToMany(() => AcceptedLift, (acceptedLift) => acceptedLift.lifter)
   acceptedLifts: AcceptedLift[];
 
