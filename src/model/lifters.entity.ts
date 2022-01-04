@@ -103,7 +103,7 @@ export class Lifter {
   })
   deletionPending: boolean | null;
 
-  @Column('date', {
+  @Column('timestamp', {
     name: 'latest_open',
     default: () => 'CURRENT_TIMESTAMP',
   })
