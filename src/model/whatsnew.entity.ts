@@ -9,7 +9,7 @@ export class WhatsNew {
   @Column('json', { name: 'data' })
   data: any;
 
-  @Column('date', {
+  @Column('timestamp', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
