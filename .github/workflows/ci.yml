@@ -28,6 +28,7 @@ jobs:
       PARTNER_USERPOOL_ID: ${{ secrets.PARTNER_USERPOOL_ID }}
       PARTNER_CLIENT_ID: ${{ secrets.PARTNER_CLIENT_ID }}
       JWKS_URL: ${{ secrets.JWKS_URL }}
+      NODE_ENV: test
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14.x
