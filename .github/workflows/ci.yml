@@ -39,6 +39,8 @@ jobs:
         run: docker-compose up -d
       - name: npm install
         run: yarn
+      - name: Run Migrations
+        run: yarn typeorm:migration:run
       - name: Run tests
         run: yarn test:e2e
       - name: Stop Docker-Compose
