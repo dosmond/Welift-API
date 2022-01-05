@@ -16,6 +16,17 @@ jobs:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_DATABASE: my_database
+      LIFTER_APPLICANT_SENDING_EMAIL: ${{secretes.LIFTER_APPLICANT_SENDING_EMAIL}}
+      LIFTER_APPLICATION_EMAIL_PASSWORD: ${{ secrets.LIFTER_APPLICATION_EMAIL_PASSWORD }}
+      GATSBY_STRIPE_SECRET_KEY: ${{ secrets.GATSBY_STRIPE_SECRET_KEY }}
+      LANDING_USERPOOL_ID: ${{ secrets.LANDING_USERPOOL_ID }}
+      LANDING_CLIENT_ID: ${{ secrets.LANDING_CLIENT_ID }}
+      MOBILE_USERPOOL_ID: ${{ secrets.MOBILE_USERPOOL_ID }}
+      MOBILE_CLIENT_ID: ${{ secrets.MOBILE_CLIENT_ID }}
+      ADMIN_USERPOOL_ID: ${{ secrets.ADMIN_USERPOOL_ID }}
+      ADMIN_CLIENT_ID: ${{ secrets.ADMIN_CLIENT_ID }}
+      PARTNER_USERPOOL_ID: ${{ secrets.PARTNER_USERPOOL_ID }}
+      PARTNER_CLIENT_ID: ${{ secrets.PARTNER_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14.x
