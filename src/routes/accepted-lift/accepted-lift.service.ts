@@ -1,4 +1,4 @@
-import { Lift } from 'src/model/lifts.entity';
+import { Lift } from '../../model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
 import {
   Injectable,
@@ -8,16 +8,16 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
+import { TokenVerificationRequestDTO } from '../../dto/tokenVerification.dto';
 import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
-import { User } from 'src/user.decorator';
+import { User } from '../../user.decorator';
 import { DeleteResult, getConnection, getManager } from 'typeorm';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
-import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
-import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
+import { PaginatedDTO } from '../../dto/base.paginated.dto';
+import { LifterPaginatedDTO } from '../../dto/lifter.paginated.dto';
+import { AcceptedLiftUpdateDTO } from '../../dto/acceptedLift.update.dto';
 import { OnEvent } from '@nestjs/event-emitter';
-import { EventNames } from 'src/enum/eventNames.enum';
-import { ClockOutEvent } from 'src/events/clockout.event';
+import { EventNames } from '../../enum/eventNames.enum';
+import { ClockOutEvent } from '../../events/clockout.event';
 
 @Injectable()
 export class AcceptedLiftService {

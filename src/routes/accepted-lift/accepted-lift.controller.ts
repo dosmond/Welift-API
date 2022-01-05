@@ -28,7 +28,9 @@ export class AcceptedLiftController {
 
   @Get()
   @Roles(Role.Lifter)
-  public async getById(@Query() query): Promise<AcceptedLiftDTO> {
+  public async getById(
+    @Query() query: { id: string },
+  ): Promise<AcceptedLiftDTO> {
     return await this.serv.getById(query.id);
   }
 
