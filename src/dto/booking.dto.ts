@@ -140,6 +140,10 @@ export class BookingDTO implements Readonly<BookingDTO> {
   @Type(() => LiftDTO)
   lift: LiftDTO;
 
+  constructor(init?: Partial<BookingDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<BookingDTO>): BookingDTO {
     const booking = new BookingDTO();
 

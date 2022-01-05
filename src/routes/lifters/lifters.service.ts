@@ -13,7 +13,6 @@ import { TextClient } from './../../helper/text.client';
 import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { LifterUpdateBatchDTO } from './../../dto/lifter.update.batch.dto';
-import { Address } from '@src/model/addresses.entity';
 import { AddressDTO } from '@src/dto/address.dto';
 import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
 import { PaginatedDTO } from '@src/dto/base.paginated.dto';
@@ -34,8 +33,6 @@ import { PushNotificationRequest } from '@src/helper/pushNotification.helper';
 export class LiftersService {
   constructor(
     @InjectRepository(Lifter) private readonly repo: Repository<Lifter>,
-    @InjectRepository(Address)
-    private readonly addressRepo: Repository<Address>,
     @InjectRepository(LifterStats)
     private readonly statsRepo: Repository<LifterStats>,
     @InjectRepository(PendingVerification)
@@ -51,7 +48,6 @@ export class LiftersService {
     private readonly lifterStatsService: LifterStatsService,
     private readonly acceptedLiftService: AcceptedLiftService,
     private readonly authService: AuthService,
-    private readonly awsS3Helper: AWSS3Helper,
     private readonly pushNotificationHelper: PushNotificationHelper,
   ) {}
 
@@ -158,7 +154,7 @@ export class LiftersService {
     const address = AddressDTO.from(batch.address);
 
     // Create Address
-    const addressResult = await this.addressRepo.save(address.toEntity());
+    const addressResult = await this.addressService.create(null, address);
     lifter.addressId = addressResult.id;
 
     // Create Lifter
@@ -236,7 +232,7 @@ export class LiftersService {
     const address = AddressUpdateDTO.from(batch.address);
 
     if (batch.address) {
-      const addressResult = await this.addressRepo.save(address.toEntity());
+      const addressResult = await this.addressService.update(null, address);
       lifter.addressId = addressResult.id;
     }
 
@@ -269,7 +265,7 @@ export class LiftersService {
     await this.repo.delete({ id: lifter.id });
 
     // Profile Picture
-    await this.awsS3Helper.deleteProfilePicture(lifter.id);
+    await this.s3Helper.deleteProfilePicture(lifter.id);
 
     // Cognito User
     await this.authService.deleteUser({
