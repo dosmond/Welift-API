@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OnEvent } from '@nestjs/event-emitter';
-import { PushNotificationRequest } from 'src/helper/pushNotification.helper';
+import { PushNotificationRequest } from '../../helper/pushNotification.helper';
 
 @Injectable()
 export class BookingLocationCountService {
