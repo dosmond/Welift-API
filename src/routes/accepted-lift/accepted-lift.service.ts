@@ -195,7 +195,7 @@ export class AcceptedLiftService {
         !lift.usePickupTruck
       ) {
         throw new BadRequestException(
-          'This booking requires someone with a pickup truck',
+          'This lift requires someone with a pickup truck',
         );
       }
 
