@@ -186,6 +186,19 @@ export class AcceptedLiftService {
 
       liftToUpdate.currentLifterCount += 1;
 
+      // If this is the last slot and the booking still needs
+      // someone with a pickup truck, then only allow people with a pickup truck.
+      if (
+        liftToUpdate.booking.needsPickupTruck &&
+        liftToUpdate.currentLifterCount == liftToUpdate.booking.lifterCount &&
+        !liftToUpdate.hasPickupTruck &&
+        !lift.usePickupTruck
+      ) {
+        throw new BadRequestException(
+          'This booking requires someone with a pickup truck',
+        );
+      }
+
       // Update lift if lifter is using pickup truck.
       if (lift.usePickupTruck) {
         liftToUpdate.hasPickupTruck = true;
