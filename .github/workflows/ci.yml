@@ -11,7 +11,7 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Use Node.js 14.x
         uses: actions/setup-node@v2
         with:
@@ -19,9 +19,9 @@ jobs:
       - name: Start Docker-Compose
         run: docker-compose up -d
       - name: npm install
-        run: npm ci
+        run: yarn
       - name: Run tests
-        run: npm run test:e2e
+        run: yarn test:e2e
       - name: Stop Docker-Compose
         run: docker-compose down
 
