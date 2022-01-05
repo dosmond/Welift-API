@@ -1,16 +1,16 @@
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PartnerSendCouponDTO } from 'src/dto/partnerSendCoupon.dto';
-import { Partner } from 'src/model/partner.entity';
-import { User } from 'src/user.decorator';
+import { PartnerSendCouponDTO } from '@src/dto/partnerSendCoupon.dto';
+import { Partner } from '@src/model/partner.entity';
+import { User } from '@src/user.decorator';
 import { Between, FindManyOptions, Repository } from 'typeorm';
 
 import Stripe from 'stripe';
-import { PartnerDTO } from 'src/dto/partner.dto';
-import { EmailClient } from 'src/helper/email.client';
-import { PartnerUpdateDTO } from 'src/dto/partner.update.dto';
-import { PartnerCreditCheckoutDTO } from 'src/dto/partnerCreditCheckout.dto';
+import { PartnerDTO } from '@src/dto/partner.dto';
+import { EmailClient } from '@src/helper/email.client';
+import { PartnerUpdateDTO } from '@src/dto/partner.update.dto';
+import { PartnerCreditCheckoutDTO } from '@src/dto/partnerCreditCheckout.dto';
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });

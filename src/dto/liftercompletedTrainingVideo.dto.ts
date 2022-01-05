@@ -1,10 +1,10 @@
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '@src/model/lifters.entity';
 import { TrainingVideo } from './../model/TrainingVideos.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional, IsUUID, ValidateNested } from 'class-validator';
-import { LifterCompletedTrainingVideo } from 'src/model/lifterCompletedTrainingVideos.entity';
-import { User } from 'src/user.decorator';
+import { LifterCompletedTrainingVideo } from '@src//model/lifterCompletedTrainingVideos.entity';
+import { User } from '@src/user.decorator';
 
 export class LifterCompletedTrainingVideoDTO
   implements Readonly<LifterCompletedTrainingVideoDTO>

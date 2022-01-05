@@ -4391,6 +4391,11 @@ mocha@^7.1.1:
     yargs-parser "13.1.2"
     yargs-unparser "1.6.0"
 
+module-alias@^2.2.2:
+  version "2.2.2"
+  resolved "https://welift-592473490836.d.codeartifact.us-east-1.amazonaws.com:443/npm/LiftUI/module-alias/-/module-alias-2.2.2.tgz#151cdcecc24e25739ff0aa6e51e1c5716974c0e0"
+  integrity sha512-A/78XjoX2EmNvppVWEhM2oGk3x4lLxnkEA4jTbaK97QKSDjkIoOsKQlfylt/d3kKKi596Qy3NP5XrXJ6fZIC9Q==
+
 moment-timezone@^0.5.x:
   version "0.5.34"
   resolved "https://welift-592473490836.d.codeartifact.us-east-1.amazonaws.com:443/npm/LiftUI/moment-timezone/-/moment-timezone-0.5.34.tgz#a75938f7476b88f155d3504a9343f7519d9a405c"

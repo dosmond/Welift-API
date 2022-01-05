@@ -1,4 +1,4 @@
-import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
 export const singleAcceptedLiftWithCustomId = (id: string) =>
   new AcceptedLift({
     id: id,

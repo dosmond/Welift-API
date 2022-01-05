@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, IsOptional } from 'class-validator';
-import { PendingVerification } from 'src/model/pendingVerification.entity';
+import { PendingVerification } from '@src/model/pendingVerification.entity';
 
 export class PendingVerificationDTO
   implements Readonly<PendingVerificationDTO>

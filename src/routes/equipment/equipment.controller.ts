@@ -11,12 +11,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { EquipmentDTO } from 'src/dto/equipment.dto';
+import { EquipmentDTO } from '@src/dto/equipment.dto';
 import { DeleteResult } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('equipment')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

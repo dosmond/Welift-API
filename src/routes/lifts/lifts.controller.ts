@@ -1,7 +1,7 @@
-import { Lift } from 'src/model/lifts.entity';
-import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
-import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { Lift } from '@src/model/lifts.entity';
+import { AcceptedLiftDTO } from '@src/dto/acceptedLift.dto';
+import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { LiftsService } from './lifts.service';
 import {
   BadRequestException,
@@ -14,12 +14,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { LiftDTO } from 'src/dto/lift.dto';
+import { LiftDTO } from '@src/dto/lift.dto';
 import { DeleteResult, Repository, TransactionRepository } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('lift')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

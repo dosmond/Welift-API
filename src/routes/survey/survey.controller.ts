@@ -10,10 +10,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { SurveyDTO } from 'src/dto/survey.dto';
-import { Role } from 'src/enum/roles.enum';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { SurveyDTO } from '@src/dto/survey.dto';
+import { Role } from '@src/enum/roles.enum';
 import { SurveyService } from './survey.service';
 
 @Controller('survey')

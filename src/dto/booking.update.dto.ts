@@ -9,8 +9,8 @@ import {
   IsNumber,
   IsDateString,
 } from 'class-validator';
-import { Booking } from 'src/model/booking.entity';
-import { User } from 'src/user.decorator';
+import { Booking } from '@src/model/booking.entity';
+import { User } from '@src/user.decorator';
 import { AddressDTO } from './address.dto';
 import { BookingDTO } from './booking.dto';
 import { LiftDTO } from './lift.dto';

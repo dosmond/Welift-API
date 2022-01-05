@@ -1,4 +1,4 @@
-import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { AcceptedLift } from '../model/acceptedLift.entity';
 import { Lifter } from '../model/lifters.entity';
 import { Lift } from '../model/lifts.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -9,7 +9,7 @@ import {
   IsOptional,
   IsUUID,
 } from 'class-validator';
-import { User } from 'src/user.decorator';
+import { User } from '@src/user.decorator';
 
 export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
   @ApiProperty({ required: false })

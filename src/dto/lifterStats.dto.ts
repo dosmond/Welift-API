@@ -1,4 +1,4 @@
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '../model/lifters.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -9,7 +9,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { LifterStats } from 'src/model/lifterStats.entity';
+import { LifterStats } from '../model/lifterStats.entity';
 
 export class LifterStatsDTO implements Readonly<LifterStatsDTO> {
   @ApiProperty()

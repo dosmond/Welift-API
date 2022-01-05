@@ -1,4 +1,4 @@
-import { Lift } from 'src/model/lifts.entity';
+import { Lift } from '@src/model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

@@ -7,8 +7,8 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { SurveyResponse } from 'src/model/surveyResponse.entity';
-import { Survey } from 'src/model/survey.entity';
+import { SurveyResponse } from '@src/model/surveyResponse.entity';
+import { Survey } from '@src/model/survey.entity';
 
 export class SurveyResponseDTO implements Readonly<SurveyResponseDTO> {
   @ApiProperty({ required: false })

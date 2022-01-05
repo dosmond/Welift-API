@@ -1,11 +1,11 @@
-import { AddressDTO } from 'src/dto/address.dto';
+import { AddressDTO } from '@src/dto/address.dto';
 import { LifterStatsDTO } from './lifterStats.dto';
-import { LifterReviewDTO } from 'src/dto/lifterReview.dto';
+import { LifterReviewDTO } from '@src/dto/lifterReview.dto';
 import { LifterEquipmentDTO } from './lifterEquipment.dto';
-import { LifterCompletedTrainingVideoDTO } from 'src/dto/liftercompletedTrainingVideo.dto';
+import { LifterCompletedTrainingVideoDTO } from '@src/dto/liftercompletedTrainingVideo.dto';
 import { CompletedLifterBadgeDTO } from './completeLifterBadge.dto';
-import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
-import { Lifter } from 'src/model/lifters.entity';
+import { AcceptedLiftDTO } from '@src/dto/acceptedLift.dto';
+import { Lifter } from '@src/model/lifters.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {

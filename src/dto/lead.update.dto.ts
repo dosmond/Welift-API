@@ -8,7 +8,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Lead } from 'src/model/leads.entity';
+import { Lead } from '@src/model/leads.entity';
 import { LeadDTO } from './lead.dto';
 import { NoteDTO } from './note.dto';
 

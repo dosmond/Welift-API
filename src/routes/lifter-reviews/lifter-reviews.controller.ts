@@ -1,4 +1,4 @@
-import { LifterReviewDTO } from 'src/dto/lifterReview.dto';
+import { LifterReviewDTO } from '@src/dto/lifterReview.dto';
 import { LifterReviewsService } from './lifter-reviews.service';
 import {
   Body,
@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('lifter-reviews')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

@@ -9,7 +9,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Lift } from 'src/model/lifts.entity';
+import { Lift } from '@src/model/lifts.entity';
 import { AcceptedLiftDTO } from './acceptedLift.dto';
 import { BookingDTO } from './booking.dto';
 import { LiftDTO } from './lift.dto';

@@ -1,7 +1,7 @@
-import { LeadDTO } from 'src/dto/lead.dto';
-import { BookingDTO } from 'src/dto/booking.dto';
+import { LeadDTO } from '@src/dto/lead.dto';
+import { BookingDTO } from '@src/dto/booking.dto';
 import { Lead } from './../model/leads.entity';
-import { Booking } from 'src/model/booking.entity';
+import { Booking } from '@src/model/booking.entity';
 import { Note } from './../model/note.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';

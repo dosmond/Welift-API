@@ -1,6 +1,6 @@
 import { SurveyResponseUpdateDTO } from './../../dto/surveyResponse.update.dto';
 import { SurveyResponseDTO } from './../../dto/surveyResponse.dto';
-import { SurveyResponse } from 'src/model/surveyResponse.entity';
+import { SurveyResponse } from '@src/model/surveyResponse.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

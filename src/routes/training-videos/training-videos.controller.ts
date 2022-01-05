@@ -9,11 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { TrainingVideoDTO } from 'src/dto/trainingVideo.dto';
-import { Role } from 'src/enum/roles.enum';
-import { User } from 'src/user.decorator';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { TrainingVideoDTO } from '@src/dto/trainingVideo.dto';
+import { Role } from '@src/enum/roles.enum';
+import { User } from '@src/user.decorator';
 import { DeleteResult } from 'typeorm';
 import { TrainingVideosService } from './training-videos.service';
 

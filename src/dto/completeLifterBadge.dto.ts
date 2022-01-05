@@ -1,10 +1,10 @@
 import { LifterDTO } from './lifter.dto';
-import { BadgeDTO } from 'src/dto/badge.dto';
+import { BadgeDTO } from '@src/dto/badge.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional, IsUUID, ValidateNested } from 'class-validator';
-import { CompletedLifterBadge } from 'src/model/completedLifterBadges.entity';
-import { User } from 'src/user.decorator';
+import { CompletedLifterBadge } from '@src/model/completedLifterBadges.entity';
+import { User } from '@src/user.decorator';
 
 export class CompletedLifterBadgeDTO
   implements Readonly<CompletedLifterBadgeDTO>

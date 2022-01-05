@@ -8,9 +8,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { SurveyData, Survey } from 'src/model/survey.entity';
+import { SurveyData, Survey } from '@src/model/survey.entity';
 import { Type } from 'class-transformer';
-import { SurveyResponse } from 'src/model/surveyResponse.entity';
+import { SurveyResponse } from '@src/model/surveyResponse.entity';
 
 export class SurveyDTO implements Readonly<SurveyDTO> {
   @ApiProperty({ required: false })

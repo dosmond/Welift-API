@@ -10,13 +10,13 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { User } from 'src/user.decorator';
-import { AddressMultipleDTO } from 'src/dto/address.multiple.dto';
-import { AddressUpdateDTO } from 'src/dto/address.update.dto';
+import { User } from '@src/user.decorator';
+import { AddressMultipleDTO } from '@src/dto/address.multiple.dto';
+import { AddressUpdateDTO } from '@src/dto/address.update.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('address')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

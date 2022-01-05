@@ -1,4 +1,4 @@
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '../model/lifters.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -11,8 +11,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { User } from 'src/user.decorator';
-import { LifterReview } from 'src/model/lifterReviews.entity';
+import { LifterReview } from '../model/lifterReviews.entity';
 
 export class LifterReviewDTO implements Readonly<LifterReviewDTO> {
   @ApiProperty()
