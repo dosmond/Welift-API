@@ -1,3 +1,4 @@
+import { LifterDTO } from 'src/dto/lifter.dto';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { WhatsNewService } from './../routes/whats-new/whats-new.service';
 import { TrainingVideosService } from './../routes/training-videos/training-videos.service';
@@ -58,6 +59,7 @@ import { TextClient } from '@src/helper/text.client';
 import { GoogleCalendarApiHelper } from '@src/helper/googleCalendar.helper';
 import { BookingBatchDTO } from '@src/dto/booking.batch.dto';
 import { AddressDTO } from '@src/dto/address.dto';
+import { LifterBatchDTO } from '@src/dto/lifter.batch.dto';
 
 async function run() {
   const seedId = Date.now()
@@ -106,7 +108,6 @@ async function run() {
   const surveyRepo = connection.getRepository(Survey);
   const surveyResponseRepo = connection.getRepository(SurveyResponse);
   const trainingVideoRepo = connection.getRepository(TrainingVideo);
-  const whatsNewRepo = connection.getRepository(WhatsNew);
 
   //
   // Service initialization
@@ -136,11 +137,6 @@ async function run() {
   );
   const completedLifterBadgeService = new CompletedLifterBadgeService(
     completedLifterBadgeRepo,
-  );
-  const cronJobService = new CronHelper(
-    new SchedulerRegistry(),
-    cronJobRepo,
-    new EventEmitter2(),
   );
   const equipmentService = new EquipmentService(
     equipmentRepo,
@@ -196,21 +192,20 @@ async function run() {
     trainingVideoRepo,
     lifterCompletedTrainingVideoRepo,
   );
-  const whatsNewService = new WhatsNewService(whatsNewRepo);
 
   console.log('Done initializing');
   //
   // Begin Data Creation
   //
   console.log('Beginning Data Creation');
-  const bookings = await createBookings(seedId, bookingService);
+  await createBookings(seedId, bookingService);
+  await createLifters(lifterService);
 }
 
 const createBookings = async (
   seedId: string,
   bookingService: BookingService,
-): Promise<BookingDTO[]> => {
-  const bookings: BookingDTO[] = [];
+): Promise<void> => {
   const startingAddress = new AddressDTO({
     street: '123 N Main St',
     street2: '',
@@ -223,30 +218,80 @@ const createBookings = async (
     const endTime = new Date();
     endTime.setHours(endTime.getHours() + 2);
     console.log('Creating Booking ', i);
-    bookings.push(
-      await bookingService.createBatch(
-        new BookingBatchDTO({
-          startingAddress: startingAddress,
-          endingAddress: startingAddress,
-          booking: new BookingDTO({
-            needsPickupTruck: false,
-            name: `test-${seedId}-${i}`,
-            phone: '8015555555',
-            email: 'test@test.com',
-            startTime: new Date(),
-            endTime: endTime,
-            lifterCount: 2,
-            hoursCount: 2,
-            totalCost: 240,
-            timezone: 'America/Denver',
-            distanceInfo: 'none',
-          }),
+    await bookingService.createBatch(
+      new BookingBatchDTO({
+        startingAddress: startingAddress,
+        endingAddress: startingAddress,
+        booking: new BookingDTO({
+          needsPickupTruck: false,
+          name: `test-${seedId}-${i}`,
+          phone: '8015555555',
+          email: 'test@test.com',
+          startTime: new Date(),
+          endTime: endTime,
+          lifterCount: 2,
+          hoursCount: 2,
+          totalCost: 240,
+          timezone: 'America/Denver',
+          distanceInfo: 'none',
         }),
-      ),
+      }),
     );
   }
+};
 
-  return bookings;
+const createLifters = async (
+  lifterService: LiftersService,
+): Promise<LifterDTO[]> => {
+  const address = new AddressDTO({
+    street: '123 N Main St',
+    street2: '',
+    state: 'UT',
+    city: 'Salt Lake City',
+    postalCode: '84004',
+  });
+
+  const lifterOne = new LifterDTO({
+    firstName: 'Test',
+    lastName: 'Tester',
+    alias: 'Test 1',
+    email: 'test1@test.com',
+    phone: '8015555556',
+    passedBc: true,
+    hasPickupTruck: false,
+    status: 'contacted',
+    acceptedContract: true,
+  });
+
+  const lifterTwo = new LifterDTO({
+    firstName: 'Test 2',
+    lastName: 'Tester',
+    alias: 'Test 2',
+    email: 'test2@test.com',
+    phone: '8015555555',
+    passedBc: true,
+    hasPickupTruck: true,
+    status: 'contacted',
+    acceptedContract: true,
+  });
+
+  const lifters: LifterDTO[] = [];
+  lifters.push(
+    await lifterService.createBatch(
+      new LifterBatchDTO({
+        address: address,
+        lifter: lifterOne,
+      }),
+    ),
+    await lifterService.createBatch(
+      new LifterBatchDTO({
+        address: address,
+        lifter: lifterTwo,
+      }),
+    ),
+  );
+
+  return lifters;
 };
 
 run()

@@ -16,4 +16,8 @@ export class LifterBatchDTO implements Readonly<LifterBatchDTO> {
   @Type(() => LifterDTO)
   @IsDefined()
   lifter: LifterDTO;
+
+  constructor(init?: Partial<LifterBatchDTO>) {
+    Object.assign(this, init);
+  }
 }
