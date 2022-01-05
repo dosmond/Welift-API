@@ -37,4 +37,8 @@ export class BookingBatchDTO implements Readonly<BookingBatchDTO> {
   @IsOptional()
   @IsString()
   referralCode: string;
+
+  constructor(init?: Partial<BookingBatchDTO>) {
+    Object.assign(this, init);
+  }
 }

@@ -46,6 +46,10 @@ export class AddressDTO implements Readonly<AddressDTO> {
   @IsOptional()
   lifter: LifterDTO;
 
+  constructor(init?: Partial<AddressDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<AddressDTO>) {
     const address = new AddressDTO();
     for (const property in dto) address[property] = dto[property];
