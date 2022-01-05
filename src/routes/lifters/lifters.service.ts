@@ -13,22 +13,22 @@ import { TextClient } from './../../helper/text.client';
 import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { LifterUpdateBatchDTO } from './../../dto/lifter.update.batch.dto';
-import { Address } from 'src/model/addresses.entity';
-import { AddressDTO } from 'src/dto/address.dto';
+import { Address } from '@src/model/addresses.entity';
+import { AddressDTO } from '@src/dto/address.dto';
 import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { LifterDTO } from './../../dto/lifter.dto';
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '@src/model/lifters.entity';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository, Between } from 'typeorm';
-import { User } from 'src/user.decorator';
-import { LifterUpdateDTO } from 'src/dto/lifter.update.dto';
-import { AddressUpdateDTO } from 'src/dto/address.update.dto';
-import { PendingVerification } from 'src/model/pendingVerification.entity';
-import { EmailClient } from 'src/helper/email.client';
+import { User } from '@src/user.decorator';
+import { LifterUpdateDTO } from '@src/dto/lifter.update.dto';
+import { AddressUpdateDTO } from '@src/dto/address.update.dto';
+import { PendingVerification } from '@src/model/pendingVerification.entity';
+import { EmailClient } from '@src/helper/email.client';
 import { OnEvent } from '@nestjs/event-emitter';
-import { PushNotificationRequest } from 'src/helper/pushNotification.helper';
+import { PushNotificationRequest } from '@src/helper/pushNotification.helper';
 
 @Injectable()
 export class LiftersService {

@@ -7,7 +7,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Equipment } from 'src/model/equipment.entity';
+import { Equipment } from '@src/model/equipment.entity';
 import { EquipmentDTO } from './equipment.dto';
 import { LifterEquipmentDTO } from './lifterEquipment.dto';
 

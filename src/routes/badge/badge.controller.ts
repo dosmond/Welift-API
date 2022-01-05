@@ -10,11 +10,11 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { BadgeUpdateDTO } from 'src/dto/badge.update.dto';
+import { BadgeUpdateDTO } from '@src/dto/badge.update.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Role } from 'src/enum/roles.enum';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Role } from '@src/enum/roles.enum';
+import { Roles } from '@src/auth/roles/roles.decorator';
 
 @Controller('badge')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

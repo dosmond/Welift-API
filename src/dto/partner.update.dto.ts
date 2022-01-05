@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, IsOptional, IsNumber } from 'class-validator';
-import { Partner } from 'src/model/partner.entity';
-import { User } from 'src/user.decorator';
+import { Partner } from '@src/model/partner.entity';
+import { User } from '@src/user.decorator';
 import { PartnerDTO } from './partner.dto';
 
 export class PartnerUpdateDTO

@@ -1,10 +1,10 @@
 import { Equipment } from './../model/equipment.entity';
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '@src/model/lifters.entity';
 import { LifterEquipment } from '../model/lifterEquipment.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional, IsUUID, ValidateNested } from 'class-validator';
-import { User } from 'src/user.decorator';
+import { User } from '@src/user.decorator';
 
 export class LifterEquipmentDTO implements Readonly<LifterEquipmentDTO> {
   @ApiProperty()

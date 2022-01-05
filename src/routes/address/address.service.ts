@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from '../../model/addresses.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { User } from 'src/user.decorator';
-import { AddressMultipleDTO } from 'src/dto/address.multiple.dto';
-import { AddressUpdateDTO } from 'src/dto/address.update.dto';
+import { User } from '@src/user.decorator';
+import { AddressMultipleDTO } from '@src/dto/address.multiple.dto';
+import { AddressUpdateDTO } from '@src/dto/address.update.dto';
 
 @Injectable()
 export class AddressService {

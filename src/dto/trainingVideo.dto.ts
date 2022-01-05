@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsUUID, IsString } from 'class-validator';
-import { User } from 'src/user.decorator';
-import { TrainingVideo } from 'src/model/TrainingVideos.entity';
+import { User } from '@src/user.decorator';
+import { TrainingVideo } from '@src/model/TrainingVideos.entity';
 
 export class TrainingVideoDTO implements Readonly<TrainingVideoDTO> {
   @ApiProperty({ required: false })

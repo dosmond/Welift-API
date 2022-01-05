@@ -1,9 +1,9 @@
 import { LifterCompletedTrainingVideo } from './../../model/lifterCompletedTrainingVideos.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TrainingVideoDTO } from 'src/dto/trainingVideo.dto';
-import { TrainingVideo } from 'src/model/TrainingVideos.entity';
-import { User } from 'src/user.decorator';
+import { TrainingVideoDTO } from '@src/dto/trainingVideo.dto';
+import { TrainingVideo } from '@src/model/TrainingVideos.entity';
+import { User } from '@src/user.decorator';
 import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()

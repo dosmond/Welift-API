@@ -3,7 +3,7 @@ import { Note } from './../../model/note.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { NoteDTO } from 'src/dto/note.dto';
+import { NoteDTO } from '@src/dto/note.dto';
 
 @Injectable()
 export class NoteService {

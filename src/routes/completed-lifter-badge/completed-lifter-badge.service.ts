@@ -2,8 +2,8 @@ import { CompletedLifterBadge } from './../../model/completedLifterBadges.entity
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { CompletedLifterBadgeDTO } from 'src/dto/completeLifterBadge.dto';
-import { User } from 'src/user.decorator';
+import { CompletedLifterBadgeDTO } from '@src/dto/completeLifterBadge.dto';
+import { User } from '@src/user.decorator';
 
 @Injectable()
 export class CompletedLifterBadgeService {

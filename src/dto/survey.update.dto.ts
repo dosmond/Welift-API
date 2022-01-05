@@ -6,9 +6,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { SurveyData, Survey } from 'src/model/survey.entity';
+import { SurveyData, Survey } from '@src/model/survey.entity';
 import { Type } from 'class-transformer';
-import { SurveyResponse } from 'src/model/surveyResponse.entity';
+import { SurveyResponse } from '@src/model/surveyResponse.entity';
 import { SurveyDTO } from './survey.dto';
 
 export class SurveyUpdateDTO implements Readonly<SurveyUpdateDTO>, SurveyDTO {

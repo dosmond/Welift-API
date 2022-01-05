@@ -1,8 +1,8 @@
 import { SlackHelper } from './../../helper/slack.helper';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { Roles } from '@src/auth/roles/roles.decorator';
 import { LeadLandingDTO } from './../../dto/lead.landing.dto';
-import { LeadUpdateDTO } from 'src/dto/lead.update.dto';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { LeadUpdateDTO } from '@src/dto/lead.update.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { LeadDTO } from './../../dto/lead.dto';
 import { LeadsService } from './leads.service';
 import {
@@ -15,10 +15,10 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { LeadThumbtackDTO } from 'src/dto/lead.thumbtack.dto';
+import { LeadThumbtackDTO } from '@src/dto/lead.thumbtack.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('lead')
 export class LeadsController {

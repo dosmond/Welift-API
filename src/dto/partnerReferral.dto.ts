@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUUID } from 'class-validator';
-import { User } from 'src/user.decorator';
+import { User } from '@src/user.decorator';
 
 export class PartnerReferralDTO implements Readonly<PartnerReferralDTO> {
   @ApiProperty()

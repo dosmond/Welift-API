@@ -1,4 +1,4 @@
-import { LiftDTO } from 'src/dto/lift.dto';
+import { LiftDTO } from '@src/dto/lift.dto';
 import { NoteDTO } from './note.dto';
 import { AddressDTO } from './address.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,8 +13,8 @@ import {
   IsDateString,
   ValidateNested,
 } from 'class-validator';
-import { Booking } from 'src/model/booking.entity';
-import { User } from 'src/user.decorator';
+import { Booking } from '@src/model/booking.entity';
+import { User } from '@src/user.decorator';
 
 export class BookingDTO implements Readonly<BookingDTO> {
   @ApiProperty({ required: false })

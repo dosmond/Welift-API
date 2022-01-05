@@ -8,8 +8,8 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Lifter } from 'src/model/lifters.entity';
-import { LifterStats } from 'src/model/lifterStats.entity';
+import { Lifter } from '../model/lifters.entity';
+import { LifterStats } from '../model/lifterStats.entity';
 import { LifterStatsDTO } from './lifterStats.dto';
 
 export class LifterStatsUpdateDTO

@@ -1,8 +1,8 @@
 import { SlackHelper } from './../../helper/slack.helper';
 import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { Roles } from '@src/auth/roles/roles.decorator';
 import { TextClient } from '../../helper/text.client';
-import { BookingDTO } from 'src/dto/booking.dto';
+import { BookingDTO } from '@src/dto/booking.dto';
 import { BookingService } from './booking.service';
 import {
   Body,
@@ -14,14 +14,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
-import { BookingConfirmTextDTO } from 'src/dto/bookingConfirmText.dto';
-import { BookingUpdateDTO } from 'src/dto/booking.update.dto';
+import { BookingBatchDTO } from '@src/dto/booking.batch.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
+import { BookingConfirmTextDTO } from '@src/dto/bookingConfirmText.dto';
+import { BookingUpdateDTO } from '@src/dto/booking.update.dto';
 import { DeleteResult } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Role } from '@src/enum/roles.enum';
 import { Stripe } from 'stripe';
 
 @Controller('booking')

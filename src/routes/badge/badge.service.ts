@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadgeDTO } from 'src/dto/badge.dto';
-import { BadgeUpdateDTO } from 'src/dto/badge.update.dto';
-import { Badge } from 'src/model/badges.entity';
+import { BadgeDTO } from '@src/dto/badge.dto';
+import { BadgeUpdateDTO } from '@src/dto/badge.update.dto';
+import { Badge } from '@src/model/badges.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

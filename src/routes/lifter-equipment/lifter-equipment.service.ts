@@ -2,8 +2,8 @@ import { LifterEquipment } from './../../model/lifterEquipment.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { LifterEquipmentDTO } from 'src/dto/lifterEquipment.dto';
-import { User } from 'src/user.decorator';
+import { LifterEquipmentDTO } from '@src/dto/lifterEquipment.dto';
+import { User } from '@src/user.decorator';
 
 @Injectable()
 export class LifterEquipmentService {

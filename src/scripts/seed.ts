@@ -1,6 +1,6 @@
-import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import { AcceptedLiftService } from './../routes/accepted-lift/accepted-lift.service';
-import { configService } from 'src/config/config.service';
+import { configService } from '@src/config/config.service';
 import { ConnectionOptions, createConnection } from 'typeorm';
 
 async function run() {

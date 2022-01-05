@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('note')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

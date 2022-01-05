@@ -1,4 +1,4 @@
-import { AddressDTO } from 'src/dto/address.dto';
+import { AddressDTO } from '@src/dto/address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDefined, IsObject, ValidateNested } from 'class-validator';

@@ -1,8 +1,8 @@
 import { SurveyUpdateDTO } from './../../dto/survey.update.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SurveyDTO } from 'src/dto/survey.dto';
-import { Survey } from 'src/model/survey.entity';
+import { SurveyDTO } from '@src/dto/survey.dto';
+import { Survey } from '@src/model/survey.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

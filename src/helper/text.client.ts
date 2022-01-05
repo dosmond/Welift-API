@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SNS, Credentials, config } from 'aws-sdk';
-import { BookingConfirmTextDTO } from 'src/dto/bookingConfirmText.dto';
+import { BookingConfirmTextDTO } from '@src/dto/bookingConfirmText.dto';
 
 // This should only be necessary for local dev work.
 if (process.env.NODE_ENV == 'local') {

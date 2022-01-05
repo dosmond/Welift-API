@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsUUID, IsString, IsNumber } from 'class-validator';
-import { User } from 'src/user.decorator';
-import { Partner } from 'src/model/partner.entity';
+import { User } from '@src/user.decorator';
+import { Partner } from '@src/model/partner.entity';
 
 export class PartnerDTO implements Readonly<PartnerDTO> {
   @ApiProperty({ required: false })

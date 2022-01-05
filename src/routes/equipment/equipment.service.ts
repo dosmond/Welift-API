@@ -4,7 +4,7 @@ import { Equipment } from './../../model/equipment.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { EquipmentDTO } from 'src/dto/equipment.dto';
+import { EquipmentDTO } from '@src/dto/equipment.dto';
 
 @Injectable()
 export class EquipmentService {
