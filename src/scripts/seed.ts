@@ -167,27 +167,9 @@ async function run() {
     authService,
     new PushNotificationHelper(),
   );
-  const liftsService = new LiftsService(
-    liftRepo,
-    lifterRepo,
-    acceptedLiftService,
-    new TextClient(),
-  );
   const noteService = new NoteService(noteRepo);
   const partnerService = new PartnersService(partnerRepo, new EmailClient());
-  const partnerCreditHourPurchaseService =
-    new PartnerCreditHourPurchasesService(
-      partnerCreditHourPurchasesRepo,
-      partnerRepo,
-    );
-  const partnerReferralService = new PartnerReferralsService(
-    partnerReferralRepo,
-  );
   const surveyService = new SurveyService(surveyRepo);
-  const surveyResponseService = new SurveyResponseService(
-    surveyResponseRepo,
-    surveyService,
-  );
   const trainingVideoService = new TrainingVideosService(
     trainingVideoRepo,
     lifterCompletedTrainingVideoRepo,
