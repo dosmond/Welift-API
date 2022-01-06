@@ -41,4 +41,8 @@ export class Address {
 
   @OneToOne(() => Lifter, (lifters) => lifters.address)
   lifter: Lifter;
+
+  constructor(init?: Partial<Address>) {
+    Object.assign(this, init);
+  }
 }

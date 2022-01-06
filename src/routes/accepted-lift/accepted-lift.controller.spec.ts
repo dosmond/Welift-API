@@ -1,25 +1,27 @@
 import { AcceptedLiftService } from './accepted-lift.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AcceptedLiftController } from './accepted-lift.controller';
-import { mockAcceptedLiftService } from 'test/mocks/acceptedLiftService.mock';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
+import { Lift } from '@src/model/lifts.entity';
+import { configService } from '@src/config/config.service';
 
 describe('AcceptedLiftController', () => {
   let controller: AcceptedLiftController;
-  let service: AcceptedLiftService;
-
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
+      imports: [
+        TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+        TypeOrmModule.forFeature([AcceptedLift, Lift]),
+      ],
       controllers: [AcceptedLiftController],
       providers: [AcceptedLiftService],
     }).compile();
 
     controller = moduleRef.get<AcceptedLiftController>(AcceptedLiftController);
-    service = moduleRef.get<AcceptedLiftService>(AcceptedLiftService);
   });
 
-  describe('GetById', () => {
-    it('should return null or undefined when the id doesnt exist', async () => {
-      await controller.getById({ id: '' });
-    });
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
   });
 });
