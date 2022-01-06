@@ -346,7 +346,7 @@ export class AcceptedLiftService {
     const lift = await this.liftRepo.findOne({ id: payload.liftId });
 
     const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
-    lift.acceptedLifts.forEach((accepted) => {
+    lift?.acceptedLifts?.forEach((accepted) => {
       if (!accepted.clockOutTime) {
         accepted.clockOutTime = new Date(Date.now());
         [accepted.payrate, accepted.totalPay] =
