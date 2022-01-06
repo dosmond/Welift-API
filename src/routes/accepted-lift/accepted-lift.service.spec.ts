@@ -1,4 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
+import { Lift } from '@src/model/lifts.entity';
 import { AcceptedLiftService } from './accepted-lift.service';
 
 describe('AcceptedLiftService', () => {
@@ -6,6 +9,7 @@ describe('AcceptedLiftService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [TypeOrmModule.forFeature([AcceptedLift, Lift])],
       providers: [AcceptedLiftService],
     }).compile();
 

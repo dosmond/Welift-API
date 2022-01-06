@@ -180,6 +180,10 @@ export class LifterDTO implements Readonly<LifterDTO> {
   @Type(() => AddressDTO)
   address: AddressDTO;
 
+  constructor(init?: Partial<LifterDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<LifterDTO>): LifterDTO {
     const badge = new LifterDTO();
     for (const property in dto) badge[property] = dto[property];
