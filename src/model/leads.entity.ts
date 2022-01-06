@@ -101,6 +101,13 @@ export class Lead {
   })
   creationDate: Date | null;
 
+  @Column('character varying', {
+    name: 'acquisition_channel',
+    nullable: true,
+    length: 128,
+  })
+  acquisitionChannel: string | null;
+
   @OneToMany(() => Note, (note) => note.lead)
   notes: Note[];
 }

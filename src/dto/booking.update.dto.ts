@@ -125,6 +125,11 @@ export class BookingUpdateDTO
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  acquisitionChannel: string;
+
+  @ApiProperty()
+  @IsOptional()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO;
 
@@ -177,6 +182,7 @@ export class BookingUpdateDTO
         status: entity.status,
         timezone: entity.timezone,
         calendarEventId: entity.calendarEventId,
+        acquisitionChannel: entity.acquisitionChannel,
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),

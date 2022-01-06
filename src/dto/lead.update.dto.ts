@@ -104,6 +104,11 @@ export class LeadUpdateDTO implements Readonly<LeadUpdateDTO>, LeadDTO {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  acquisitionChannel: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => NoteDTO)
@@ -135,6 +140,7 @@ export class LeadUpdateDTO implements Readonly<LeadUpdateDTO>, LeadDTO {
         referralCode: entity.referralCode,
         promoCode: entity.promoCode,
         creationDate: entity.creationDate,
+        acquisitionChannel: entity.acquisitionChannel,
         notes: entity.notes?.map((item) => NoteDTO.fromEntity(item)),
       });
     }
