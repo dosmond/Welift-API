@@ -343,20 +343,27 @@ export class AcceptedLiftService {
 
   @OnEvent(EventNames.AutoClockOut)
   private async handleAutoClockOut(payload: ClockOutEvent) {
-    const lift = await this.liftRepo.findOne({ id: payload.liftId });
+    try {
+      const lift = await this.liftRepo.findOne(
+        { id: payload.liftId },
+        { relations: ['acceptedLifts'] },
+      );
 
-    const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
-    lift.acceptedLifts.forEach((accepted) => {
-      if (!accepted.clockOutTime) {
-        accepted.clockOutTime = new Date(Date.now());
-        [accepted.payrate, accepted.totalPay] =
-          this.getPayrateAndTotalPay(accepted);
-        promises.push(
-          this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
-        );
-      }
-    });
-    await Promise.all(promises);
+      const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
+      lift?.acceptedLifts?.forEach((accepted) => {
+        if (accepted.clockInTime && !accepted.clockOutTime) {
+          accepted.clockOutTime = new Date(Date.now());
+          [accepted.payrate, accepted.totalPay] =
+            this.getPayrateAndTotalPay(accepted);
+          promises.push(
+            this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
+          );
+        }
+      });
+      await Promise.all(promises);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   private getPayrateAndTotalPay(lift: AcceptedLift): number[] {

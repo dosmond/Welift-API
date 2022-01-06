@@ -117,6 +117,13 @@ export class Booking {
   })
   calendarEventId: string | null;
 
+  @Column('character varying', {
+    name: 'acquisition_channel',
+    nullable: true,
+    length: 128,
+  })
+  acquisitionChannel: string | null;
+
   @OneToOne(() => Address, (addresses) => addresses.bookingEnd)
   @JoinColumn([{ name: 'ending_address', referencedColumnName: 'id' }])
   endingAddress: Address;
