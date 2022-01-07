@@ -1,6 +1,6 @@
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CronHelper, CronModule } from './../../helper/cron.helper';
+import { CronHelper } from './../../helper/cron.helper';
 import { EmailClient } from '@src/helper/email.client';
 import { configService } from '@src/config/config.service';
 import { Test, TestingModule } from '@nestjs/testing';

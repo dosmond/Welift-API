@@ -1,6 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CronJobDescription } from './../../model/cronjob.entity';
-import { CronHelper, CronModule } from './../../helper/cron.helper';
+import { CronHelper } from './../../helper/cron.helper';
 import { EmailClient } from '@src/helper/email.client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
