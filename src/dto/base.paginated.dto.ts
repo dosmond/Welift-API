@@ -36,4 +36,8 @@ export class PaginatedDTO implements Readonly<PaginatedDTO> {
   @IsOptional()
   @IsEnum(Order)
   order?: Order = Order.DESC;
+
+  constructor(init?: Partial<PaginatedDTO>) {
+    Object.assign(this, init);
+  }
 }

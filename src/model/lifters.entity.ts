@@ -146,4 +146,8 @@ export class Lifter {
   })
   @JoinColumn([{ name: 'address', referencedColumnName: 'id' }])
   address: Address;
+
+  constructor(init?: Partial<Lifter>) {
+    Object.assign(this, init);
+  }
 }
