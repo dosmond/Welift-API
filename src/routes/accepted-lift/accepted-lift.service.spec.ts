@@ -258,39 +258,33 @@ describe('AcceptedLiftService', () => {
     const lifterStats = await lifterStatsRepo.find();
 
     let promises: Promise<DeleteResult>[] = [];
-    acceptedLifts.forEach((lift) => {
+    for (const lift of acceptedLifts)
       promises.push(acceptedLiftRepo.delete({ id: lift.id }));
-    });
+
     await Promise.all(promises);
     promises = [];
 
-    lifts.forEach((lift) => {
-      promises.push(liftRepo.delete({ id: lift.id }));
-    });
+    for (const lift of lifts) promises.push(liftRepo.delete({ id: lift.id }));
     await Promise.all(promises);
     promises = [];
 
-    lifterStats.forEach((lifter) => {
+    for (const lifter of lifterStats)
       promises.push(lifterStatsRepo.delete({ id: lifter.id }));
-    });
     await Promise.all(promises);
     promises = [];
 
-    lifters.forEach((lifter) => {
+    for (const lifter of lifters)
       promises.push(lifterRepo.delete({ id: lifter.id }));
-    });
     await Promise.all(promises);
     promises = [];
 
-    bookings.forEach((booking) => {
+    for (const booking of bookings)
       promises.push(bookingRepo.delete({ id: booking.id }));
-    });
     await Promise.all(promises);
     promises = [];
 
-    addresses.forEach((address) => {
+    for (const address of addresses)
       promises.push(addressRepo.delete({ id: address.id }));
-    });
     await Promise.all(promises);
   };
 });
