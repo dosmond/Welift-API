@@ -1,24 +1,24 @@
+import { WhatsNewService } from './whats-new.service';
+import { WhatsNew } from '@src/model/whatsnew.entity';
+import { WhatsNewController } from './whats-new.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
-import { Note } from '@src/model/note.entity';
-import { NoteController } from './note.controller';
-import { NoteService } from './note.service';
 
-describe('NoteController', () => {
-  let controller: NoteController;
+describe('TrainingVideosController', () => {
+  let controller: WhatsNewController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-        TypeOrmModule.forFeature([Note]),
+        TypeOrmModule.forFeature([WhatsNew]),
       ],
-      controllers: [NoteController],
-      providers: [NoteService],
+      controllers: [WhatsNewController],
+      providers: [WhatsNewService],
     }).compile();
 
-    controller = module.get<NoteController>(NoteController);
+    controller = module.get<WhatsNewController>(WhatsNewController);
   });
 
   it('should be defined', () => {

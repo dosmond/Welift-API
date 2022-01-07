@@ -1,22 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
-import { Note } from '@src/model/note.entity';
-import { NoteService } from './note.service';
+import { WhatsNew } from '@src/model/whatsnew.entity';
+import { WhatsNewService } from './whats-new.service';
 
-describe('NoteService', () => {
-  let service: NoteService;
+describe('TrainingVideosService', () => {
+  let service: WhatsNewService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-        TypeOrmModule.forFeature([Note]),
+        TypeOrmModule.forFeature([WhatsNew]),
       ],
-      providers: [NoteService],
+      providers: [WhatsNewService],
     }).compile();
 
-    service = module.get<NoteService>(NoteService);
+    service = module.get<WhatsNewService>(WhatsNewService);
   });
 
   it('should be defined', () => {
