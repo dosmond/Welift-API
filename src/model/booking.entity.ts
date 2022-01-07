@@ -139,4 +139,8 @@ export class Booking {
 
   @OneToOne(() => Lift, (lift) => lift.booking)
   lift: Lift;
+
+  constructor(init?: Partial<Booking>) {
+    Object.assign(this, init);
+  }
 }

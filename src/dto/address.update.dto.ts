@@ -55,6 +55,10 @@ export class AddressUpdateDTO
   @ValidateNested()
   lifter: LifterDTO;
 
+  constructor(init?: Partial<AddressUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<AddressUpdateDTO>) {
     const address = new AddressUpdateDTO();
     for (const property in dto) address[property] = dto[property];
