@@ -41,7 +41,9 @@ jobs:
         run: yarn
       - name: Run Migrations
         run: yarn typeorm:migration:run
-      - name: Run tests
+      - name: Run unit tests
+        run: yarn test --detectOpenHandles
+      - name: Run e2e tests
         run: yarn test:e2e
       - name: Stop Docker-Compose
         run: docker-compose down
