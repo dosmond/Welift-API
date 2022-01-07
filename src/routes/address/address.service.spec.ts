@@ -87,7 +87,7 @@ describe('AddressService', () => {
     });
   });
 
-  describe.only('update', () => {
+  describe('update', () => {
     it('should update the existing address', async () => {
       const address = new AddressDTO({
         street: 'test1',

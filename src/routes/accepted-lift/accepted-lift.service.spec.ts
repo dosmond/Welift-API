@@ -50,7 +50,7 @@ describe('AcceptedLiftService', () => {
     expect(service).toBeDefined();
   });
 
-  describe.only('getAll', () => {
+  describe('getAll', () => {
     beforeAll(async () => {
       await createTwoBookingsAndAssignOneLifterToBoth();
     });
