@@ -25,7 +25,7 @@ export class AWSS3Helper {
       Bucket: process.env.PROFILE_PICTURE_BUCKET,
       Key: `${lifterId}/${lifterId}.png`,
     };
-    console.log(lifterId);
+
     try {
       // Check file exists first
       await this.s3.headObject(params).promise();
