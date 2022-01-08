@@ -21,15 +21,22 @@ export class AWSS3Helper {
   }
 
   public async getProfilePicture(lifterId: string) {
+    const params: S3.GetObjectRequest = {
+      Bucket: 'mobile-profile-pictures-dev',
+      Key: `${lifterId}/${lifterId}.png`,
+    };
+
     try {
-      const params: S3.GetObjectRequest = {
-        Bucket: 'mobile-profile-pictures-dev',
-        Key: `${lifterId}/${lifterId}.png`,
-      };
       // Check file exists first
       await this.s3.headObject(params).promise();
+    } catch (err) {
+      throw err;
+    }
+
+    try {
       return await this.s3.getSignedUrlPromise('getObject', params);
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
