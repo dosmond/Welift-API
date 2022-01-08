@@ -30,7 +30,6 @@ export class AWSS3Helper {
       await this.s3.headObject(params).promise();
       return await this.s3.getSignedUrlPromise('getObject', params);
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
