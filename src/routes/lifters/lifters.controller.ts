@@ -72,7 +72,6 @@ export class LiftersController {
     try {
       return await this.serv.getProfilePicture(query.lifterId);
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err.message);
     }
   }
