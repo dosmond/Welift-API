@@ -1,8 +1,8 @@
 import { LifterDTO } from './lifter.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, IsOptional, ValidateNested } from 'class-validator';
-import { Address } from 'src/model/addresses.entity';
-import { User } from 'src/user.decorator';
+import { Address } from '@src/model/addresses.entity';
+import { User } from '@src/user.decorator';
 import { BookingDTO } from './booking.dto';
 
 export class AddressDTO implements Readonly<AddressDTO> {
@@ -45,6 +45,10 @@ export class AddressDTO implements Readonly<AddressDTO> {
   @ValidateNested()
   @IsOptional()
   lifter: LifterDTO;
+
+  constructor(init?: Partial<AddressDTO>) {
+    Object.assign(this, init);
+  }
 
   public static from(dto: Partial<AddressDTO>) {
     const address = new AddressDTO();

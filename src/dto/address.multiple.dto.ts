@@ -9,4 +9,8 @@ export class AddressMultipleDTO implements Readonly<AddressMultipleDTO> {
   @ValidateNested({ each: true })
   @Type(() => AddressDTO)
   addresses: AddressDTO[];
+
+  constructor(init?: Partial<AddressMultipleDTO>) {
+    Object.assign(this, init);
+  }
 }

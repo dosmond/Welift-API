@@ -2,8 +2,8 @@ import { LifterCompletedTrainingVideo } from './../../model/lifterCompletedTrain
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { LifterCompletedTrainingVideoDTO } from 'src/dto/liftercompletedTrainingVideo.dto';
-import { User } from 'src/user.decorator';
+import { LifterCompletedTrainingVideoDTO } from '@src/dto/liftercompletedTrainingVideo.dto';
+import { User } from '@src/user.decorator';
 
 @Injectable()
 export class LifterCompletedTrainingVideosService {

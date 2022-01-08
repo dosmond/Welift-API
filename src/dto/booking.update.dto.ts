@@ -9,8 +9,8 @@ import {
   IsNumber,
   IsDateString,
 } from 'class-validator';
-import { Booking } from 'src/model/booking.entity';
-import { User } from 'src/user.decorator';
+import { Booking } from '@src/model/booking.entity';
+import { User } from '@src/user.decorator';
 import { AddressDTO } from './address.dto';
 import { BookingDTO } from './booking.dto';
 import { LiftDTO } from './lift.dto';
@@ -125,6 +125,11 @@ export class BookingUpdateDTO
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  acquisitionChannel: string;
+
+  @ApiProperty()
+  @IsOptional()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO;
 
@@ -177,6 +182,7 @@ export class BookingUpdateDTO
         status: entity.status,
         timezone: entity.timezone,
         calendarEventId: entity.calendarEventId,
+        acquisitionChannel: entity.acquisitionChannel,
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),

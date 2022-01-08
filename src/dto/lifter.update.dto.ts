@@ -14,7 +14,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '@src/model/lifters.entity';
 import { AcceptedLiftDTO } from './acceptedLift.dto';
 import { AddressDTO } from './address.dto';
 import { CompletedLifterBadgeDTO } from './completeLifterBadge.dto';

@@ -1,11 +1,11 @@
 import { AddressDTO } from './../../dto/address.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from '../../model/addresses.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { User } from 'src/user.decorator';
-import { AddressMultipleDTO } from 'src/dto/address.multiple.dto';
-import { AddressUpdateDTO } from 'src/dto/address.update.dto';
+import { User } from '@src/user.decorator';
+import { AddressMultipleDTO } from '@src/dto/address.multiple.dto';
+import { AddressUpdateDTO } from '@src/dto/address.update.dto';
 
 @Injectable()
 export class AddressService {
@@ -52,6 +52,10 @@ export class AddressService {
     address: AddressUpdateDTO,
   ): Promise<AddressDTO> {
     const dto = AddressUpdateDTO.from(address);
+
+    if (!(await this.repo.findOne({ id: dto.id })))
+      throw new BadRequestException('Address does not exist');
+
     return AddressDTO.fromEntity(await this.repo.save(dto.toEntity(user)));
   }
 

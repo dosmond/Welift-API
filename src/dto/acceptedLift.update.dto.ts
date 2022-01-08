@@ -1,11 +1,11 @@
 import { IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsOptional, IsUUID } from 'class-validator';
-import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
-import { AcceptedLift } from 'src/model/acceptedLift.entity';
-import { Lifter } from 'src/model/lifters.entity';
-import { Lift } from 'src/model/lifts.entity';
-import { User } from 'src/user.decorator';
+import { AcceptedLiftDTO } from '../dto/acceptedLift.dto';
+import { AcceptedLift } from '../model/acceptedLift.entity';
+import { Lifter } from '../model/lifters.entity';
+import { Lift } from '../model/lifts.entity';
+import { User } from '../user.decorator';
 
 export class AcceptedLiftUpdateDTO
   implements Readonly<AcceptedLiftUpdateDTO>, AcceptedLiftDTO

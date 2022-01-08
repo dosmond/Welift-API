@@ -1,9 +1,9 @@
 import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { AuthService } from './../../auth/auth.service';
-import { Lift } from 'src/model/lifts.entity';
-import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { Lift } from '@src/model/lifts.entity';
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
-import { CompletedLifterBadge } from 'src/model/completedLifterBadges.entity';
+import { CompletedLifterBadge } from '@src/model/completedLifterBadges.entity';
 import { LifterReviewsService } from './../lifter-reviews/lifter-reviews.service';
 import { LifterEquipmentService } from './../lifter-equipment/lifter-equipment.service';
 import { LifterCompletedTrainingVideosService } from './../lifter-completed-training-videos/lifter-completed-training-videos.service';
@@ -13,16 +13,16 @@ import { AddressService } from './../address/address.service';
 import { AWSS3Helper } from './../../helper/awss3.helper';
 import { TextClient } from './../../helper/text.client';
 import { LifterStats } from './../../model/lifterStats.entity';
-import { Address } from 'src/model/addresses.entity';
+import { Address } from '@src/model/addresses.entity';
 import { Lifter } from './../../model/lifters.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LiftersController } from './lifters.controller';
 import { LiftersService } from './lifters.service';
-import { PendingVerification } from 'src/model/pendingVerification.entity';
-import { LifterCompletedTrainingVideo } from 'src/model/lifterCompletedTrainingVideos.entity';
-import { LifterEquipment } from 'src/model/lifterEquipment.entity';
-import { LifterReview } from 'src/model/lifterReviews.entity';
+import { PendingVerification } from '@src/model/pendingVerification.entity';
+import { LifterCompletedTrainingVideo } from '@src/model/lifterCompletedTrainingVideos.entity';
+import { LifterEquipment } from '@src/model/lifterEquipment.entity';
+import { LifterReview } from '@src/model/lifterReviews.entity';
 
 @Module({
   imports: [

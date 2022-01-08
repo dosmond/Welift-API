@@ -1,10 +1,10 @@
 import { TextClient } from './../../helper/text.client';
-import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
+import { AcceptedLiftDTO } from '@src/dto/acceptedLift.dto';
 import { TwoWayMap } from './../../helper/twoWayMap.helper';
-import { Lifter } from 'src/model/lifters.entity';
+import { Lifter } from '@src/model/lifters.entity';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
-import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { Lift } from './../../model/lifts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, BadRequestException } from '@nestjs/common';
@@ -14,8 +14,8 @@ import {
   Transaction,
   TransactionRepository,
 } from 'typeorm';
-import { LiftDTO } from 'src/dto/lift.dto';
-import { LiftUpdateDTO } from 'src/dto/lift.update.dto';
+import { LiftDTO } from '@src/dto/lift.dto';
+import { LiftUpdateDTO } from '@src/dto/lift.update.dto';
 
 @Injectable()
 export class LiftsService {

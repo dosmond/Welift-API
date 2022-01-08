@@ -1,4 +1,4 @@
-import { Lift } from 'src/model/lifts.entity';
+import { Lift } from '../../model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
 import {
   Injectable,
@@ -8,16 +8,16 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
+import { TokenVerificationRequestDTO } from '../../dto/tokenVerification.dto';
 import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
-import { User } from 'src/user.decorator';
+import { User } from '../../user.decorator';
 import { DeleteResult, getConnection, getManager } from 'typeorm';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
-import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
-import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
+import { PaginatedDTO } from '../../dto/base.paginated.dto';
+import { LifterPaginatedDTO } from '../../dto/lifter.paginated.dto';
+import { AcceptedLiftUpdateDTO } from '../../dto/acceptedLift.update.dto';
 import { OnEvent } from '@nestjs/event-emitter';
-import { EventNames } from 'src/enum/eventNames.enum';
-import { ClockOutEvent } from 'src/events/clockout.event';
+import { EventNames } from '../../enum/eventNames.enum';
+import { ClockOutEvent } from '../../events/clockout.event';
 
 @Injectable()
 export class AcceptedLiftService {
@@ -186,6 +186,19 @@ export class AcceptedLiftService {
 
       liftToUpdate.currentLifterCount += 1;
 
+      // If this is the last slot and the booking still needs
+      // someone with a pickup truck, then only allow people with a pickup truck.
+      if (
+        liftToUpdate.booking.needsPickupTruck &&
+        liftToUpdate.currentLifterCount == liftToUpdate.booking.lifterCount &&
+        !liftToUpdate.hasPickupTruck &&
+        !lift.usePickupTruck
+      ) {
+        throw new BadRequestException(
+          'This lift requires someone with a pickup truck',
+        );
+      }
+
       // Update lift if lifter is using pickup truck.
       if (lift.usePickupTruck) {
         liftToUpdate.hasPickupTruck = true;
@@ -330,20 +343,27 @@ export class AcceptedLiftService {
 
   @OnEvent(EventNames.AutoClockOut)
   private async handleAutoClockOut(payload: ClockOutEvent) {
-    const lift = await this.liftRepo.findOne({ id: payload.liftId });
+    try {
+      const lift = await this.liftRepo.findOne(
+        { id: payload.liftId },
+        { relations: ['acceptedLifts'] },
+      );
 
-    const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
-    lift.acceptedLifts.forEach((accepted) => {
-      if (!accepted.clockOutTime) {
-        accepted.clockOutTime = new Date(Date.now());
-        [accepted.payrate, accepted.totalPay] =
-          this.getPayrateAndTotalPay(accepted);
-        promises.push(
-          this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
-        );
-      }
-    });
-    await Promise.all(promises);
+      const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
+      lift?.acceptedLifts?.forEach((accepted) => {
+        if (accepted.clockInTime && !accepted.clockOutTime) {
+          accepted.clockOutTime = new Date(Date.now());
+          [accepted.payrate, accepted.totalPay] =
+            this.getPayrateAndTotalPay(accepted);
+          promises.push(
+            this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
+          );
+        }
+      });
+      await Promise.all(promises);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   private getPayrateAndTotalPay(lift: AcceptedLift): number[] {

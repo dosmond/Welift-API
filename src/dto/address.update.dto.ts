@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, IsOptional, ValidateNested } from 'class-validator';
-import { Address } from 'src/model/addresses.entity';
-import { Booking } from 'src/model/booking.entity';
-import { Lifter } from 'src/model/lifters.entity';
-import { User } from 'src/user.decorator';
+import { Address } from '@src/model/addresses.entity';
+import { Booking } from '@src/model/booking.entity';
+import { Lifter } from '@src/model/lifters.entity';
+import { User } from '@src/user.decorator';
 import { AddressDTO } from './address.dto';
 import { BookingDTO } from './booking.dto';
 import { LifterDTO } from './lifter.dto';
@@ -54,6 +54,10 @@ export class AddressUpdateDTO
   @IsOptional()
   @ValidateNested()
   lifter: LifterDTO;
+
+  constructor(init?: Partial<AddressUpdateDTO>) {
+    Object.assign(this, init);
+  }
 
   public static from(dto: Partial<AddressUpdateDTO>) {
     const address = new AddressUpdateDTO();

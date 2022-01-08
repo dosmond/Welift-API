@@ -117,6 +117,13 @@ export class Booking {
   })
   calendarEventId: string | null;
 
+  @Column('character varying', {
+    name: 'acquisition_channel',
+    nullable: true,
+    length: 128,
+  })
+  acquisitionChannel: string | null;
+
   @OneToOne(() => Address, (addresses) => addresses.bookingEnd)
   @JoinColumn([{ name: 'ending_address', referencedColumnName: 'id' }])
   endingAddress: Address;
@@ -132,4 +139,8 @@ export class Booking {
 
   @OneToOne(() => Lift, (lift) => lift.booking)
   lift: Lift;
+
+  constructor(init?: Partial<Booking>) {
+    Object.assign(this, init);
+  }
 }

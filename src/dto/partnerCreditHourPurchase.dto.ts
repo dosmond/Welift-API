@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUUID, IsNumber } from 'class-validator';
-import { User } from 'src/user.decorator';
+import { User } from '@src/user.decorator';
 
 export class PartnerCreditHourPurchaseDTO
   implements Readonly<PartnerCreditHourPurchaseDTO>

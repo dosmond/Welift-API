@@ -8,13 +8,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CompletedLifterBadgeDTO } from 'src/dto/completeLifterBadge.dto';
-import { User } from 'src/user.decorator';
+import { CompletedLifterBadgeDTO } from '@src/dto/completeLifterBadge.dto';
+import { User } from '@src/user.decorator';
 import { DeleteResult } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
 
 @Controller('completed-badge')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

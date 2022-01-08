@@ -1,7 +1,7 @@
-import { AddressDTO } from 'src/dto/address.dto';
+import { AddressDTO } from '@src/dto/address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDefined, ValidateNested } from 'class-validator';
+import { IsDefined, IsOptional, ValidateNested } from 'class-validator';
 
 export class LeadLandingDTO implements Readonly<LeadLandingDTO> {
   @ApiProperty()
@@ -18,6 +18,10 @@ export class LeadLandingDTO implements Readonly<LeadLandingDTO> {
 
   @ApiProperty()
   promoCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  acquisitionChannel: string;
 
   @ApiProperty()
   @ValidateNested()

@@ -2,7 +2,7 @@ import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
 import { LiftersService } from './../lifters/lifters.service';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { LifterDTO } from 'src/dto/lifter.dto';
+import { LifterDTO } from '@src/dto/lifter.dto';
 
 @Injectable()
 export class CheckrService {

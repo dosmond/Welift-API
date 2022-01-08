@@ -1,4 +1,4 @@
-import { AddressDTO } from 'src/dto/address.dto';
+import { AddressDTO } from '@src/dto/address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDefined, IsObject, ValidateNested } from 'class-validator';
@@ -16,4 +16,8 @@ export class LifterBatchDTO implements Readonly<LifterBatchDTO> {
   @Type(() => LifterDTO)
   @IsDefined()
   lifter: LifterDTO;
+
+  constructor(init?: Partial<LifterBatchDTO>) {
+    Object.assign(this, init);
+  }
 }

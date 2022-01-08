@@ -10,11 +10,11 @@ import {
   Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { Role } from 'src/enum/roles.enum';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { Role } from '@src/enum/roles.enum';
 import { SurveyResponseService } from './survey-response.service';
-import { SurveyResponseUpdateDTO } from 'src/dto/surveyResponse.update.dto';
+import { SurveyResponseUpdateDTO } from '@src/dto/surveyResponse.update.dto';
 
 @Controller('survey-response')
 @UseGuards(AuthGuard('jwt'), RolesGuard)

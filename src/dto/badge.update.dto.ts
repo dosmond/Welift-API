@@ -1,8 +1,8 @@
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { BadgeDTO } from './badge.dto';
-import { CompletedLifterBadge } from 'src/model/completedLifterBadges.entity';
-import { Badge } from 'src/model/badges.entity';
+import { CompletedLifterBadge } from '@src/model/completedLifterBadges.entity';
+import { Badge } from '@src/model/badges.entity';
 
 export class BadgeUpdateDTO implements Readonly<BadgeUpdateDTO>, BadgeDTO {
   @ApiProperty({ required: true })

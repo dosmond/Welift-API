@@ -1,5 +1,5 @@
-import { LeadDTO } from 'src/dto/lead.dto';
-import { BookingDTO } from 'src/dto/booking.dto';
+import { LeadDTO } from '@src/dto/lead.dto';
+import { BookingDTO } from '@src//dto/booking.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -9,9 +9,9 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Booking } from 'src/model/booking.entity';
-import { Lead } from 'src/model/leads.entity';
-import { Note } from 'src/model/note.entity';
+import { Booking } from '@src/model/booking.entity';
+import { Lead } from '@src/model/leads.entity';
+import { Note } from '@src/model/note.entity';
 import { NoteDTO } from './note.dto';
 
 export class NoteUpdateDTO implements Readonly<NoteUpdateDTO>, NoteDTO {

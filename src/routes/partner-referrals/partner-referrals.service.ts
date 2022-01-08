@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PartnerReferralDTO } from 'src/dto/partnerReferral.dto';
-import { PartnerReferral } from 'src/model/partnerReferrals.entity';
-import { User } from 'src/user.decorator';
+import { PartnerReferralDTO } from '@src/dto/partnerReferral.dto';
+import { PartnerReferral } from '@src/model/partnerReferrals.entity';
+import { User } from '@src/user.decorator';
 import { Repository } from 'typeorm';
 
 @Injectable()

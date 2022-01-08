@@ -1,4 +1,4 @@
-import { WhatsNew } from 'src/model/whatsnew.entity';
+import { WhatsNew } from '@src/model/whatsnew.entity';
 import {
   IsDateString,
   IsNotEmptyObject,

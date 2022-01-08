@@ -23,11 +23,7 @@ export class EmailClient {
     });
 
     transporter.verify(function (error: Error) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Server is ready to take our messages');
-      }
+      if (error) console.log(error);
     });
 
     return transporter;

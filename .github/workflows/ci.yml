@@ -1,0 +1,61 @@
+name: Continuous Integration Testing
+
+on:
+  pull_request:
+    branches:
+      - 'master'
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DATABASE: my_database
+      LIFTER_APPLICANT_SENDING_EMAIL: ${{ secrets.LIFTER_APPLICANT_SENDING_EMAIL }}
+      LIFTER_APPLICATION_EMAIL_PASSWORD: ${{ secrets.LIFTER_APPLICATION_EMAIL_PASSWORD }}
+      GATSBY_STRIPE_SECRET_KEY: ${{ secrets.GATSBY_STRIPE_SECRET_KEY }}
+      LANDING_USERPOOL_ID: ${{ secrets.LANDING_USERPOOL_ID }}
+      LANDING_CLIENT_ID: ${{ secrets.LANDING_CLIENT_ID }}
+      MOBILE_USERPOOL_ID: ${{ secrets.MOBILE_USERPOOL_ID }}
+      MOBILE_CLIENT_ID: ${{ secrets.MOBILE_CLIENT_ID }}
+      ADMIN_USERPOOL_ID: ${{ secrets.ADMIN_USERPOOL_ID }}
+      ADMIN_CLIENT_ID: ${{ secrets.ADMIN_CLIENT_ID }}
+      PARTNER_USERPOOL_ID: ${{ secrets.PARTNER_USERPOOL_ID }}
+      PARTNER_CLIENT_ID: ${{ secrets.PARTNER_CLIENT_ID }}
+      JWKS_URL: ${{ secrets.JWKS_URL }}
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: Start Docker-Compose
+        run: docker-compose up -d
+      - name: npm install
+        run: yarn
+      - name: Run Migrations
+        run: yarn typeorm:migration:run
+      - name: Run unit tests
+        run: yarn test --detectOpenHandles
+      - name: Run e2e tests
+        run: yarn test:e2e
+      - name: Stop Docker-Compose
+        run: docker-compose down
+
+  automerge:
+    needs: e2e-test
+    if: contains(github.event.pull_request.user.login, 'dependabot')
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: 'pascalgn/automerge-action@v0.12.0'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          MERGE_LABELS: ''
+          MERGE_METHOD: rebase

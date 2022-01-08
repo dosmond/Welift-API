@@ -9,15 +9,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
-import { PartnerDTO } from 'src/dto/partner.dto';
-import { PartnerUpdateDTO } from 'src/dto/partner.update.dto';
-import { PartnerCreditCheckoutDTO } from 'src/dto/partnerCreditCheckout.dto';
-import { PartnerSendCouponDTO } from 'src/dto/partnerSendCoupon.dto';
-import { Role } from 'src/enum/roles.enum';
-import { User } from 'src/user.decorator';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
+import { PartnerDTO } from '@src/dto/partner.dto';
+import { PartnerUpdateDTO } from '@src/dto/partner.update.dto';
+import { PartnerCreditCheckoutDTO } from '@src/dto/partnerCreditCheckout.dto';
+import { PartnerSendCouponDTO } from '@src/dto/partnerSendCoupon.dto';
+import { Role } from '@src/enum/roles.enum';
+import { User } from '@src/user.decorator';
 import { PartnersService } from './partners.service';
 
 @Controller('partner')

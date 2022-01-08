@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PartnerCreditHourPurchaseDTO } from 'src/dto/partnerCreditHourPurchase.dto';
-import { PartnerCreditHourPurchase } from 'src/model/partnerCreditHourPurchases.entity';
-import { Partner } from 'src/model/partner.entity';
-import { User } from 'src/user.decorator';
+import { PartnerCreditHourPurchaseDTO } from '@src/dto/partnerCreditHourPurchase.dto';
+import { PartnerCreditHourPurchase } from '@src/model/partnerCreditHourPurchases.entity';
+import { Partner } from '@src/model/partner.entity';
+import { User } from '@src/user.decorator';
 import { Repository } from 'typeorm';
 
 @Injectable()

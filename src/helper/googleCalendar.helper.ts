@@ -9,9 +9,16 @@ import axios from 'axios';
 export class GoogleCalendarApiHelper {
   private readonly google: { private_key: string; client_email: string };
   constructor() {
-    this.google = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../keys/google-service.json')),
-    );
+    if (process.env.NODE_ENV !== 'test') {
+      this.google = JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, '../keys/google-service.json')),
+      );
+    } else {
+      this.google = {
+        private_key: '',
+        client_email: '',
+      };
+    }
   }
 
   private async getAccessToken(): Promise<string> {

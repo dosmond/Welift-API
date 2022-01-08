@@ -2,13 +2,13 @@ import { CronJobNames } from './../../enum/cronJobNames.enum';
 import { CronHelper } from './../../helper/cron.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { BookingLocationCountService } from './../booking-location-count/bookingLocationCount.service';
-import { Note } from 'src/model/note.entity';
+import { Note } from '@src/model/note.entity';
 import { CheckoutSessionDTO } from './../../dto/checkoutSession.dto';
-import { AcceptedLift } from 'src/model/acceptedLift.entity';
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
 import { Partner } from '../../model/partner.entity';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { EmailClient } from '../../helper/email.client';
 import { Booking } from './../../model/booking.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
@@ -20,18 +20,18 @@ import {
   FindManyOptions,
   DeleteResult,
 } from 'typeorm';
-import { BookingDTO } from 'src/dto/booking.dto';
-import { BookingBatchDTO } from 'src/dto/booking.batch.dto';
-import { AddressDTO } from 'src/dto/address.dto';
+import { BookingDTO } from '@src/dto/booking.dto';
+import { BookingBatchDTO } from '@src/dto/booking.batch.dto';
+import { AddressDTO } from '@src/dto/address.dto';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const words = require('random-words');
 
 import Stripe from 'stripe';
-import { Lift } from 'src/model/lifts.entity';
-import { BookingUpdateDTO } from 'src/dto/booking.update.dto';
-import { Address } from 'src/model/addresses.entity';
-import { CronJobData, CronJobOptions } from 'src/model/cronjob.entity';
+import { Lift } from '@src/model/lifts.entity';
+import { BookingUpdateDTO } from '@src/dto/booking.update.dto';
+import { Address } from '@src/model/addresses.entity';
+import { CronJobData, CronJobOptions } from '@src/model/cronjob.entity';
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });

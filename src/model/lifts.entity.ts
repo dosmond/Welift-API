@@ -44,4 +44,8 @@ export class Lift {
   @OneToOne(() => Booking, (booking) => booking.lift)
   @JoinColumn([{ name: 'booking_id', referencedColumnName: 'id' }])
   booking: Booking;
+
+  constructor(init?: Partial<Lift>) {
+    Object.assign(this, init);
+  }
 }

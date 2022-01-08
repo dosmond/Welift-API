@@ -1,13 +1,13 @@
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { EmailClient } from './../../helper/email.client';
 import { Lead } from './../../model/leads.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository, Between } from 'typeorm';
-import { LeadDTO } from 'src/dto/lead.dto';
-import { LeadUpdateDTO } from 'src/dto/lead.update.dto';
-import { LeadThumbtackDTO } from 'src/dto/lead.thumbtack.dto';
-import { LeadLandingDTO } from 'src/dto/lead.landing.dto';
+import { LeadDTO } from '@src/dto/lead.dto';
+import { LeadUpdateDTO } from '@src/dto/lead.update.dto';
+import { LeadThumbtackDTO } from '@src/dto/lead.thumbtack.dto';
+import { LeadLandingDTO } from '@src/dto/lead.landing.dto';
 
 @Injectable()
 export class LeadsService {

@@ -106,6 +106,11 @@ export class LeadDTO implements Readonly<LeadDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  acquisitionChannel: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => NoteDTO)
@@ -131,6 +136,7 @@ export class LeadDTO implements Readonly<LeadDTO> {
         name: dto.customer.name,
         phone: dto.customer.phone,
         businessName: dto.business.name,
+        acquisitionChannel: 'thumbtack',
       });
     }
   }
@@ -148,6 +154,7 @@ export class LeadDTO implements Readonly<LeadDTO> {
         postalCode: dto.address.postalCode,
         referralCode: dto.referralCode,
         promoCode: dto.promoCode,
+        acquisitionChannel: dto.acquisitionChannel,
       });
     }
   }
@@ -171,6 +178,7 @@ export class LeadDTO implements Readonly<LeadDTO> {
         referralCode: entity.referralCode,
         promoCode: entity.promoCode,
         creationDate: entity.creationDate,
+        acquisitionChannel: entity.acquisitionChannel,
         notes: entity.notes?.map((item) => NoteDTO.fromEntity(item)),
       });
     }

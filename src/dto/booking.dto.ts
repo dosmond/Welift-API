@@ -1,4 +1,4 @@
-import { LiftDTO } from 'src/dto/lift.dto';
+import { LiftDTO } from '@src/dto/lift.dto';
 import { NoteDTO } from './note.dto';
 import { AddressDTO } from './address.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,8 +13,8 @@ import {
   IsDateString,
   ValidateNested,
 } from 'class-validator';
-import { Booking } from 'src/model/booking.entity';
-import { User } from 'src/user.decorator';
+import { Booking } from '@src/model/booking.entity';
+import { User } from '@src/user.decorator';
 
 export class BookingDTO implements Readonly<BookingDTO> {
   @ApiProperty({ required: false })
@@ -118,6 +118,11 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  acquisitionChannel: string;
+
+  @ApiProperty()
+  @IsOptional()
   @ValidateNested()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO;
@@ -139,6 +144,10 @@ export class BookingDTO implements Readonly<BookingDTO> {
   @ValidateNested()
   @Type(() => LiftDTO)
   lift: LiftDTO;
+
+  constructor(init?: Partial<BookingDTO>) {
+    Object.assign(this, init);
+  }
 
   public static from(dto: Partial<BookingDTO>): BookingDTO {
     const booking = new BookingDTO();
@@ -174,6 +183,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
         status: entity.status,
         timezone: entity.timezone,
         calendarEventId: entity.calendarEventId,
+        acquisitionChannel: entity.acquisitionChannel,
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),

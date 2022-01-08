@@ -9,17 +9,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AcceptedLiftService } from './accepted-lift.service';
-import { User } from 'src/user.decorator';
+import { User } from '@src/user.decorator';
 import { DeleteResult } from 'typeorm';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { Role } from 'src/enum/roles.enum';
-import { LifterPaginatedDTO } from 'src/dto/lifter.paginated.dto';
-import { PaginatedDTO } from 'src/dto/base.paginated.dto';
-import { AcceptedLiftDTO } from 'src/dto/acceptedLift.dto';
-import { TokenVerificationRequestDTO } from 'src/dto/tokenVerification.dto';
-import { AcceptedLiftUpdateDTO } from 'src/dto/acceptedLift.update.dto';
+import { Roles } from '@src/auth/roles/roles.decorator';
+import { Role } from '@src/enum/roles.enum';
+import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
+import { PaginatedDTO } from '@src/dto/base.paginated.dto';
+import { AcceptedLiftDTO } from '@src/dto/acceptedLift.dto';
+import { TokenVerificationRequestDTO } from '@src/dto/tokenVerification.dto';
+import { AcceptedLiftUpdateDTO } from '@src/dto/acceptedLift.update.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles/roles.gaurd';
+import { RolesGuard } from '@src/auth/roles/roles.gaurd';
 
 @Controller('accepted-lift')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -28,7 +28,9 @@ export class AcceptedLiftController {
 
   @Get()
   @Roles(Role.Lifter)
-  public async getById(@Query() query): Promise<AcceptedLiftDTO> {
+  public async getById(
+    @Query() query: { id: string },
+  ): Promise<AcceptedLiftDTO> {
     return await this.serv.getById(query.id);
   }
 
