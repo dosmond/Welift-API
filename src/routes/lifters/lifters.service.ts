@@ -274,7 +274,7 @@ export class LiftersService {
 
     // Cognito User
     await this.authService.deleteUser({
-      appName: 'landing',
+      appName: 'mobile',
       username: lifter?.email,
     });
   }
