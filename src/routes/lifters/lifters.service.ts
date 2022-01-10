@@ -254,9 +254,6 @@ export class LiftersService {
     // Equipment
     await this.lifterEquipmentService.deleteByLifterId(lifter.id);
 
-    // Address
-    await this.addressService.delete(lifter.addressId);
-
     // Accepted Lift
     await this.acceptedLiftService.deleteAllByLifterId(lifter.id);
 
@@ -268,6 +265,9 @@ export class LiftersService {
 
     // Lifter
     await this.repo.delete({ id: lifter.id });
+
+    // Address
+    await this.addressService.delete(lifter.addressId);
 
     // Profile Picture
     await this.s3Helper.deleteProfilePicture(lifter.id);
