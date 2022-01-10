@@ -330,15 +330,7 @@ export class AcceptedLiftService {
   }
 
   public async deleteAllByLifterId(lifterId: string) {
-    const request = new LifterPaginatedDTO();
-    request.lifterId = lifterId;
-    const acceptedLifts = await this.getLifterAccepted(request);
-
-    const promises: Promise<DeleteResult>[] = [];
-    acceptedLifts.forEach((acceptedLift) => {
-      promises.push(this.delete(null, acceptedLift.id));
-    });
-    await Promise.all(promises);
+    await this.repo.delete({ lifterId: lifterId });
   }
 
   @OnEvent(EventNames.AutoClockOut)
