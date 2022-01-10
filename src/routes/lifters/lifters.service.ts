@@ -246,36 +246,36 @@ export class LiftersService {
 
   public async deleteLifter(lifter: Lifter): Promise<void> {
     // Lifter Stats
-    await this.lifterStatsService.deleteByLifterId(lifter.id);
+    await this.lifterStatsService.deleteByLifterId(lifter?.id);
 
     // Badges
-    await this.completedLifterBadgeService.deleteByLifterId(lifter.id);
+    await this.completedLifterBadgeService.deleteByLifterId(lifter?.id);
 
     // Equipment
-    await this.lifterEquipmentService.deleteByLifterId(lifter.id);
+    await this.lifterEquipmentService.deleteByLifterId(lifter?.id);
 
     // Accepted Lift
-    await this.acceptedLiftService.deleteAllByLifterId(lifter.id);
+    await this.acceptedLiftService.deleteAllByLifterId(lifter?.id);
 
     // Lifter Reviews
-    await this.lifterReviewSerivce.deleteByLifterId(lifter.id);
+    await this.lifterReviewSerivce.deleteByLifterId(lifter?.id);
 
     // Training Videos
-    await this.completedTrainingVideoService.deleteByLifterId(lifter.id);
+    await this.completedTrainingVideoService.deleteByLifterId(lifter?.id);
 
     // Lifter
-    await this.repo.delete({ id: lifter.id });
+    await this.repo.delete({ id: lifter?.id });
 
     // Address
-    await this.addressService.delete(lifter.addressId);
+    await this.addressService.delete(lifter?.addressId);
 
     // Profile Picture
-    await this.s3Helper.deleteProfilePicture(lifter.id);
+    await this.s3Helper.deleteProfilePicture(lifter?.id);
 
     // Cognito User
     await this.authService.deleteUser({
       appName: 'landing',
-      username: lifter.email,
+      username: lifter?.email,
     });
   }
 
