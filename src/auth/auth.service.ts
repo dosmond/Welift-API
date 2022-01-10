@@ -7,6 +7,19 @@ import {
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
 
+import { Credentials, config, CognitoIdentityServiceProvider } from 'aws-sdk';
+
+// This should only be necessary for local dev work.
+if (process.env.NODE_ENV == 'local') {
+  const creds = new Credentials(
+    process.env.AWS_CRED_KEY,
+    process.env.AWS_CRED_SECRET,
+  );
+  config.credentials = creds;
+}
+
+config.update({ region: 'us-east-1' });
+
 @Injectable()
 export class AuthService {
   private userPools: { [key: string]: CognitoUserPool };
@@ -222,18 +235,13 @@ export class AuthService {
   public async deleteUser(request: { appName: string; username: string }) {
     const userPool = this.userPools[request.appName];
 
-    const userData = {
-      Username: request.username,
-      Pool: userPool,
-    };
+    const cognito = new CognitoIdentityServiceProvider();
 
-    const user = new CognitoUser(userData);
-
-    return new Promise((resolve, reject) => {
-      return user.deleteUser((error, res) => {
-        if (error) reject(error);
-        else resolve(res);
-      });
-    });
+    await cognito
+      .adminDeleteUser({
+        UserPoolId: userPool.getUserPoolId(),
+        Username: request.username,
+      })
+      .promise();
   }
 }
