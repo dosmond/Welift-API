@@ -15,6 +15,7 @@ import {
   ConflictException,
   UseInterceptors,
   UploadedFile,
+  Delete,
 } from '@nestjs/common';
 import { LifterDTO } from '@src/dto/lifter.dto';
 import { User } from '@src/user.decorator';
@@ -149,6 +150,17 @@ export class LiftersController {
   ): Promise<LifterDTO> {
     try {
       return await this.serv.updateBatch(body);
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Delete('delete')
+  @Roles(Role.Admin)
+  public async delete(@Query() query: { lifterId: string }): Promise<void> {
+    try {
+      return await this.serv.delete(query.lifterId);
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.message);

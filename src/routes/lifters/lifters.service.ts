@@ -239,6 +239,11 @@ export class LiftersService {
     return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
   }
 
+  public async delete(lifterId: string) {
+    const lifter = await this.repo.findOne({ id: lifterId });
+    await this.deleteLifter(lifter);
+  }
+
   public async deleteLifter(lifter: Lifter): Promise<void> {
     // Lifter Stats
     await this.lifterStatsService.deleteByLifterId(lifter.id);
