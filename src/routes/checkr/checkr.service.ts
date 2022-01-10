@@ -24,8 +24,6 @@ export class CheckrService {
               },
             );
 
-            console.log(candidate);
-
             const dto = new LifterBatchDTO();
             dto.lifter = new LifterDTO();
             dto.lifter.id = candidate?.data?.metadata?.lifterId;
