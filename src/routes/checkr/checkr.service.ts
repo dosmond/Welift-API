@@ -24,10 +24,16 @@ export class CheckrService {
               },
             );
 
+            const lifter = await this.lifterService.getByUserId(
+              null,
+              candidate?.data?.metadata?.userId,
+            );
+
+            lifter.passedBc = true;
+            lifter.bcInProgress = true;
+
             const dto = new LifterBatchDTO();
-            dto.lifter = new LifterDTO();
-            dto.lifter.id = candidate?.data?.metadata?.lifterId;
-            dto.lifter.passedBc = true;
+            dto.lifter = lifter;
 
             await this.lifterService.updateBatch(dto);
           } catch (err) {
