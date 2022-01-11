@@ -19,4 +19,9 @@ export class LifterPaginatedDTO
   @IsOptional()
   @IsBooleanString()
   hideUncompleted: boolean;
+
+  constructor(init?: Partial<LifterPaginatedDTO>) {
+    super();
+    Object.assign(this, init);
+  }
 }

@@ -58,6 +58,10 @@ export class AcceptedLiftDTO implements Readonly<AcceptedLiftDTO> {
   @IsOptional()
   lifter: Lifter;
 
+  constructor(init?: Partial<AcceptedLiftDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<AcceptedLiftDTO>): AcceptedLiftDTO {
     const lift = new AcceptedLiftDTO();
     for (const property in dto) lift[property] = dto[property];
