@@ -53,7 +53,9 @@ export class BookingController {
 
   @Get('total-earnings')
   @Roles(Role.Admin)
-  public async getTotalEarnings(@Query() query: PaginatedDTO): Promise<number> {
+  public async getTotalEarnings(
+    @Query() query: PaginatedDTO,
+  ): Promise<{ sum: number }> {
     return await this.serv.getTotalEarnings(query.start, query.end);
   }
 

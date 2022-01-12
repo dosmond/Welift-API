@@ -92,7 +92,10 @@ export class BookingService {
       );
   }
 
-  public async getTotalEarnings(start: Date, end: Date): Promise<number> {
+  public async getTotalEarnings(
+    start: Date,
+    end: Date,
+  ): Promise<{ sum: number }> {
     const query = this.repo
       .createQueryBuilder('booking')
       .select('SUM(booking.totalCost)');

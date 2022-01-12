@@ -69,7 +69,7 @@ export class Booking {
   })
   totalCost: number;
 
-  @Column('date', {
+  @Column('timestamptz', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
