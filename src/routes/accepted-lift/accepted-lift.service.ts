@@ -258,6 +258,10 @@ export class AcceptedLiftService {
   ): Promise<AcceptedLiftUpdateDTO> {
     try {
       const dto = AcceptedLiftUpdateDTO.fromEntity(acceptedLift);
+
+      if (!(await this.repo.findOne({ id: dto.id })))
+        throw new BadRequestException('Accepted Lift does not exist');
+
       return AcceptedLiftUpdateDTO.fromEntity(
         await this.repo.save(dto.toEntity()),
       );
@@ -295,11 +299,11 @@ export class AcceptedLiftService {
         });
 
         const liftToUpdate = await this.liftRepo.findOne(
-          { id: accepted.lift.id },
+          { id: accepted?.lift?.id },
           { relations: ['booking', 'acceptedLifts'] },
         );
 
-        if (liftToUpdate.currentLifterCount - 1 < 0) {
+        if (liftToUpdate?.currentLifterCount - 1 < 0) {
           throw new BadRequestException('Cannot have less than 0 lifters');
         }
 
@@ -329,8 +333,14 @@ export class AcceptedLiftService {
     }
   }
 
-  public async deleteAllByLifterId(lifterId: string) {
-    await this.repo.delete({ lifterId: lifterId });
+  public async deleteAllByLifterId(lifterId: string): Promise<void> {
+    const lifts = await this.repo.find({ lifterId: lifterId });
+    const promises: Promise<DeleteResult>[] = [];
+    lifts.forEach((lift) => {
+      promises.push(this.delete(null, lift.id));
+    });
+
+    await Promise.all(promises);
   }
 
   @OnEvent(EventNames.AutoClockOut)
