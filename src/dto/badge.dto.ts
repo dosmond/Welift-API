@@ -21,6 +21,10 @@ export class BadgeDTO implements Readonly<BadgeDTO> {
   @IsOptional()
   completedLifterBadges: CompletedLifterBadge[];
 
+  constructor(init?: Partial<BadgeDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<BadgeDTO>) {
     const badge = new BadgeDTO();
     for (const property in dto) badge[property] = dto[property];

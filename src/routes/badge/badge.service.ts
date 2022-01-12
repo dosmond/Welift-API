@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BadgeDTO } from '@src/dto/badge.dto';
 import { BadgeUpdateDTO } from '@src/dto/badge.update.dto';
@@ -28,6 +28,10 @@ export class BadgeService {
 
   public async update(badge: BadgeUpdateDTO): Promise<BadgeDTO> {
     const dto = BadgeUpdateDTO.from(badge);
+
+    if (!(await this.repo.findOne({ id: dto.id })))
+      throw new BadRequestException('Badge does not exist');
+
     return BadgeDTO.fromEntity(await this.repo.save(dto.toEntity()));
   }
 }
