@@ -177,10 +177,8 @@ describe('BookingService', () => {
   });
 
   describe('getTotalEarnings', () => {
-    let bookings: Booking[];
-
     beforeAll(async () => {
-      bookings = await createTwoBookings();
+      await createTwoBookings();
     });
 
     it('should get total earnings of all bookings when no params are given', async () => {
@@ -209,10 +207,8 @@ describe('BookingService', () => {
   });
 
   describe('count', () => {
-    let bookings: Booking[];
-
     beforeAll(async () => {
-      bookings = await createTwoBookings();
+      await createTwoBookings();
     });
 
     it('should get the correct count', async () => {
@@ -225,10 +221,8 @@ describe('BookingService', () => {
   });
 
   describe('createBatch', () => {
-    let bookings: Booking[];
-
     beforeAll(async () => {
-      bookings = await createTwoBookings();
+      await createTwoBookings();
     });
 
     it('should create a booking, addresses, and a lift', async () => {
