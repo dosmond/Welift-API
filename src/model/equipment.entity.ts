@@ -21,4 +21,8 @@ export class Equipment {
     (lifterEquipment) => lifterEquipment.equipment,
   )
   lifterEquipments: LifterEquipment[];
+
+  constructor(init?: Partial<Equipment>) {
+    Object.assign(this, init);
+  }
 }
