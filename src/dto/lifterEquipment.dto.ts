@@ -34,6 +34,10 @@ export class LifterEquipmentDTO implements Readonly<LifterEquipmentDTO> {
   @Type(() => Lifter)
   lifter: Lifter;
 
+  constructor(init?: Partial<LifterEquipmentDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<LifterEquipmentDTO>): LifterEquipmentDTO {
     const badge = new LifterEquipmentDTO();
     for (const property in dto) badge[property] = dto[property];
