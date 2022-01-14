@@ -30,6 +30,10 @@ export class EquipmentUpdateDTO
   @Type(() => LifterEquipmentDTO)
   lifterEquipment: LifterEquipmentDTO[];
 
+  constructor(init?: Partial<EquipmentUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<EquipmentUpdateDTO>): EquipmentUpdateDTO {
     const badge = new EquipmentUpdateDTO();
     for (const property in dto) badge[property] = dto[property];

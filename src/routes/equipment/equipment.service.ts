@@ -1,7 +1,7 @@
 import { LifterEquipment } from './../../model/lifterEquipment.entity';
 import { EquipmentUpdateDTO } from './../../dto/equipment.update.dto';
 import { Equipment } from './../../model/equipment.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { EquipmentDTO } from '@src/dto/equipment.dto';
@@ -33,6 +33,10 @@ export class EquipmentService {
     equipment: EquipmentUpdateDTO,
   ): Promise<EquipmentUpdateDTO> {
     const dto = EquipmentUpdateDTO.from(equipment);
+
+    if (!(await this.repo.findOne({ id: dto.id })))
+      throw new BadRequestException('Equipment does not exist');
+
     return EquipmentUpdateDTO.fromEntity(await this.repo.save(dto.toEntity()));
   }
 
