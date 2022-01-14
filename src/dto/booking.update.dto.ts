@@ -153,6 +153,10 @@ export class BookingUpdateDTO
   @Type(() => LiftDTO)
   lift: LiftDTO;
 
+  constructor(init?: Partial<BookingUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<BookingDTO>): BookingDTO {
     const booking = new BookingDTO();
 
@@ -192,7 +196,7 @@ export class BookingUpdateDTO
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),
-        notes: entity.notes.map((item) => NoteDTO.fromEntity(item)),
+        notes: entity?.notes?.map((item) => NoteDTO.fromEntity(item)),
       });
     }
     return null;
