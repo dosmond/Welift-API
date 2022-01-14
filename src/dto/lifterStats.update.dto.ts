@@ -41,6 +41,10 @@ export class LifterStatsUpdateDTO
   @Type(() => Lifter)
   lifter: Lifter;
 
+  constructor(init?: Partial<LifterStatsUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<LifterStatsUpdateDTO>): LifterStatsUpdateDTO {
     const badge = new LifterStatsUpdateDTO();
     for (const property in dto) badge[property] = dto[property];

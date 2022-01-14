@@ -43,7 +43,7 @@ describe('EquipmentService', () => {
       await createTwoEquipment();
     });
 
-    it('should return all badges', async () => {
+    it('should return all equipment', async () => {
       expect((await service.getAll()).length).toEqual(2);
     });
 
@@ -58,7 +58,7 @@ describe('EquipmentService', () => {
       equipment = await createTwoEquipment();
     });
 
-    it('should return the expected Badge', async () => {
+    it('should return the expected equipment', async () => {
       expect((await service.getById(equipment[0].id)).id).toEqual(
         equipment[0].id,
       );
@@ -70,7 +70,7 @@ describe('EquipmentService', () => {
   });
 
   describe('create', () => {
-    it('should create a badge', async () => {
+    it('should create an equipment', async () => {
       await service.create(
         new EquipmentDTO({
           name: 'TestTest',
@@ -97,7 +97,7 @@ describe('EquipmentService', () => {
       expect((await service.update(equipmentDTO)).name).toEqual('UpdateTest');
     });
 
-    it('should throw a 400 error if the Badge does not exist', async () => {
+    it('should throw a 400 error if the Equipment does not exist', async () => {
       expect(
         async () =>
           await service.update(
