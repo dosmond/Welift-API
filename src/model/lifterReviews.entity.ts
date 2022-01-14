@@ -27,4 +27,8 @@ export class LifterReview {
   @ManyToOne(() => Lifter, (lifters) => lifters.lifterReviews)
   @JoinColumn([{ name: 'lifter_id', referencedColumnName: 'id' }])
   lifter: Lifter;
+
+  constructor(init?: Partial<LifterReview>) {
+    Object.assign(this, init);
+  }
 }
