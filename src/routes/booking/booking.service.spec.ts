@@ -1,3 +1,4 @@
+import { BookingUpdateDTO } from './../../dto/booking.update.dto';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CronHelper } from './../../helper/cron.helper';
@@ -24,12 +25,21 @@ import { Repository } from 'typeorm';
 import { Address } from '@src/model/addresses.entity';
 import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { Order } from '@src/enum/order.enum';
+import { BookingBatchDTO } from '@src/dto/booking.batch.dto';
+import { AddressDTO } from '@src/dto/address.dto';
+import { BookingDTO } from '@src/dto/booking.dto';
+import { BadRequestException } from '@nestjs/common';
 
 describe('BookingService', () => {
   let service: BookingService;
   let bookingRepo: Repository<Booking>;
+  let liftRepo: Repository<Lift>;
   let addressRepo: Repository<Address>;
+  let bookingCountRepo: Repository<BookingLocationCount>;
+  let notesRepo: Repository<Note>;
   let module: TestingModule;
+  let cronHelper: CronHelper;
+
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [
@@ -63,7 +73,11 @@ describe('BookingService', () => {
 
     service = module.get<BookingService>(BookingService);
     bookingRepo = module.get(getRepositoryToken(Booking));
+    liftRepo = module.get(getRepositoryToken(Lift));
     addressRepo = module.get(getRepositoryToken(Address));
+    notesRepo = module.get(getRepositoryToken(Note));
+    bookingCountRepo = module.get(getRepositoryToken(BookingLocationCount));
+    cronHelper = module.get<CronHelper>(CronHelper);
   });
 
   it('should be defined', () => {
@@ -163,10 +177,8 @@ describe('BookingService', () => {
   });
 
   describe('getTotalEarnings', () => {
-    let bookings: Booking[];
-
     beforeAll(async () => {
-      bookings = await createTwoBookings();
+      await createTwoBookings();
     });
 
     it('should get total earnings of all bookings when no params are given', async () => {
@@ -195,14 +207,126 @@ describe('BookingService', () => {
   });
 
   describe('count', () => {
+    beforeAll(async () => {
+      await createTwoBookings();
+    });
+
+    it('should get the correct count', async () => {
+      expect(await service.count()).toEqual(2);
+    });
+
+    afterAll(async () => {
+      await cleanUp();
+    });
+  });
+
+  describe('createBatch', () => {
+    beforeAll(async () => {
+      await createTwoBookings();
+    });
+
+    it('should create a booking, addresses, and a lift', async () => {
+      jest.spyOn(cronHelper, 'addCronJob').mockImplementation(async () => {
+        return;
+      });
+
+      const batch = new BookingBatchDTO({
+        startingAddress: new AddressDTO({
+          street: 'test1',
+          street2: 'test1',
+          city: 'city',
+          state: 'state',
+          postalCode: 'postalCode',
+        }),
+        endingAddress: new AddressDTO({
+          street: 'test1',
+          street2: 'test1',
+          city: 'city',
+          state: 'state',
+          postalCode: 'postalCode',
+        }),
+        booking: new BookingDTO({
+          needsPickupTruck: true,
+          name: `test-booking`,
+          phone: '8015555555',
+          email: 'test@test.com',
+          startTime: new Date('2022-01-06 18:35:00+00'),
+          endTime: new Date('2022-01-06 20:35:00+00'),
+          lifterCount: 2,
+          hoursCount: 2,
+          totalCost: 240,
+          timezone: 'America/Denver',
+          distanceInfo: 'none',
+          creationDate: new Date('2022-01-06 18:35:00+00'),
+        }),
+      });
+
+      let booking = await service.createBatch(batch);
+
+      expect(cronHelper.addCronJob).toHaveBeenCalled();
+      expect(booking.id).not.toBeNull();
+
+      booking = await service.getById(booking.id);
+      expect(booking.lift.id).not.toBeNull();
+      expect(booking.startingAddressId).not.toBeNull();
+      expect(booking.endingAddressId).not.toBeNull();
+    });
+
+    afterAll(async () => {
+      await cleanUp();
+    });
+  });
+
+  describe('update', () => {
     let bookings: Booking[];
 
     beforeAll(async () => {
       bookings = await createTwoBookings();
     });
 
-    it('should get the correct count', async () => {
-      expect(await service.count()).toEqual(2);
+    it('should update the booking', async () => {
+      const updateBooking = BookingUpdateDTO.fromEntity(
+        await bookingRepo.findOne(
+          { id: bookings[0].id },
+          { relations: ['lift', 'startingAddress', 'endingAddress'] },
+        ),
+      );
+      updateBooking.name = 'Updated Name';
+      await service.update(updateBooking);
+
+      const booking = await bookingRepo.findOne({ id: bookings[0].id });
+      expect(booking.name).toEqual(updateBooking.name);
+    });
+
+    it('should throw a 400 error if the booking does not exist', async () => {
+      expect(async () => {
+        await service.update(
+          new BookingUpdateDTO({
+            id: '7628dfcb-b78c-4435-bf7c-33e7728f6a11',
+          }),
+        );
+      }).rejects.toEqual(new BadRequestException('Booking does not exist'));
+    });
+
+    afterAll(async () => {
+      await cleanUp();
+    });
+  });
+
+  describe('delete', () => {
+    let bookings: Booking[];
+
+    beforeAll(async () => {
+      bookings = await createTwoBookings();
+    });
+
+    it('should delete the booking, lift, and notes', async () => {
+      await service.delete(bookings[0].id, '', '');
+      const booking = await bookingRepo.findOne({ id: bookings[0].id });
+      const notes = await notesRepo.find();
+
+      expect(booking).toBeUndefined();
+      expect(notes.length).toEqual(0);
     });
 
     afterAll(async () => {
@@ -285,10 +409,35 @@ describe('BookingService', () => {
       creationDate: new Date('2022-01-05 18:35:00+00'),
     });
 
-    return [await bookingRepo.save(booking), await bookingRepo.save(booking2)];
+    const bookings = [
+      await bookingRepo.save(booking),
+      await bookingRepo.save(booking2),
+    ];
+
+    await notesRepo.save(
+      new Note({
+        bookingId: bookings[0].id,
+        note: 'Test',
+        author: 'test@test.com',
+      }),
+    );
+
+    return bookings;
   };
 
   const cleanUp = async () => {
+    const lifts = await liftRepo.find();
+
+    for (const lift of lifts) {
+      await liftRepo.delete({ id: lift.id });
+    }
+
+    const notes = await notesRepo.find();
+
+    for (const note of notes) {
+      await notesRepo.delete({ id: note.id });
+    }
+
     const bookings = await bookingRepo.find();
 
     for (const booking of bookings) {
@@ -299,6 +448,12 @@ describe('BookingService', () => {
 
     for (const address of addresses) {
       await addressRepo.delete({ id: address.id });
+    }
+
+    const bookingCount = await bookingCountRepo.find();
+
+    for (const count of bookingCount) {
+      await bookingCountRepo.delete({ id: count.id });
     }
   };
 

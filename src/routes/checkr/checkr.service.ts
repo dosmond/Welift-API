@@ -8,7 +8,6 @@ export class CheckrService {
   constructor(private readonly lifterService: LiftersService) {}
 
   public async handleBcWebhook(request: any): Promise<void> {
-    console.log(request);
     switch (request.type) {
       case 'report.completed':
         if (request.data.object.status === 'clear') {
@@ -38,8 +37,6 @@ export class CheckrService {
           } catch (err) {
             console.error(`unable to update lifter: ${err}`);
           }
-
-          console.error('Report status clear');
           return;
         } else console.error('Report status not clear');
         break;
