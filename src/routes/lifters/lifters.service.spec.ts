@@ -453,18 +453,24 @@ describe('LiftersService', () => {
     });
 
     it('should sucessfully update the lifter and address if both are given', async () => {
-      const address = await addressRepo.findOne({ id: lifter.addressId });
-      const lifterDto = LifterUpdateDTO.fromEntity(lifter);
-      lifterDto.firstName = 'UPDATED';
+      const lifterDto = new LifterUpdateDTO({
+        id: lifter.id,
+        firstName: 'UPDATED',
+      });
 
-      const addressDto = AddressUpdateDTO.fromEntity(address);
-      addressDto.state = 'UPDATED';
+      const addressDto = new AddressUpdateDTO({
+        id: lifter.addressId,
+        state: 'UPDATED',
+      });
       const updateDto = new LifterUpdateBatchDTO({
         address: addressDto,
         lifter: lifterDto,
       });
 
       const updated = await service.updateBatch(updateDto);
+      expect(updated.firstName).toEqual('UPDATED');
+      const updatedAddress = await addressRepo.findOne({ id: addressDto.id });
+      expect(updatedAddress.state).toEqual('UPDATED');
     });
 
     afterAll(async () => {

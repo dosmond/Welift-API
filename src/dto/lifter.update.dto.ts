@@ -186,6 +186,10 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
   @Type(() => AddressDTO)
   address: AddressDTO;
 
+  constructor(init?: Partial<LifterUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<LifterUpdateDTO>): LifterUpdateDTO {
     const lifter = new LifterUpdateDTO();
     for (const property in dto) lifter[property] = dto[property];
