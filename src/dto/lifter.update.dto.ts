@@ -186,6 +186,10 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
   @Type(() => AddressDTO)
   address: AddressDTO;
 
+  constructor(init?: Partial<LifterUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<LifterUpdateDTO>): LifterUpdateDTO {
     const lifter = new LifterUpdateDTO();
     for (const property in dto) lifter[property] = dto[property];
@@ -218,19 +222,20 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         deletionPending: entity.deletionPending,
         latestOpen: entity.latestOpen,
         checkrId: entity.checkrId,
-        acceptedLifts: entity.acceptedLifts.map((item) =>
+        acceptedLifts: entity?.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
-        completedLifterBadges: entity.completedLifterBadges.map((item) =>
+        completedLifterBadges: entity?.completedLifterBadges?.map((item) =>
           CompletedLifterBadgeDTO.fromEntity(item),
         ),
-        lifterCompletedTrainingVideos: entity.lifterCompletedTrainingVideos.map(
-          (item) => LifterCompletedTrainingVideoDTO.fromEntity(item),
-        ),
-        lifterEquiupments: entity.lifterEquipments.map((item) =>
+        lifterCompletedTrainingVideos:
+          entity?.lifterCompletedTrainingVideos?.map((item) =>
+            LifterCompletedTrainingVideoDTO.fromEntity(item),
+          ),
+        lifterEquiupments: entity?.lifterEquipments?.map((item) =>
           LifterEquipmentDTO.fromEntity(item),
         ),
-        lifterReviews: entity.lifterReviews.map((item) =>
+        lifterReviews: entity?.lifterReviews?.map((item) =>
           LifterReviewDTO.fromEntity(item),
         ),
         lifterStats: LifterStatsDTO.fromEntity(entity.lifterStats),

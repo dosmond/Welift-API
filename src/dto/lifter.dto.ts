@@ -232,8 +232,8 @@ export class LifterDTO implements Readonly<LifterDTO> {
         lifterReviews: entity.lifterReviews?.map((item) =>
           LifterReviewDTO.fromEntity(item),
         ),
-        lifterStats: LifterStatsDTO.fromEntity(entity.lifterStats),
-        address: AddressDTO.fromEntity(entity.address),
+        lifterStats: LifterStatsDTO.fromEntity(entity?.lifterStats),
+        address: AddressDTO.fromEntity(entity?.address),
       });
     }
     return null;

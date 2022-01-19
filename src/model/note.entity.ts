@@ -35,7 +35,7 @@ export class Note {
   })
   author: string;
 
-  @Column('date', {
+  @Column('timestamptz', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',

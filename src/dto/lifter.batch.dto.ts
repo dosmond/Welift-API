@@ -1,7 +1,7 @@
 import { AddressDTO } from '@src/dto/address.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDefined, IsObject, ValidateNested } from 'class-validator';
+import { IsDefined, ValidateNested } from 'class-validator';
 import { LifterDTO } from './lifter.dto';
 
 export class LifterBatchDTO implements Readonly<LifterBatchDTO> {

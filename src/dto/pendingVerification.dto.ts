@@ -19,6 +19,10 @@ export class PendingVerificationDTO
   @IsString()
   code: string;
 
+  constructor(init?: Partial<PendingVerificationDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<PendingVerificationDTO>) {
     const pending = new PendingVerificationDTO();
     for (const property in dto) pending[property] = dto[property];
