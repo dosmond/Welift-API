@@ -106,8 +106,7 @@ export class LiftersService {
 
     if (start && end) {
       options.where = { creationDate: Between(start, end) };
-    }
-    if (start) {
+    } else if (start) {
       options.where = { creationDate: Between(start, new Date()) };
     }
 
@@ -181,14 +180,12 @@ export class LiftersService {
     };
 
     if (result) {
-      result.code = this.generateVerificationCode();
-      await this.verificationRepo.save(result);
-      textObject.code = result.code;
-    } else {
-      dto.code = this.generateVerificationCode();
-      await this.verificationRepo.save(dto.toEntity());
-      textObject.code = dto.code;
+      dto.id = result.id;
     }
+
+    dto.code = this.generateVerificationCode();
+    await this.verificationRepo.save(dto.toEntity());
+    textObject.code = dto.code;
 
     await this.textClient.sendPhoneVerificationText(textObject);
   }
@@ -205,14 +202,12 @@ export class LiftersService {
     };
 
     if (result) {
-      result.code = this.generateVerificationCode();
-      await this.verificationRepo.save(result);
-      emailObject.code = result.code;
-    } else {
-      dto.code = this.generateVerificationCode();
-      await this.verificationRepo.save(dto.toEntity());
-      emailObject.code = dto.code;
+      dto.id = result.id;
     }
+
+    dto.code = this.generateVerificationCode();
+    await this.verificationRepo.save(dto.toEntity());
+    emailObject.code = dto.code;
 
     await this.emailClient.sendEmailVerification(emailObject);
   }
@@ -231,10 +226,12 @@ export class LiftersService {
     const lifter = LifterUpdateDTO.from(batch.lifter);
     const address = AddressUpdateDTO.from(batch.address);
 
-    if (batch.address) {
-      const addressResult = await this.addressService.update(null, address);
-      lifter.addressId = addressResult.id;
-    }
+    console.log(lifter);
+
+    // if (batch.address) {
+    //   const addressResult = await this.addressService.update(null, address);
+    //   lifter.addressId = addressResult.id;
+    // }
 
     return LifterDTO.fromEntity(await this.repo.save(lifter.toEntity()));
   }

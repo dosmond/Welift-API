@@ -218,19 +218,20 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         deletionPending: entity.deletionPending,
         latestOpen: entity.latestOpen,
         checkrId: entity.checkrId,
-        acceptedLifts: entity.acceptedLifts.map((item) =>
+        acceptedLifts: entity?.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
-        completedLifterBadges: entity.completedLifterBadges.map((item) =>
+        completedLifterBadges: entity?.completedLifterBadges?.map((item) =>
           CompletedLifterBadgeDTO.fromEntity(item),
         ),
-        lifterCompletedTrainingVideos: entity.lifterCompletedTrainingVideos.map(
-          (item) => LifterCompletedTrainingVideoDTO.fromEntity(item),
-        ),
-        lifterEquiupments: entity.lifterEquipments.map((item) =>
+        lifterCompletedTrainingVideos:
+          entity?.lifterCompletedTrainingVideos?.map((item) =>
+            LifterCompletedTrainingVideoDTO.fromEntity(item),
+          ),
+        lifterEquiupments: entity?.lifterEquipments?.map((item) =>
           LifterEquipmentDTO.fromEntity(item),
         ),
-        lifterReviews: entity.lifterReviews.map((item) =>
+        lifterReviews: entity?.lifterReviews?.map((item) =>
           LifterReviewDTO.fromEntity(item),
         ),
         lifterStats: LifterStatsDTO.fromEntity(entity.lifterStats),
@@ -244,6 +245,8 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
     const lifter = new Lifter();
     for (const property in this as LifterUpdateDTO)
       lifter[property] = this[property];
+
+    delete lifter.address;
     return lifter;
   }
 }

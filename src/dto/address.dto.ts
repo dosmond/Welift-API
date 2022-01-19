@@ -66,9 +66,9 @@ export class AddressDTO implements Readonly<AddressDTO> {
         city: entity.city,
         state: entity.state,
         postalCode: entity.postalCode,
-        bookingStart: BookingDTO.fromEntity(entity.bookingStart),
-        bookingEnd: BookingDTO.fromEntity(entity.bookingEnd),
-        lifter: LifterDTO.fromEntity(entity.lifter),
+        bookingStart: BookingDTO.fromEntity(entity?.bookingStart),
+        bookingEnd: BookingDTO.fromEntity(entity?.bookingEnd),
+        lifter: LifterDTO.fromEntity(entity?.lifter),
       });
     }
     return null;

@@ -37,7 +37,7 @@ export class Partner {
   })
   referralCode: string | null;
 
-  @Column('date', {
+  @Column('timestamptz', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',

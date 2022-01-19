@@ -63,7 +63,7 @@ export class SurveyResponse {
   @Column('json', { name: 'data' })
   data: SurveyResponseData;
 
-  @Column('date', {
+  @Column('timestamptz', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',

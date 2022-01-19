@@ -124,7 +124,7 @@ describe('BookingService', () => {
       expect(bookings.length).toEqual(1);
     });
 
-    it('should return correct accepted lifts when start and end are given', async () => {
+    it('should return correct bookings when start and end are given', async () => {
       const bookings = await service.getAll(
         new PaginatedDTO({
           start: new Date('2022-01-05 10:35:00+00'),
