@@ -249,8 +249,6 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
     const lifter = new Lifter();
     for (const property in this as LifterUpdateDTO)
       lifter[property] = this[property];
-
-    delete lifter.address;
     return lifter;
   }
 }
