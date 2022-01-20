@@ -32,6 +32,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SurveyModule } from './routes/survey/survey.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WhatsNewModule } from './routes/whats-new/whats-new.module';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -39,6 +40,24 @@ import { WhatsNewModule } from './routes/whats-new/whats-new.module';
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     CacheModule.register(),
+    LoggerModule.forRoot({
+      pinoHttp:
+        process.env.NODE_ENV === 'local'
+          ? {
+              autoLogging: {
+                ignorePaths: ['*'],
+              },
+              transport: {
+                target: 'pino-pretty',
+                options: {
+                  colorize: true,
+                  levelFirst: true,
+                  translateTime: 'UTC:mm/dd/yyyy, h:MM:ss TT Z',
+                },
+              },
+            }
+          : {},
+    }),
     AddressModule,
     AuthModule,
     AcceptedLiftModule,
