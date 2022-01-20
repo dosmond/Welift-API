@@ -36,6 +36,10 @@ export class LifterCompletedTrainingVideoDTO
   @Type(() => Lifter)
   lifter: Lifter;
 
+  constructor(init?: Partial<LifterCompletedTrainingVideoDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(
     dto: Partial<LifterCompletedTrainingVideoDTO>,
   ): LifterCompletedTrainingVideoDTO {

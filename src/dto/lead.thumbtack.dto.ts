@@ -5,6 +5,10 @@ import { ValidateNested } from 'class-validator';
 export class ThumbtackBusiness implements Readonly<ThumbtackBusiness> {
   @ApiProperty()
   name: string;
+
+  constructor(init?: Partial<ThumbtackBusiness>) {
+    Object.assign(this, init);
+  }
 }
 
 export class ThumbtackCustomer implements Readonly<ThumbtackCustomer> {
@@ -13,6 +17,10 @@ export class ThumbtackCustomer implements Readonly<ThumbtackCustomer> {
 
   @ApiProperty()
   phone: string;
+
+  constructor(init?: Partial<ThumbtackCustomer>) {
+    Object.assign(this, init);
+  }
 }
 
 export class ThumbtackLocation implements Readonly<ThumbtackLocation> {
@@ -24,6 +32,10 @@ export class ThumbtackLocation implements Readonly<ThumbtackLocation> {
 
   @ApiProperty()
   zipCode: string;
+
+  constructor(init?: Partial<ThumbtackLocation>) {
+    Object.assign(this, init);
+  }
 }
 
 export class ThumbtackRequest implements Readonly<ThumbtackRequest> {
@@ -41,6 +53,10 @@ export class ThumbtackRequest implements Readonly<ThumbtackRequest> {
 
   @ApiProperty()
   location: ThumbtackLocation;
+
+  constructor(init?: Partial<ThumbtackRequest>) {
+    Object.assign(this, init);
+  }
 }
 
 export class LeadThumbtackDTO implements Readonly<LeadThumbtackDTO> {
@@ -64,4 +80,8 @@ export class LeadThumbtackDTO implements Readonly<LeadThumbtackDTO> {
   @ValidateNested()
   @Type(() => ThumbtackBusiness)
   business: ThumbtackBusiness;
+
+  constructor(init?: Partial<LeadThumbtackDTO>) {
+    Object.assign(this, init);
+  }
 }

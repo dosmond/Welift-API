@@ -30,7 +30,8 @@ export class LeadsService {
     };
 
     if (start && end) options.where = { creationDate: Between(start, end) };
-    if (start) options.where = { creationDate: Between(start, new Date()) };
+    else if (start)
+      options.where = { creationDate: Between(start, new Date()) };
 
     options.order = { creationDate: order };
 

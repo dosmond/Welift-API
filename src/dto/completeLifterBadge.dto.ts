@@ -36,6 +36,10 @@ export class CompletedLifterBadgeDTO
   @Type(() => LifterDTO)
   lifter: LifterDTO;
 
+  constructor(init?: Partial<CompletedLifterBadgeDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(
     dto: Partial<CompletedLifterBadgeDTO>,
   ): CompletedLifterBadgeDTO {

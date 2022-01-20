@@ -92,7 +92,10 @@ export class BookingService {
       );
   }
 
-  public async getTotalEarnings(start: Date, end: Date): Promise<number> {
+  public async getTotalEarnings(
+    start: Date,
+    end: Date,
+  ): Promise<{ sum: number }> {
     const query = this.repo
       .createQueryBuilder('booking')
       .select('SUM(booking.totalCost)');
@@ -252,6 +255,10 @@ export class BookingService {
 
   public async update(request: BookingUpdateDTO): Promise<BookingDTO> {
     const dto = BookingUpdateDTO.from(request);
+
+    if (!(await this.repo.findOne({ id: dto.id })))
+      throw new BadRequestException('Booking does not exist');
+
     const result = BookingDTO.fromEntity(await this.repo.save(dto.toEntity()));
 
     if (process.env.NODE_ENV === 'production') {

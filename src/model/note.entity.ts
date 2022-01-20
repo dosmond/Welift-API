@@ -35,7 +35,7 @@ export class Note {
   })
   author: string;
 
-  @Column('date', {
+  @Column('timestamptz', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
@@ -49,4 +49,8 @@ export class Note {
   @ManyToOne(() => Lead, (lead) => lead.notes)
   @JoinColumn([{ name: 'lead_id', referencedColumnName: 'id' }])
   lead: Lead;
+
+  constructor(init?: Partial<Note>) {
+    Object.assign(this, init);
+  }
 }

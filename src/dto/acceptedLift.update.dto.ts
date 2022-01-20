@@ -57,6 +57,10 @@ export class AcceptedLiftUpdateDTO
   @IsOptional()
   lifter: Lifter;
 
+  constructor(init?: Partial<AcceptedLiftUpdateDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(
     dto: Partial<AcceptedLiftUpdateDTO>,
   ): AcceptedLiftUpdateDTO {

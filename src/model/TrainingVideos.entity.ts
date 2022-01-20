@@ -21,4 +21,8 @@ export class TrainingVideo {
     (lifterCompletedTrainingVideos) => lifterCompletedTrainingVideos.video,
   )
   lifterCompletedTrainingVideos: LifterCompletedTrainingVideo[];
+
+  constructor(init?: Partial<TrainingVideo>) {
+    Object.assign(this, init);
+  }
 }

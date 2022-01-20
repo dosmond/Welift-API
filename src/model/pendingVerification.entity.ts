@@ -15,4 +15,8 @@ export class PendingVerification {
     length: 6,
   })
   code: string;
+
+  constructor(init?: Partial<PendingVerification>) {
+    Object.assign(this, init);
+  }
 }

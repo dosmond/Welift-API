@@ -94,7 +94,7 @@ export class Lead {
   })
   promoCode: string | null;
 
-  @Column('date', {
+  @Column('timestamptz', {
     name: 'creation_date',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
@@ -110,4 +110,8 @@ export class Lead {
 
   @OneToMany(() => Note, (note) => note.lead)
   notes: Note[];
+
+  constructor(init?: Partial<Lead>) {
+    Object.assign(this, init);
+  }
 }

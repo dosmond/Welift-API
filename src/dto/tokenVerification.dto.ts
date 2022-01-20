@@ -11,4 +11,8 @@ export class TokenVerificationRequestDTO
   @ApiProperty({ required: true })
   @IsString()
   token: string;
+
+  constructor(init?: Partial<TokenVerificationRequestDTO>) {
+    Object.assign(this, init);
+  }
 }

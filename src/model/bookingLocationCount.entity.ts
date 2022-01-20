@@ -15,4 +15,8 @@ export class BookingLocationCount {
 
   @Column('integer', { name: 'count', default: 0 })
   count: number;
+
+  constructor(init?: Partial<BookingLocationCount>) {
+    Object.assign(this, init);
+  }
 }

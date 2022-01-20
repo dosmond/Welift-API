@@ -24,4 +24,8 @@ export class Badge {
     (completedLifterBadges) => completedLifterBadges.badge,
   )
   completedLifterBadges: CompletedLifterBadge[];
+
+  constructor(init?: Partial<Badge>) {
+    Object.assign(this, init);
+  }
 }

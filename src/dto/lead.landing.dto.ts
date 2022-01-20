@@ -28,4 +28,8 @@ export class LeadLandingDTO implements Readonly<LeadLandingDTO> {
   @Type(() => AddressDTO)
   @IsDefined()
   address: AddressDTO;
+
+  constructor(init?: Partial<LeadLandingDTO>) {
+    Object.assign(this, init);
+  }
 }
