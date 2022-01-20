@@ -57,7 +57,6 @@ export class AddressController {
     try {
       return await this.serv.createMultiple(user, body);
     } catch (err) {
-      this.logger.error('ERROR');
       throw new BadRequestException(err.message);
     }
   }
