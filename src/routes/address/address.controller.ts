@@ -9,6 +9,7 @@ import {
   Query,
   BadRequestException,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { User } from '@src/user.decorator';
 import { AddressMultipleDTO } from '@src/dto/address.multiple.dto';
@@ -21,6 +22,8 @@ import { Role } from '@src/enum/roles.enum';
 @Controller('address')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AddressController {
+  private readonly logger = new Logger(AddressController.name);
+
   constructor(private serv: AddressService) {}
 
   @Get()
@@ -54,6 +57,7 @@ export class AddressController {
     try {
       return await this.serv.createMultiple(user, body);
     } catch (err) {
+      this.logger.error('ERROR');
       throw new BadRequestException(err.message);
     }
   }
