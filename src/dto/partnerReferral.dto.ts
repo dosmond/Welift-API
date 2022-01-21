@@ -1,8 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 import { User } from '@src/user.decorator';
 
 export class PartnerReferralDTO implements Readonly<PartnerReferralDTO> {
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID()
+  id: string;
+
   @ApiProperty()
   @IsUUID()
   partnerId: string;
@@ -11,8 +16,13 @@ export class PartnerReferralDTO implements Readonly<PartnerReferralDTO> {
   @IsUUID()
   bookingId: string;
 
+  constructor(init?: Partial<PartnerReferralDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<PartnerReferralDTO>): PartnerReferralDTO {
     const partnerReferral = new PartnerReferralDTO();
+    partnerReferral.id = dto.id;
     partnerReferral.partnerId = dto.partnerId;
     partnerReferral.bookingId = dto.bookingId;
     return partnerReferral;
@@ -21,6 +31,7 @@ export class PartnerReferralDTO implements Readonly<PartnerReferralDTO> {
   public static fromEntity(entity: PartnerReferralDTO): PartnerReferralDTO {
     if (entity) {
       return this.from({
+        id: entity.id,
         partnerId: entity.partnerId,
         bookingId: entity.bookingId,
       });

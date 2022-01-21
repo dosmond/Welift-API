@@ -21,4 +21,8 @@ export class CouponInfoDTO implements Readonly<CouponInfoDTO> {
   @ApiProperty()
   @IsString()
   email: string;
+
+  constructor(init?: Partial<CouponInfoDTO>) {
+    Object.assign(this, init);
+  }
 }
