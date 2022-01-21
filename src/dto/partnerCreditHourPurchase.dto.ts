@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsNumber } from 'class-validator';
+import { IsUUID, IsNumber, IsString } from 'class-validator';
 import { User } from '@src/user.decorator';
+import { PartnerCreditHourPurchase } from '@src/model/partnerCreditHourPurchases.entity';
 
 export class PartnerCreditHourPurchaseDTO
   implements Readonly<PartnerCreditHourPurchaseDTO>
 {
   @ApiProperty()
-  @IsUUID()
+  @IsString()
   stripeSessionId: string;
 
   @ApiProperty()
@@ -20,6 +21,10 @@ export class PartnerCreditHourPurchaseDTO
   @ApiProperty()
   @IsUUID()
   partnerId: string;
+
+  constructor(init?: Partial<PartnerCreditHourPurchaseDTO>) {
+    Object.assign(this, init);
+  }
 
   public static from(
     dto: Partial<PartnerCreditHourPurchaseDTO>,
@@ -46,8 +51,8 @@ export class PartnerCreditHourPurchaseDTO
     return null;
   }
 
-  public toEntity(user: User = null): PartnerCreditHourPurchaseDTO {
-    const partnerCreditPurchase = new PartnerCreditHourPurchaseDTO();
+  public toEntity(user: User = null): PartnerCreditHourPurchase {
+    const partnerCreditPurchase = new PartnerCreditHourPurchase();
     for (const property in this as PartnerCreditHourPurchaseDTO) {
       partnerCreditPurchase[property] = this[property];
     }

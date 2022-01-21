@@ -57,11 +57,11 @@ export class PartnersController {
 
   @Post('create')
   @Roles(Role.Admin)
-  public async addPartner(
+  public async create(
     @User() user: User,
     @Body() body: PartnerDTO,
   ): Promise<PartnerDTO> {
-    return await this.serv.addPartner(user, body);
+    return await this.serv.create(user, body);
   }
 
   @Put('update')

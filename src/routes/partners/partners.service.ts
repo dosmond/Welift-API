@@ -55,10 +55,7 @@ export class PartnersService {
     return count;
   }
 
-  public async addPartner(
-    user: User,
-    request: PartnerDTO,
-  ): Promise<PartnerDTO> {
+  public async create(user: User, request: PartnerDTO): Promise<PartnerDTO> {
     const dto = PartnerDTO.from(request);
     return PartnerDTO.fromEntity(await this.repo.save(dto.toEntity(user)));
   }

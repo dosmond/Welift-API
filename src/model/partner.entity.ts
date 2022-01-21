@@ -49,4 +49,8 @@ export class Partner {
     (partnerCreditHourPurchases) => partnerCreditHourPurchases.partner,
   )
   partnerCreditHourPurchases: PartnerCreditHourPurchase[];
+
+  constructor(init?: Partial<Partner>) {
+    Object.assign(this, init);
+  }
 }
