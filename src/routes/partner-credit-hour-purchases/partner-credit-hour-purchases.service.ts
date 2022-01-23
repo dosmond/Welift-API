@@ -26,7 +26,7 @@ export class PartnerCreditHourPurchasesService {
 
     partner.totalCredits += partnerCreditPurchase.creditsPurchased;
 
-    await this.repo.save(partner);
+    await this.partnerRepo.save(partner);
     await this.repo.save(partnerCreditPurchase.toEntity(user));
   }
 }

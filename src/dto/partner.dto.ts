@@ -36,6 +36,10 @@ export class PartnerDTO implements Readonly<PartnerDTO> {
   @IsOptional()
   referralCode: string;
 
+  constructor(init?: Partial<PartnerDTO>) {
+    Object.assign(this, init);
+  }
+
   public static from(dto: Partial<PartnerDTO>): PartnerDTO {
     const partner = new PartnerDTO();
     for (const property in dto) partner[property] = dto[property];

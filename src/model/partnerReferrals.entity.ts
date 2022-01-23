@@ -14,4 +14,8 @@ export class PartnerReferral {
 
   @Column('boolean', { name: 'refunded', default: () => 'false' })
   refunded: boolean;
+
+  constructor(init?: Partial<PartnerReferral>) {
+    Object.assign(this, init);
+  }
 }
