@@ -39,13 +39,13 @@ export class CronHelper implements OnApplicationBootstrap {
   }
 
   // Only Run at 9AM or 5PM
-  @Cron('* * 9,17 * * *', {
-    name: 'booking-location-count',
-    timeZone: 'America/Denver',
-  })
-  public async checkBookingCount() {
-    this.eventEmitter.emit(EventNames.CheckBookingCount);
-  }
+  // @Cron('* * 9,17 * * *', {
+  //   name: 'booking-location-count',
+  //   timeZone: 'America/Denver',
+  // })
+  // public async checkBookingCount() {
+  //   this.eventEmitter.emit(EventNames.CheckBookingCount);
+  // }
 
   @Cron(CronExpression.EVERY_3_HOURS, {
     name: 'check_passed_pc',
