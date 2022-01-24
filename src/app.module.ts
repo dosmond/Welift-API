@@ -1,3 +1,4 @@
+import { PushNotificationModule } from './helper/pushNotification.helper';
 import { EmailModule } from './helper/email.client';
 import { CronModule } from './helper/cron.helper';
 import { BookingLocationCountModule } from './routes/booking-location-count/bookingLocationCount.module';
@@ -77,6 +78,7 @@ import { LoggerModule } from 'nestjs-pino';
     PartnerCreditHourPurchasesModule,
     PartnerReferralsModule,
     PartnersModule,
+    PushNotificationModule,
     SurveyModule,
     SurveyResponseModule,
     TrainingVideosModule,

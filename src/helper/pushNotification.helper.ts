@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Global, Injectable, Module } from '@nestjs/common';
 import axios from 'axios';
 import { IsString } from 'class-validator';
 
@@ -47,3 +47,10 @@ export class PushNotificationRequest
     this.message = request.message;
   }
 }
+
+@Global()
+@Module({
+  providers: [PushNotificationHelper],
+  exports: [PushNotificationHelper],
+})
+export class PushNotificationModule {}
