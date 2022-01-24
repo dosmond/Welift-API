@@ -4,7 +4,6 @@ import { AuthService } from '@src/auth/auth.service';
 import { configService } from '@src/config/config.service';
 import { AWSS3Helper } from '@src/helper/awss3.helper';
 import { EmailClient } from '@src/helper/email.client';
-import { PushNotificationHelper } from '@src/helper/pushNotification.helper';
 import { TextClient } from '@src/helper/text.client';
 import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import { Address } from '@src/model/addresses.entity';
@@ -59,7 +58,6 @@ describe('LiftersController', () => {
         LifterReviewsService,
         AcceptedLiftService,
         AuthService,
-        PushNotificationHelper,
         EmailClient,
       ],
     }).compile();

@@ -1,4 +1,3 @@
-import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { Lifter } from '../../model/lifters.entity';
 import { LiftersService } from './../lifters/lifters.service';
 import { CheckrService } from './checkr.service';
@@ -54,7 +53,6 @@ import { PendingVerification } from '../../model/pendingVerification.entity';
     LifterReviewsService,
     AcceptedLiftService,
     AuthService,
-    PushNotificationHelper,
   ],
 })
 export class CheckrModule {}
