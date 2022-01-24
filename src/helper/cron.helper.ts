@@ -39,7 +39,7 @@ export class CronHelper implements OnApplicationBootstrap {
   }
 
   // Only Run at 9AM or 5PM
-  @Cron(CronExpression.EVERY_5_SECONDS, {
+  @Cron('* * 9,17 * * *', {
     name: 'booking-location-count',
     timeZone: 'America/Denver',
   })
