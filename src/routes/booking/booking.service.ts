@@ -11,7 +11,7 @@ import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { EmailClient } from '../../helper/email.client';
 import { Booking } from './../../model/booking.entity';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   getConnection,
@@ -38,6 +38,8 @@ const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
 
 @Injectable()
 export class BookingService {
+  private readonly logger = new Logger(BookingService.name);
+
   constructor(
     @InjectRepository(Booking)
     private readonly repo: Repository<Booking>,

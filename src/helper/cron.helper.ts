@@ -8,6 +8,7 @@ import {
   Injectable,
   OnApplicationBootstrap,
   Module,
+  Logger,
 } from '@nestjs/common';
 import { CronJob } from 'cron';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
@@ -16,6 +17,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CronHelper implements OnApplicationBootstrap {
+  private readonly logger = new Logger(CronHelper.name);
+
   constructor(
     private schedulerReg: SchedulerRegistry,
     @InjectRepository(CronJobDescription)
