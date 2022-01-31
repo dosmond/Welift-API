@@ -1,3 +1,4 @@
+import { TextModule } from './helper/text.client';
 import { PushNotificationModule } from './helper/pushNotification.helper';
 import { EmailModule } from './helper/email.client';
 import { CronModule } from './helper/cron.helper';
@@ -86,6 +87,7 @@ import { LoggerModule } from 'nestjs-pino';
     CronModule,
     EmailModule,
     WhatsNewModule,
+    TextModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],

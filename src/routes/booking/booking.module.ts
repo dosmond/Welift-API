@@ -4,7 +4,6 @@ import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import { Lift } from '@src/model/lifts.entity';
 import { Partner } from '../../model/partner.entity';
 import { PartnerReferral } from './../../model/partnerReferrals.entity';
-import { TextClient } from '../../helper/text.client';
 import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { Booking } from './../../model/booking.entity';
 import { Module } from '@nestjs/common';
@@ -26,6 +25,6 @@ import { Note } from '@src/model/note.entity';
     ]),
   ],
   controllers: [BookingController],
-  providers: [BookingService, TextClient, GoogleCalendarApiHelper, SlackHelper],
+  providers: [BookingService, GoogleCalendarApiHelper, SlackHelper],
 })
 export class BookingModule {}
