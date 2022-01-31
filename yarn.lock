@@ -2162,7 +2162,7 @@ dateformat@^4.6.3:
 
 dayjs@^1.10.7:
   version "1.10.7"
-  resolved "https://welift-592473490836.d.codeartifact.us-east-1.amazonaws.com:443/npm/LiftUI/dayjs/-/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
   integrity sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==
 
 debug@2.6.9:
