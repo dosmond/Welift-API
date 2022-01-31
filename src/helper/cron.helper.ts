@@ -1,3 +1,4 @@
+import { CustomerPrepEvent } from './../events/customerPrep.event';
 import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
 import { ClockOutEvent } from './../events/clockout.event';
@@ -90,6 +91,10 @@ export class CronHelper implements OnApplicationBootstrap {
 
   private async [CronJobNames.AutoClockOut](liftId: string) {
     this.eventEmitter.emit(EventNames.AutoClockOut, new ClockOutEvent(liftId));
+  }
+
+  private async [CronJobNames.CustomerPrep](event: CustomerPrepEvent) {
+    this.eventEmitter.emit(EventNames.CustomerPrep, event);
   }
 }
 

@@ -10,7 +10,6 @@ import { CompletedLifterBadgeService } from './../completed-lifter-badge/complet
 import { LifterStatsService } from './../lifter-stats/lifter-stats.service';
 import { AddressService } from './../address/address.service';
 import { AWSS3Helper } from './../../helper/awss3.helper';
-import { TextClient } from './../../helper/text.client';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { Address } from '@src/model/addresses.entity';
 import { Lifter } from './../../model/lifters.entity';
@@ -41,7 +40,6 @@ import { LifterReview } from '@src/model/lifterReviews.entity';
   controllers: [LiftersController],
   providers: [
     LiftersService,
-    TextClient,
     AWSS3Helper,
     AddressService,
     LifterStatsService,

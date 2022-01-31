@@ -6,7 +6,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from '../../auth/auth.service';
 import { AWSS3Helper } from '../../helper/awss3.helper';
-import { TextClient } from '../../helper/text.client';
 import { AcceptedLiftService } from '../accepted-lift/accepted-lift.service';
 import { AddressService } from '../address/address.service';
 import { CompletedLifterBadgeService } from '../completed-lifter-badge/completed-lifter-badge.service';
@@ -43,7 +42,6 @@ import { PendingVerification } from '../../model/pendingVerification.entity';
   providers: [
     CheckrService,
     LiftersService,
-    TextClient,
     AWSS3Helper,
     AddressService,
     LifterStatsService,
