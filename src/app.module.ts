@@ -1,3 +1,4 @@
+import { TextModule } from './helper/text.client';
 import { PushNotificationModule } from './helper/pushNotification.helper';
 import { EmailModule } from './helper/email.client';
 import { CronModule } from './helper/cron.helper';
@@ -42,22 +43,22 @@ import { LoggerModule } from 'nestjs-pino';
     EventEmitterModule.forRoot(),
     CacheModule.register(),
     LoggerModule.forRoot({
-      pinoHttp:
-        process.env.NODE_ENV === 'local'
-          ? {
-              autoLogging: {
-                ignorePaths: ['*'],
-              },
-              transport: {
+      pinoHttp: {
+        autoLogging: {
+          ignorePaths: ['*'],
+        },
+        transport:
+          process.env.NODE_ENV === 'local'
+            ? {
                 target: 'pino-pretty',
                 options: {
                   colorize: true,
                   levelFirst: true,
                   translateTime: 'UTC:mm/dd/yyyy, h:MM:ss TT Z',
                 },
-              },
-            }
-          : {},
+              }
+            : null,
+      },
     }),
     AddressModule,
     AuthModule,
@@ -86,6 +87,7 @@ import { LoggerModule } from 'nestjs-pino';
     CronModule,
     EmailModule,
     WhatsNewModule,
+    TextModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],

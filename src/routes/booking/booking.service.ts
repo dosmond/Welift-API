@@ -11,7 +11,7 @@ import { GoogleCalendarApiHelper } from './../../helper/googleCalendar.helper';
 import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { EmailClient } from '../../helper/email.client';
 import { Booking } from './../../model/booking.entity';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   getConnection,
@@ -32,12 +32,25 @@ import { Lift } from '@src/model/lifts.entity';
 import { BookingUpdateDTO } from '@src/dto/booking.update.dto';
 import { Address } from '@src/model/addresses.entity';
 import { CronJobData, CronJobOptions } from '@src/model/cronjob.entity';
+import { CustomerPrepEvent } from '@src/events/customerPrep.event';
+import dayjs from 'dayjs';
+
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(utc);
+dayjs.extend(localizedFormat);
+dayjs.extend(timezone);
+
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });
 
 @Injectable()
 export class BookingService {
+  private readonly logger = new Logger(BookingService.name);
+
   constructor(
     @InjectRepository(Booking)
     private readonly repo: Repository<Booking>,
@@ -163,6 +176,7 @@ export class BookingService {
 
       const lift = await queryRunner.manager.save(newLift);
 
+      // Auto-clockout cron
       this.cronHelper.addCronJob(
         new CronJobData({
           cronName: CronJobNames.AutoClockOut,
@@ -170,6 +184,35 @@ export class BookingService {
           options: new CronJobOptions({
             key: `autoclockout-${lift.id}`,
             date: new Date(booking.endTime),
+          }),
+        }),
+      );
+
+      const date = dayjs(booking.startTime).tz(booking.timezone).format('ll');
+
+      const time = dayjs(booking.startTime)
+        .tz(booking.timezone)
+        .format('hh:mm A');
+
+      // Customer Prep cron
+      this.cronHelper.addCronJob(
+        new CronJobData({
+          cronName: CronJobNames.CustomerPrep,
+          params: [
+            new CustomerPrepEvent({
+              liftId: lift.id,
+              phoneNumber: booking.phone,
+              name: booking.name,
+              time: time,
+              date: date,
+            }),
+          ],
+          options: new CronJobOptions({
+            key: `${CronJobNames.CustomerPrep}-${lift.id}`,
+            date: this.calculateCustomerPrepTextSendTime(
+              booking.startTime,
+              booking.timezone,
+            ),
           }),
         }),
       );
@@ -405,5 +448,28 @@ export class BookingService {
       location.state = address.state;
       await this.locationCountService.upsert(location);
     }
+  }
+
+  private calculateCustomerPrepTextSendTime(
+    time: Date,
+    timezone: string,
+  ): Date {
+    // Send the text 12 hours before
+    const adjustedTime = dayjs(time).tz(timezone).subtract(12, 'hour');
+
+    // If time is between 7:00pm and midnight, send text at 7:00pm
+    if (adjustedTime.hour() <= 23 && adjustedTime.hour() > 19)
+      return adjustedTime.set('hour', 19).set('minute', 0).toDate();
+
+    // If time is between mindnight and 8:00am, send text at 7:00pm the night before.
+    if (adjustedTime.hour() <= 8)
+      return adjustedTime
+        .set('date', adjustedTime.date() - 1)
+        .set('hour', 19)
+        .set('minute', 0)
+        .toDate();
+
+    // Time is between 8:00am and 7:00pm, just send the text then.
+    return adjustedTime.toDate();
   }
 }

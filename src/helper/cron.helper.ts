@@ -1,3 +1,4 @@
+import { CustomerPrepEvent } from './../events/customerPrep.event';
 import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
 import { ClockOutEvent } from './../events/clockout.event';
@@ -8,6 +9,7 @@ import {
   Injectable,
   OnApplicationBootstrap,
   Module,
+  Logger,
 } from '@nestjs/common';
 import { CronJob } from 'cron';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
@@ -16,6 +18,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CronHelper implements OnApplicationBootstrap {
+  private readonly logger = new Logger(CronHelper.name);
+
   constructor(
     private schedulerReg: SchedulerRegistry,
     @InjectRepository(CronJobDescription)
@@ -87,6 +91,10 @@ export class CronHelper implements OnApplicationBootstrap {
 
   private async [CronJobNames.AutoClockOut](liftId: string) {
     this.eventEmitter.emit(EventNames.AutoClockOut, new ClockOutEvent(liftId));
+  }
+
+  private async [CronJobNames.CustomerPrep](event: CustomerPrepEvent) {
+    this.eventEmitter.emit(EventNames.CustomerPrep, event);
   }
 }
 
