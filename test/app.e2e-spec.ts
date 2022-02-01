@@ -16,7 +16,9 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', async () => {
-    return await request(app.getHttpServer()).get('/').expect(401);
+    return await request(app.getHttpServer())
+      .get('/elastic-beanstalk-hc')
+      .expect(200);
   });
 
   afterAll(() => {

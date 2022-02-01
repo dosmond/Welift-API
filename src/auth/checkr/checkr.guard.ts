@@ -1,8 +1,15 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { createHmac } from 'crypto';
 
 @Injectable()
 export class CheckrGuard implements CanActivate {
+  private readonly logger: Logger = new Logger(CheckrGuard.name);
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const sig = request.get('X-Checkr-Signature');
@@ -12,15 +19,12 @@ export class CheckrGuard implements CanActivate {
         .update(JSON.stringify(request.body))
         .digest('hex');
 
-      console.log(hmac, sig);
-
       if (sig === hmac) return true;
       else {
-        console.log("Signature doesn't match!");
         throw new Error("Signature doesn't match!");
       }
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
     }
   }
 }
