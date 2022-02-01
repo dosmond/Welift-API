@@ -57,18 +57,13 @@ dayjs.extend(timezone);
     LoggerModule.forRoot({
       pinoHttp: {
         useLevel: 'error',
-        level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug',
-        autoLogging: {
-          // eslint-disable-next-line prettier/prettier
-          ignorePaths: [new RegExp('[\s\S]*')],
-        },
+        autoLogging: false,
         transport: {
           target: 'pino-pretty',
           options: {
             colorize: true,
             levelFirst: true,
             singleLine: true,
-            timestampKey: 'time',
             translateTime: 'UTC:mm/dd/yyyy, h:MM:ss TT Z',
           },
         },
