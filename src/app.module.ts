@@ -35,6 +35,7 @@ import { SurveyModule } from './routes/survey/survey.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WhatsNewModule } from './routes/whats-new/whats-new.module';
 import { LoggerModule } from 'nestjs-pino';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -42,22 +43,23 @@ import { LoggerModule } from 'nestjs-pino';
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     CacheModule.register(),
+    ThrottlerModule.forRoot(),
     LoggerModule.forRoot({
       pinoHttp: {
+        useLevel: 'error',
         autoLogging: {
-          ignorePaths: ['*'],
+          // eslint-disable-next-line prettier/prettier
+          ignorePaths: [new RegExp('[\s\S]*')],
         },
-        transport:
-          process.env.NODE_ENV === 'local'
-            ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  levelFirst: true,
-                  translateTime: 'UTC:mm/dd/yyyy, h:MM:ss TT Z',
-                },
-              }
-            : null,
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            levelFirst: true,
+            singleLine: true,
+            translateTime: 'UTC:mm/dd/yyyy, h:MM:ss TT Z',
+          },
+        },
       },
     }),
     AddressModule,
