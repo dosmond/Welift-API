@@ -3,7 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as express from 'express';
 import 'module-alias/register';
-import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+import { Logger } from 'nestjs-pino';
+import { ErrorLoggerInterceptor } from './interceptors/error-logger.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -12,7 +13,7 @@ async function bootstrap() {
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
   app.useLogger(app.get(Logger));
-  app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  app.useGlobalInterceptors(new ErrorLoggerInterceptor());
   await app.listen(3000);
 }
 

@@ -42,6 +42,7 @@ export class AddressController {
     @Body() body: AddressDTO,
   ): Promise<AddressDTO> {
     try {
+      throw new Error('Error');
       return await this.serv.create(user, body);
     } catch (err) {
       throw new BadRequestException(err.message);
