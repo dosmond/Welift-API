@@ -37,6 +37,16 @@ import { WhatsNewModule } from './routes/whats-new/whats-new.module';
 import { LoggerModule } from 'nestjs-pino';
 import { ThrottlerModule } from '@nestjs/throttler';
 
+import dayjs from 'dayjs';
+
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(utc);
+dayjs.extend(localizedFormat);
+dayjs.extend(timezone);
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
@@ -47,6 +57,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     LoggerModule.forRoot({
       pinoHttp: {
         useLevel: 'error',
+        level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug',
         autoLogging: {
           // eslint-disable-next-line prettier/prettier
           ignorePaths: [new RegExp('[\s\S]*')],
@@ -57,6 +68,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
             colorize: true,
             levelFirst: true,
             singleLine: true,
+            timestampKey: 'time',
             translateTime: 'UTC:mm/dd/yyyy, h:MM:ss TT Z',
           },
         },

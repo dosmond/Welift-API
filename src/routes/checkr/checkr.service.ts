@@ -1,10 +1,12 @@
 import { LifterBatchDTO } from './../../dto/lifter.batch.dto';
 import { LiftersService } from './../lifters/lifters.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
 export class CheckrService {
+  private readonly logger: Logger = new Logger(CheckrService.name);
+
   constructor(private readonly lifterService: LiftersService) {}
 
   public async handleBcWebhook(request: any): Promise<void> {
@@ -35,15 +37,15 @@ export class CheckrService {
 
             await this.lifterService.updateBatch(dto);
           } catch (err) {
-            console.error(`unable to update lifter: ${err}`);
+            this.logger.error(`unable to update lifter: ${err}`);
           }
           return;
-        } else console.error('Report status not clear');
+        } else this.logger.error('Report status not clear');
         break;
       case 'candidate.created':
-        console.info('Checkr Candidate Created');
+        this.logger.debug('Checkr Candidate Created');
       default:
-        console.warn('Unhandled bc webhook type');
+        this.logger.warn('Unhandled bc webhook type');
         break;
     }
   }
