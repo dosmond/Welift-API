@@ -7,7 +7,6 @@ import { Role } from './enum/roles.enum';
 import { Throttle } from '@nestjs/throttler';
 
 @Controller()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -18,6 +17,7 @@ export class AppController {
   }
 
   @Post('admin/retrieve')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Lifter, Role.Landing)
   public retrieve(@Body() body: { secrets: string[] }): Promise<any> {
     return this.appService.retrieveSecrets(body.secrets);
