@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Lifter } from '../../model/lifters.entity';
 import { LiftersService } from './../lifters/lifters.service';
 import { CheckrService } from './checkr.service';
@@ -22,6 +23,7 @@ import { LifterReview } from '../../model/lifterReviews.entity';
 import { LifterStats } from '../../model/lifterStats.entity';
 import { Lift } from '../../model/lifts.entity';
 import { PendingVerification } from '../../model/pendingVerification.entity';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { PendingVerification } from '../../model/pendingVerification.entity';
       CompletedLifterBadge,
       LifterCompletedTrainingVideo,
       LifterEquipment,
+      LifterTransaction,
       LifterReview,
       AcceptedLift,
       Lift,
@@ -49,6 +52,7 @@ import { PendingVerification } from '../../model/pendingVerification.entity';
     LifterCompletedTrainingVideosService,
     LifterEquipmentService,
     LifterReviewsService,
+    LifterTransactionsService,
     AcceptedLiftService,
     AuthService,
   ],
