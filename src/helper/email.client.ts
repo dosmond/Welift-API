@@ -2,6 +2,7 @@ import { CouponInfoDTO } from './../dto/couponInfo.dto';
 import { Transporter, createTransport } from 'nodemailer';
 import { renderFile } from 'ejs';
 import { Global, Injectable, Module } from '@nestjs/common';
+import Mail from 'nodemailer/lib/mailer';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const stripe = require('stripe')(process.env.GATSBY_STRIPE_SECRET_KEY);
 
@@ -80,9 +81,10 @@ export class EmailClient {
       const data = await renderFile('./dist/assets/leadConversionEmail.ejs', {
         bookingLink: bookingLink,
       });
-      const emailObject = {
+      const emailObject: Mail.Options = {
         from: process.env.LIFTER_APPLICANT_SENDING_EMAIL,
         to: email,
+        bcc: 'getwelift.com+f78b59ae29@invite.trustpilot.com',
         subject: 'Confirm your booking with Welift',
         html: data,
         attachments: [
