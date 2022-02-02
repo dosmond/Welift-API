@@ -1,3 +1,4 @@
+import { LifterTransactionDTO } from './lifterTransaction.dto';
 import { AddressDTO } from '@src/dto/address.dto';
 import { LifterStatsDTO } from './lifterStats.dto';
 import { LifterReviewDTO } from '@src/dto/lifterReview.dto';
@@ -180,6 +181,13 @@ export class LifterDTO implements Readonly<LifterDTO> {
   @Type(() => AddressDTO)
   address: AddressDTO;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @ValidateNested()
+  @Type(() => LifterTransactionDTO)
+  lifterTransactions: LifterTransactionDTO[];
+
   constructor(init?: Partial<LifterDTO>) {
     Object.assign(this, init);
   }
@@ -233,6 +241,9 @@ export class LifterDTO implements Readonly<LifterDTO> {
           LifterReviewDTO.fromEntity(item),
         ),
         lifterStats: LifterStatsDTO.fromEntity(entity?.lifterStats),
+        lifterTransactions: entity.lifterTransactions?.map((item) =>
+          LifterTransactionDTO.fromEntity(item),
+        ),
         address: AddressDTO.fromEntity(entity?.address),
       });
     }

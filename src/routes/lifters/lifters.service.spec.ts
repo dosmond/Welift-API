@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { AddressUpdateDTO } from './../../dto/address.update.dto';
 import { LifterUpdateDTO } from './../../dto/lifter.update.dto';
 import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
@@ -35,6 +36,7 @@ import { LifterStatsService } from '../lifter-stats/lifter-stats.service';
 import { LiftersService } from './lifters.service';
 import { ConflictException } from '@nestjs/common';
 import { LifterUpdateBatchDTO } from '@src/dto/lifter.update.batch.dto';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
 describe('LiftersService', () => {
   let service: LiftersService;
@@ -57,6 +59,7 @@ describe('LiftersService', () => {
           CompletedLifterBadge,
           LifterCompletedTrainingVideo,
           LifterEquipment,
+          LifterTransaction,
           LifterReview,
           AcceptedLift,
           Lift,
@@ -72,6 +75,7 @@ describe('LiftersService', () => {
         LifterCompletedTrainingVideosService,
         LifterEquipmentService,
         LifterReviewsService,
+        LifterTransactionsService,
         AcceptedLiftService,
         AuthService,
         PushNotificationHelper,

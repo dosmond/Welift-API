@@ -14,6 +14,7 @@ import { LifterEquipment } from './lifterEquipment.entity';
 import { LifterReview } from './lifterReviews.entity';
 import { LifterStats } from './lifterStats.entity';
 import { Address } from './addresses.entity';
+import { LifterTransaction } from './lifterTransaction.entity';
 
 @Index('fki_fk_lifter_address', ['address'], {})
 @Index('lifters_email_phone_key', ['email', 'phone'], { unique: true })
@@ -146,6 +147,9 @@ export class Lifter {
   })
   @JoinColumn([{ name: 'address', referencedColumnName: 'id' }])
   address: Address;
+
+  @OneToMany(() => LifterTransaction, (transaction) => transaction.lifter)
+  lifterTransactions: LifterTransaction[];
 
   constructor(init?: Partial<Lifter>) {
     Object.assign(this, init);
