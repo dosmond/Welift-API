@@ -1,3 +1,5 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 import { EmailClient } from '@src/helper/email.client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -29,9 +31,10 @@ import { configService } from '@src/config/config.service';
 
 describe('CheckrController', () => {
   let controller: CheckrController;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([
@@ -41,6 +44,7 @@ describe('CheckrController', () => {
           PendingVerification,
           CompletedLifterBadge,
           LifterCompletedTrainingVideo,
+          LifterTransaction,
           LifterEquipment,
           LifterReview,
           AcceptedLift,
@@ -63,6 +67,7 @@ describe('CheckrController', () => {
         AuthService,
         PushNotificationHelper,
         EmailClient,
+        LifterTransactionsService,
       ],
     }).compile();
 
@@ -71,5 +76,9 @@ describe('CheckrController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  afterAll(() => {
+    module.close();
   });
 });

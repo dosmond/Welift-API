@@ -36,6 +36,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WhatsNewModule } from './routes/whats-new/whats-new.module';
 import { LoggerModule } from 'nestjs-pino';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { LifterTransactionsModule } from './routes/lifter-transactions/lifter-transactions.module';
 
 import dayjs from 'dayjs';
 
@@ -97,6 +98,7 @@ dayjs.extend(timezone);
     EmailModule,
     WhatsNewModule,
     TextModule,
+    LifterTransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],
