@@ -72,7 +72,7 @@ export class LifterTransactionsController {
   }
 
   @Post('create')
-  @Roles(Role.Lifter)
+  @Roles(Role.Admin)
   public async create(
     @Body() body: LifterTransactionDTO,
   ): Promise<LifterTransactionDTO> {
