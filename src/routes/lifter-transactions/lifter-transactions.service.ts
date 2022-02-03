@@ -1,17 +1,26 @@
+import { Lifter } from '@src/model/lifters.entity';
+import { Role } from '@src/enum/roles.enum';
 import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { LifterTransaction } from '../../model/lifterTransaction.entity';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
 import { LifterTransactionUpdateDTO } from '@src/dto/lifterTransaction.update.dto';
 import { Repository } from 'typeorm';
 import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
+import { User } from '@src/user.decorator';
 
 @Injectable()
 export class LifterTransactionsService {
   constructor(
     @InjectRepository(LifterTransaction)
     private readonly repo: Repository<LifterTransaction>,
+    @InjectRepository(Lifter)
+    private readonly lifterRepo: Repository<Lifter>,
   ) {}
 
   public async getById(id: string): Promise<LifterTransactionDTO> {
@@ -107,13 +116,23 @@ export class LifterTransactionsService {
   }
 
   public async createQuickDeposit(
+    user: User,
     request: LifterTransactionDTO,
   ): Promise<LifterTransactionDTO> {
     const dto = LifterTransactionDTO.from(request);
 
-    // Preliminary checks
-    // Need to check this for permission purposes.
+    // Can only alter your own info unless you are an admin
+    if (!user.roles.split(',').includes(Role.Admin)) {
+      const lifter = await this.lifterRepo.findOne({ id: request.lifterId });
+
+      if (user.sub !== lifter.userId) {
+        throw new ForbiddenException('Forbidden');
+      }
+    }
+
     if (!dto.isQuickDeposit)
+      // Preliminary checks
+      // Need to check this for permission purposes.
       throw new BadRequestException('Must be a quick deposit');
 
     // Only difference is the quick deposit check.
@@ -151,17 +170,19 @@ export class LifterTransactionsService {
   }
 
   public async create(
+    user: User,
     request: LifterTransactionDTO,
   ): Promise<LifterTransactionDTO> {
     const dto = LifterTransactionDTO.from(request);
 
-    if (dto.isQuickDeposit) return await this.createQuickDeposit(request);
+    if (dto.isQuickDeposit) return await this.createQuickDeposit(user, request);
 
     if (dto.amount < 0) return await this.createStandardDeposit(request);
 
     const currentBalance = await this.getLifterCurrentBalance(dto.lifterId);
 
-    dto.remainingBalance = currentBalance + dto.amount;
+    if (!currentBalance) dto.remainingBalance = dto.amount;
+    else dto.remainingBalance = currentBalance + dto.amount;
 
     return LifterTransactionDTO.fromEntity(
       await this.repo.save(dto.toEntity()),
