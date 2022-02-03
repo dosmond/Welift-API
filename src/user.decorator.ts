@@ -7,6 +7,6 @@ export interface User {
 import { createParamDecorator } from '@nestjs/common';
 
 export const User = createParamDecorator((data, req) => {
-  const user: User = req.user || {};
+  const user: User = req.args[0].user || {};
   return user;
 });

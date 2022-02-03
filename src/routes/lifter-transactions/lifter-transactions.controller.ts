@@ -17,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '@src/auth/roles/roles.gaurd';
 import { Roles } from '@src/auth/roles/roles.decorator';
 import { Role } from '@src/enum/roles.enum';
+import { User } from '@src/user.decorator';
 
 @Controller('lifter-transactions')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -62,10 +63,11 @@ export class LifterTransactionsController {
   @Post('quick-deposit')
   @Roles(Role.Lifter)
   public async createQuickDeposit(
+    @User() user: User,
     @Body() body: LifterTransactionDTO,
   ): Promise<LifterTransactionDTO> {
     try {
-      return await this.serv.createQuickDeposit(body);
+      return await this.serv.createQuickDeposit(user, body);
     } catch (err) {
       throw new BadRequestException(err);
     }
@@ -74,10 +76,11 @@ export class LifterTransactionsController {
   @Post('create')
   @Roles(Role.Admin)
   public async create(
+    @User() user: User,
     @Body() body: LifterTransactionDTO,
   ): Promise<LifterTransactionDTO> {
     try {
-      return await this.serv.create(body);
+      return await this.serv.create(user, body);
     } catch (err) {
       throw new BadRequestException(err);
     }

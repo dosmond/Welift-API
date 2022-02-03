@@ -10,14 +10,17 @@ import { PaginatedDTO } from '@src/dto/base.paginated.dto';
 import { Order } from '@src/enum/order.enum';
 import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
 import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { LifterTransactionUpdateDTO } from '@src/dto/lifterTransaction.update.dto';
+import { User } from '@src/user.decorator';
 
 describe('LifterTransactionsService', () => {
   let service: LifterTransactionsService;
   let transactionRepo: Repository<LifterTransaction>;
   let addressRepo: Repository<Address>;
   let lifterRepo: Repository<Lifter>;
+  let user: User;
+  let nonAdminUser: User;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,6 +35,18 @@ describe('LifterTransactionsService', () => {
     transactionRepo = module.get(getRepositoryToken(LifterTransaction));
     addressRepo = module.get(getRepositoryToken(Address));
     lifterRepo = module.get(getRepositoryToken(Lifter));
+
+    user = {
+      roles: 'admin',
+      sub: '',
+      email: '',
+    };
+
+    nonAdminUser = {
+      roles: 'lifter',
+      sub: 'testUUID',
+      email: 'test@test.com',
+    };
   });
 
   it('should be defined', () => {
@@ -203,6 +218,7 @@ describe('LifterTransactionsService', () => {
     it('should throw an error if it is not a quick deposit', async () => {
       expect(async () => {
         await service.createQuickDeposit(
+          user,
           new LifterTransactionDTO({
             isQuickDeposit: false,
             amount: -1000,
@@ -213,8 +229,10 @@ describe('LifterTransactionsService', () => {
 
     it('should throw an error if it is there are no previous transactions', async () => {
       await transactionRepo.delete({ id: transaction.id });
+
       expect(async () => {
         await service.createQuickDeposit(
+          user,
           new LifterTransactionDTO({
             lifterId: lifter.id,
             isQuickDeposit: true,
@@ -229,6 +247,7 @@ describe('LifterTransactionsService', () => {
     it('should throw an error if remaining balance is insufficient', async () => {
       expect(async () => {
         await service.createQuickDeposit(
+          user,
           new LifterTransactionDTO({
             lifterId: lifter.id,
             isQuickDeposit: true,
@@ -240,10 +259,25 @@ describe('LifterTransactionsService', () => {
       );
     });
 
+    it('should throw an error if the user does not match the lifterId', async () => {
+      expect(async () => {
+        await service.createQuickDeposit(
+          nonAdminUser,
+          new LifterTransactionDTO({
+            lifterId: lifter.id,
+            title: 'testDeposit',
+            isQuickDeposit: true,
+            amount: -1000,
+          }),
+        );
+      }).rejects.toEqual(new ForbiddenException('Forbidden'));
+    });
+
     it('should update the remaining balance correctly', async () => {
       expect(
         (
           await service.createQuickDeposit(
+            user,
             new LifterTransactionDTO({
               lifterId: lifter.id,
               title: 'Quick Deposit',
@@ -272,6 +306,7 @@ describe('LifterTransactionsService', () => {
       expect(
         (
           await service.create(
+            user,
             new LifterTransactionDTO({
               lifterId: lifter.id,
               title: 'Lift in Salt Lake City',

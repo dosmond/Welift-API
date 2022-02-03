@@ -155,6 +155,7 @@ async function run() {
   const lifterStatsService = new LifterStatsService(lifterStatsRepo);
   const lifterTransactionsService = new LifterTransactionsService(
     lifterTransactionRepo,
+    lifterRepo,
   );
   const lifterService = new LiftersService(
     lifterRepo,
