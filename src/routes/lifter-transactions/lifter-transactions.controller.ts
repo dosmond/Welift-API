@@ -60,6 +60,18 @@ export class LifterTransactionsController {
     }
   }
 
+  @Get('lifter-balance')
+  @Roles(Role.Lifter)
+  public async getLifterBalance(
+    @Query() query: { lifterId: string },
+  ): Promise<number> {
+    try {
+      return await this.serv.getLifterCurrentBalance(query.lifterId);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
   @Post('quick-deposit')
   @Roles(Role.Lifter)
   public async createQuickDeposit(
