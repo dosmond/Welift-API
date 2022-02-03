@@ -57,6 +57,7 @@
     "pg": "^8.7.1",
     "pino-http": "^6.5.0",
     "pino-pretty": "^7.4.0",
+    "plaid": "^9.10.0",
     "random-words": "^1.1.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

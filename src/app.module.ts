@@ -1,3 +1,4 @@
+import { LifterTransactionsModule } from './routes/lifter-transactions/lifter-transactions.module';
 import { TextModule } from './helper/text.client';
 import { PushNotificationModule } from './helper/pushNotification.helper';
 import { EmailModule } from './helper/email.client';
@@ -36,7 +37,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WhatsNewModule } from './routes/whats-new/whats-new.module';
 import { LoggerModule } from 'nestjs-pino';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { LifterTransactionsModule } from './routes/lifter-transactions/lifter-transactions.module';
+import { BankingModule } from './routes/banking/banking.module';
 
 import dayjs from 'dayjs';
 
@@ -99,6 +100,7 @@ dayjs.extend(timezone);
     WhatsNewModule,
     TextModule,
     LifterTransactionsModule,
+    BankingModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],
