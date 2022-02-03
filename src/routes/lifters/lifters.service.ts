@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { EventNames } from './../../enum/eventNames.enum';
 import { AuthService } from './../../auth/auth.service';
@@ -46,6 +47,7 @@ export class LiftersService {
     private readonly lifterEquipmentService: LifterEquipmentService,
     private readonly lifterReviewSerivce: LifterReviewsService,
     private readonly lifterStatsService: LifterStatsService,
+    private readonly lifterTransactionService: LifterTransactionsService,
     private readonly acceptedLiftService: AcceptedLiftService,
     private readonly authService: AuthService,
     private readonly pushNotificationHelper: PushNotificationHelper,
@@ -135,6 +137,33 @@ export class LiftersService {
 
     const [, count] = await this.repo.findAndCount(options);
     return count;
+  }
+
+  public async getUniqueLifterCount(request: PaginatedDTO): Promise<number> {
+    const acceptedLifts = await this.acceptedLiftService.getAll(request);
+
+    const uniqueLifters = new Set<string>();
+
+    for (const lift of acceptedLifts) {
+      uniqueLifters.add(lift.lifterId);
+    }
+
+    return uniqueLifters.size;
+  }
+
+  public async getRepeatLifterCount(request: PaginatedDTO): Promise<number> {
+    const acceptedLifts = await this.acceptedLiftService.getAll(request);
+
+    const uniqueLifters = new Set<string>();
+    const repeatLifters = new Set<string>();
+
+    for (const lift of acceptedLifts) {
+      if (uniqueLifters.has(lift.lifterId)) repeatLifters.add(lift.lifterId);
+
+      uniqueLifters.add(lift.lifterId);
+    }
+
+    return repeatLifters.size;
   }
 
   public async getProfilePicture(lifterId: string) {
@@ -257,6 +286,9 @@ export class LiftersService {
 
     // Training Videos
     await this.completedTrainingVideoService.deleteByLifterId(lifter?.id);
+
+    // Transactions
+    await this.lifterTransactionService.deleteByLifter(lifter.id);
 
     // Lifter
     await this.repo.delete({ id: lifter?.id });

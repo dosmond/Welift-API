@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { AddressUpdateDTO } from './../../dto/address.update.dto';
 import { LifterUpdateDTO } from './../../dto/lifter.update.dto';
 import { PendingVerificationDTO } from './../../dto/pendingVerification.dto';
@@ -35,6 +36,8 @@ import { LifterStatsService } from '../lifter-stats/lifter-stats.service';
 import { LiftersService } from './lifters.service';
 import { ConflictException } from '@nestjs/common';
 import { LifterUpdateBatchDTO } from '@src/dto/lifter.update.batch.dto';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
+import { Booking } from '@src/model/booking.entity';
 
 describe('LiftersService', () => {
   let service: LiftersService;
@@ -42,6 +45,9 @@ describe('LiftersService', () => {
   let addressRepo: Repository<Address>;
   let statsRepo: Repository<LifterStats>;
   let pendingRepo: Repository<PendingVerification>;
+  let bookingRepo: Repository<Booking>;
+  let liftRepo: Repository<Lift>;
+  let acceptedLiftRepo: Repository<AcceptedLift>;
   let textClient: TextClient;
   let emailClient: EmailClient;
 
@@ -50,6 +56,7 @@ describe('LiftersService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([
+          Booking,
           Lifter,
           Address,
           LifterStats,
@@ -57,6 +64,7 @@ describe('LiftersService', () => {
           CompletedLifterBadge,
           LifterCompletedTrainingVideo,
           LifterEquipment,
+          LifterTransaction,
           LifterReview,
           AcceptedLift,
           Lift,
@@ -72,6 +80,7 @@ describe('LiftersService', () => {
         LifterCompletedTrainingVideosService,
         LifterEquipmentService,
         LifterReviewsService,
+        LifterTransactionsService,
         AcceptedLiftService,
         AuthService,
         PushNotificationHelper,
@@ -84,6 +93,9 @@ describe('LiftersService', () => {
     addressRepo = module.get(getRepositoryToken(Address));
     statsRepo = module.get(getRepositoryToken(LifterStats));
     pendingRepo = module.get(getRepositoryToken(PendingVerification));
+    bookingRepo = module.get(getRepositoryToken(Booking));
+    liftRepo = module.get(getRepositoryToken(Lift));
+    acceptedLiftRepo = module.get(getRepositoryToken(AcceptedLift));
     textClient = module.get<TextClient>(TextClient);
     emailClient = module.get<EmailClient>(EmailClient);
   });
@@ -224,6 +236,76 @@ describe('LiftersService', () => {
       );
       expect(liftersPageTwo.length).toEqual(1);
       expect(liftersPageOne[0].id).not.toEqual(liftersPageTwo[0].id);
+    });
+
+    afterAll(async () => {
+      await cleanUp();
+    });
+  });
+
+  describe('getUniqueLifterCount', () => {
+    beforeAll(async () => {
+      await createTwoBookingsAndAssignOneLifterToEach();
+    });
+
+    it('should return the correct amount of unique lifters when no params given', async () => {
+      expect(await service.getUniqueLifterCount(new PaginatedDTO())).toEqual(2);
+    });
+
+    it('should return the correct amount when start is given', async () => {
+      expect(
+        await service.getUniqueLifterCount(
+          new PaginatedDTO({
+            start: new Date('2022-01-05 20:35:00+00'),
+          }),
+        ),
+      ).toEqual(1);
+    });
+
+    it('should return the correct amount when start and end are given', async () => {
+      expect(
+        await service.getUniqueLifterCount(
+          new PaginatedDTO({
+            start: new Date('2022-01-05 20:35:00+00'),
+            end: new Date('2022-01-06 20:35:00+00'),
+          }),
+        ),
+      ).toEqual(1);
+    });
+
+    afterAll(async () => {
+      await cleanUp();
+    });
+  });
+
+  describe('getRepeatLifterCount', () => {
+    beforeAll(async () => {
+      await createTwoBookingsAndAssignOneLifterToBoth();
+    });
+
+    it('should return the correct amount of repeat lifters when no params given', async () => {
+      expect(await service.getRepeatLifterCount(new PaginatedDTO())).toEqual(1);
+    });
+
+    it('should return the correct amount when start is given', async () => {
+      expect(
+        await service.getRepeatLifterCount(
+          new PaginatedDTO({
+            start: new Date('2022-01-05 20:35:00+00'),
+          }),
+        ),
+      ).toEqual(0);
+    });
+
+    it('should return the correct amount when start and end are given', async () => {
+      expect(
+        await service.getRepeatLifterCount(
+          new PaginatedDTO({
+            start: new Date('2022-01-05 20:35:00+00'),
+            end: new Date('2022-01-06 20:35:00+00'),
+          }),
+        ),
+      ).toEqual(0);
     });
 
     afterAll(async () => {
@@ -565,11 +647,354 @@ describe('LiftersService', () => {
     return createdLifters;
   };
 
+  const createTwoBookingsAndAssignOneLifterToEach = async () => {
+    const booking = new Booking({
+      needsPickupTruck: true,
+      name: `test-booking`,
+      phone: '8015555555',
+      email: 'test@test.com',
+      startingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      endingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      startTime: new Date('2022-01-06 18:35:00+00'),
+      endTime: new Date('2022-01-06 20:35:00+00'),
+      lifterCount: 2,
+      hoursCount: 2,
+      totalCost: 240,
+      timezone: 'America/Denver',
+      distanceInfo: 'none',
+    });
+
+    const booking2 = new Booking({
+      needsPickupTruck: false,
+      name: `test-booking2`,
+      phone: '8015555555',
+      email: 'test@test.com',
+      startingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      endingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      startTime: new Date('2022-01-05 18:35:00+00'),
+      endTime: new Date('2022-01-05 20:35:00+00'),
+      lifterCount: 2,
+      hoursCount: 2,
+      totalCost: 240,
+      timezone: 'America/Denver',
+      distanceInfo: 'none',
+    });
+
+    await bookingRepo.save(booking);
+    await bookingRepo.save(booking2);
+    const liftOne = new Lift({
+      bookingId: booking.id,
+      completionToken: 'test12',
+      currentLifterCount: 1,
+      hasPickupTruck: true,
+    });
+
+    const liftTwo = new Lift({
+      bookingId: booking2.id,
+      completionToken: 'test12',
+      hasPickupTruck: true,
+    });
+
+    const createdLifts = [
+      await liftRepo.save(liftOne),
+      await liftRepo.save(liftTwo),
+    ];
+
+    const lifters = [
+      new Lifter({
+        firstName: 'test',
+        lastName: 'test',
+        phone: '8015555555',
+        passedBc: true,
+        email: 'test@test.com',
+        hasPickupTruck: true,
+        status: 'contacted',
+        addressId: (
+          await addressRepo.save(
+            new Address({
+              street: 'test1',
+              street2: 'test1',
+              city: 'city',
+              state: 'state',
+              postalCode: 'postalCode',
+            }),
+          )
+        ).id,
+      }),
+      new Lifter({
+        firstName: 'test1',
+        lastName: 'test1',
+        phone: '8015555556',
+        passedBc: true,
+        email: 'test2@test.com',
+        hasPickupTruck: true,
+        status: 'contacted',
+        addressId: (
+          await addressRepo.save(
+            new Address({
+              street: 'test1',
+              street2: 'test1',
+              city: 'city',
+              state: 'state',
+              postalCode: 'postalCode',
+            }),
+          )
+        ).id,
+      }),
+    ];
+
+    const newLifters = [
+      await lifterRepo.save(lifters[0]),
+      await lifterRepo.save(lifters[1]),
+    ];
+
+    const createdAcceptedLifts: AcceptedLift[] = [];
+
+    createdAcceptedLifts.push(
+      await acceptedLiftRepo.save(
+        new AcceptedLift({
+          liftId: createdLifts[0].id,
+          lifterId: newLifters[0].id,
+          payrate: 20,
+          usePickupTruck: true,
+          totalPay: 40,
+        }),
+      ),
+    );
+
+    createdAcceptedLifts.push(
+      await acceptedLiftRepo.save(
+        new AcceptedLift({
+          liftId: createdLifts[1].id,
+          lifterId: newLifters[1].id,
+          payrate: 20,
+          usePickupTruck: true,
+          totalPay: 40,
+        }),
+      ),
+    );
+
+    return {
+      lifters: newLifters,
+      acceptedLifts: createdAcceptedLifts,
+      lifts: createdLifts,
+    };
+  };
+
+  const createTwoBookingsAndAssignOneLifterToBoth = async () => {
+    const booking = new Booking({
+      needsPickupTruck: true,
+      name: `test-booking`,
+      phone: '8015555555',
+      email: 'test@test.com',
+      startingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      endingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      startTime: new Date('2022-01-06 18:35:00+00'),
+      endTime: new Date('2022-01-06 20:35:00+00'),
+      lifterCount: 2,
+      hoursCount: 2,
+      totalCost: 240,
+      timezone: 'America/Denver',
+      distanceInfo: 'none',
+    });
+
+    const booking2 = new Booking({
+      needsPickupTruck: false,
+      name: `test-booking2`,
+      phone: '8015555555',
+      email: 'test@test.com',
+      startingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      endingAddressId: (
+        await addressRepo.save(
+          new Address({
+            street: 'test1',
+            street2: 'test1',
+            city: 'city',
+            state: 'state',
+            postalCode: 'postalCode',
+          }),
+        )
+      ).id,
+      startTime: new Date('2022-01-05 18:35:00+00'),
+      endTime: new Date('2022-01-05 20:35:00+00'),
+      lifterCount: 2,
+      hoursCount: 2,
+      totalCost: 240,
+      timezone: 'America/Denver',
+      distanceInfo: 'none',
+    });
+
+    await bookingRepo.save(booking);
+    await bookingRepo.save(booking2);
+    const liftOne = new Lift({
+      bookingId: booking.id,
+      completionToken: 'test12',
+      currentLifterCount: 1,
+      hasPickupTruck: true,
+    });
+
+    const liftTwo = new Lift({
+      bookingId: booking2.id,
+      completionToken: 'test12',
+      hasPickupTruck: true,
+    });
+
+    const createdLifts = [
+      await liftRepo.save(liftOne),
+      await liftRepo.save(liftTwo),
+    ];
+
+    const lifters = [
+      new Lifter({
+        firstName: 'test',
+        lastName: 'test',
+        phone: '8015555555',
+        passedBc: true,
+        email: 'test@test.com',
+        hasPickupTruck: true,
+        status: 'contacted',
+        addressId: (
+          await addressRepo.save(
+            new Address({
+              street: 'test1',
+              street2: 'test1',
+              city: 'city',
+              state: 'state',
+              postalCode: 'postalCode',
+            }),
+          )
+        ).id,
+      }),
+    ];
+
+    const newLifters = [await lifterRepo.save(lifters[0])];
+
+    const createdAcceptedLifts: AcceptedLift[] = [];
+
+    createdAcceptedLifts.push(
+      await acceptedLiftRepo.save(
+        new AcceptedLift({
+          liftId: createdLifts[0].id,
+          lifterId: newLifters[0].id,
+          payrate: 20,
+          usePickupTruck: true,
+          totalPay: 40,
+        }),
+      ),
+    );
+
+    createdAcceptedLifts.push(
+      await acceptedLiftRepo.save(
+        new AcceptedLift({
+          liftId: createdLifts[1].id,
+          lifterId: newLifters[0].id,
+          payrate: 20,
+          usePickupTruck: true,
+          totalPay: 40,
+        }),
+      ),
+    );
+
+    return {
+      lifters: newLifters,
+      acceptedLifts: createdAcceptedLifts,
+      lifts: createdLifts,
+    };
+  };
+
   const cleanUp = async () => {
     const stats = await statsRepo.find();
 
     for (const stat of stats) {
       await statsRepo.delete({ id: stat.id });
+    }
+
+    const acceptedLifts = await acceptedLiftRepo.find();
+
+    for (const lift of acceptedLifts) {
+      await acceptedLiftRepo.delete({ id: lift.id });
+    }
+
+    const lifts = await liftRepo.find();
+
+    for (const lift of lifts) {
+      await liftRepo.delete({ id: lift.id });
+    }
+
+    const bookings = await bookingRepo.find();
+
+    for (const booking of bookings) {
+      await bookingRepo.delete({ id: booking.id });
     }
 
     const lifters = await lifterRepo.find();

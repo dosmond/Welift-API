@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { AuthService } from '@src/auth/auth.service';
@@ -14,6 +15,7 @@ import { LifterEquipment } from '@src/model/lifterEquipment.entity';
 import { LifterReview } from '@src/model/lifterReviews.entity';
 import { Lifter } from '@src/model/lifters.entity';
 import { LifterStats } from '@src/model/lifterStats.entity';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 import { Lift } from '@src/model/lifts.entity';
 import { PendingVerification } from '@src/model/pendingVerification.entity';
 import axios from 'axios';
@@ -44,6 +46,7 @@ describe('CheckrService', () => {
           LifterStats,
           PendingVerification,
           CompletedLifterBadge,
+          LifterTransaction,
           LifterCompletedTrainingVideo,
           LifterEquipment,
           LifterReview,
@@ -62,6 +65,7 @@ describe('CheckrService', () => {
         LifterCompletedTrainingVideosService,
         LifterEquipmentService,
         LifterReviewsService,
+        LifterTransactionsService,
         AcceptedLiftService,
         AuthService,
         PushNotificationHelper,

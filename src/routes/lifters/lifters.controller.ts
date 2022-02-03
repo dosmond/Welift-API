@@ -62,7 +62,30 @@ export class LiftersController {
     try {
       return await this.serv.count(query);
     } catch (err) {
-      console.log(err);
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Get('unique-lifters-count')
+  @Roles(Role.Admin)
+  public async getUniqueLifterCount(
+    @Query() query: PaginatedDTO,
+  ): Promise<number> {
+    try {
+      return await this.serv.getUniqueLifterCount(query);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  @Get('repeat-lifters-count')
+  @Roles(Role.Admin)
+  public async getRepeatLifterCount(
+    @Query() query: PaginatedDTO,
+  ): Promise<number> {
+    try {
+      return await this.serv.getRepeatLifterCount(query);
+    } catch (err) {
       throw new BadRequestException(err.message);
     }
   }

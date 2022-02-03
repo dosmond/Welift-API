@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../routes/lifter-transactions/lifter-transactions.service';
 import { LifterDTO } from 'src/dto/lifter.dto';
 import { BookingDTO } from 'src/dto/booking.dto';
 import { WhatsNewService } from './../routes/whats-new/whats-new.service';
@@ -60,6 +61,7 @@ import { GoogleCalendarApiHelper } from '@src/helper/googleCalendar.helper';
 import { BookingBatchDTO } from '@src/dto/booking.batch.dto';
 import { AddressDTO } from '@src/dto/address.dto';
 import { LifterBatchDTO } from '@src/dto/lifter.batch.dto';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
 async function run() {
   const seedId = Date.now()
@@ -97,6 +99,7 @@ async function run() {
   const lifterReviewRepo = connection.getRepository(LifterReview);
   const lifterRepo = connection.getRepository(Lifter);
   const lifterStatsRepo = connection.getRepository(LifterStats);
+  const lifterTransactionRepo = connection.getRepository(LifterTransaction);
   const liftRepo = connection.getRepository(Lift);
   const noteRepo = connection.getRepository(Note);
   const partnerRepo = connection.getRepository(Partner);
@@ -150,6 +153,10 @@ async function run() {
   );
   const lifterReviewService = new LifterReviewsService(lifterReviewRepo);
   const lifterStatsService = new LifterStatsService(lifterStatsRepo);
+  const lifterTransactionsService = new LifterTransactionsService(
+    lifterTransactionRepo,
+    lifterRepo,
+  );
   const lifterService = new LiftersService(
     lifterRepo,
     lifterStatsRepo,
@@ -163,6 +170,7 @@ async function run() {
     lifterEquipmentService,
     lifterReviewService,
     lifterStatsService,
+    lifterTransactionsService,
     acceptedLiftService,
     authService,
     new PushNotificationHelper(),
