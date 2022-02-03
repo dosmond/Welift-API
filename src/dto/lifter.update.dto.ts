@@ -235,7 +235,7 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         deletionPending: entity.deletionPending,
         latestOpen: entity.latestOpen,
         checkrId: entity.checkrId,
-        hasLinkedBankAcount: entity.plaidInfo.hasLinkedBankAccount,
+        hasLinkedBankAcount: entity?.plaidInfo?.hasLinkedBankAccount || false,
         acceptedLifts: entity?.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),
