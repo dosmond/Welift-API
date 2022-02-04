@@ -73,6 +73,9 @@ export class BankingService {
     const institutionRequest: InstitutionsGetByIdRequest = {
       institution_id: accountsResponse.data.item.institution_id,
       country_codes: [CountryCode.Us],
+      options: {
+        include_optional_metadata: true,
+      },
     };
 
     const institutionResponse = await this.client.institutionsGetById(
