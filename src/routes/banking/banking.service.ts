@@ -35,7 +35,7 @@ export class BankingService {
     this.client = new PlaidApi(configuration);
   }
 
-  public async createLinkToken(user: User) {
+  public async createLinkToken(user: User, isAndroid: boolean) {
     const request: LinkTokenCreateRequest = {
       user: {
         client_user_id: user.sub,
@@ -46,6 +46,8 @@ export class BankingService {
       country_codes: [CountryCode.Us],
     };
 
+    if (isAndroid) request.android_package_name = 'com.welift.lifterapp';
+
     const createTokenResponse: AxiosResponse<LinkTokenCreateResponse> =
       await this.client.linkTokenCreate(request);
 
@@ -54,9 +56,9 @@ export class BankingService {
 
   public async exchangePublicToken(
     user: User,
-    body: { public_token: string },
+    body: { publicToken: string },
   ): Promise<void> {
-    const token = body.public_token;
+    const token = body.publicToken;
 
     const response = await this.client.itemPublicTokenExchange({
       public_token: token,

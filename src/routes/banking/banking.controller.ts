@@ -19,9 +19,12 @@ export class BankingController {
 
   @Post('create-link-token')
   @Roles(Role.Lifter)
-  public async createLinkToken(@User() user: User) {
+  public async createLinkToken(
+    @User() user: User,
+    @Body() body: { isAndroid: boolean },
+  ) {
     try {
-      return await this.serv.createLinkToken(user);
+      return await this.serv.createLinkToken(user, body.isAndroid);
     } catch (err) {
       throw new BadRequestException(err);
     }
@@ -31,7 +34,7 @@ export class BankingController {
   @Roles(Role.Lifter)
   public async exchangePublicToken(
     @User() user: User,
-    @Body() body: { public_token: string },
+    @Body() body: { publicToken: string },
   ) {
     try {
       return await this.serv.exchangePublicToken(user, body);
