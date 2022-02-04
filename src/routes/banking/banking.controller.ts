@@ -4,18 +4,37 @@ import {
   BadRequestException,
   UseGuards,
   Body,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '@src/auth/roles/roles.decorator';
 import { RolesGuard } from '@src/auth/roles/roles.gaurd';
 import { Role } from '@src/enum/roles.enum';
 import { User } from '@src/user.decorator';
+import { AccountBase, Institution } from 'plaid';
 import { BankingService } from './banking.service';
 
 @Controller('banking')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BankingController {
   constructor(private readonly serv: BankingService) {}
+
+  @Get('account')
+  @Roles(Role.Lifter)
+  public async getLifterAccount(
+    @User() user: User,
+    @Query() query: { lifterId: string },
+  ): Promise<{
+    accounts: AccountBase[];
+    institution: Institution;
+  }> {
+    try {
+      return await this.serv.getLifterAccount(user, query.lifterId);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
 
   @Post('create-link-token')
   @Roles(Role.Lifter)
