@@ -1,11 +1,19 @@
 import { Lifter, PlaidInfo } from '@src/model/lifters.entity';
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@src/user.decorator';
 import { AxiosResponse } from 'axios';
 import {
+  AccountBase,
+  AccountsGetRequest,
   Configuration,
   CountryCode,
+  Institution,
+  InstitutionsGetByIdRequest,
   LinkTokenCreateRequest,
   LinkTokenCreateResponse,
   PlaidApi,
@@ -13,6 +21,7 @@ import {
   Products,
 } from 'plaid';
 import { Repository } from 'typeorm';
+import { Role } from '@src/enum/roles.enum';
 
 @Injectable()
 export class BankingService {
@@ -33,6 +42,47 @@ export class BankingService {
     });
 
     this.client = new PlaidApi(configuration);
+  }
+
+  public async getLifterAccount(
+    user: User,
+    lifterId: string,
+  ): Promise<{
+    accounts: AccountBase[];
+    institution: Institution;
+  }> {
+    const lifter = await this.lifterRepo.findOne({ id: lifterId });
+
+    // Can only get your own info unless you are an admin
+    if (!user.roles.split(',').includes(Role.Admin)) {
+      if (user.sub !== lifter.userId) {
+        throw new ForbiddenException('Forbidden');
+      }
+    }
+
+    if (!lifter?.plaidInfo?.accessToken) {
+      throw new BadRequestException('Bank account must first be linked');
+    }
+
+    const request: AccountsGetRequest = {
+      access_token: lifter.plaidInfo.accessToken,
+    };
+
+    const accountsResponse = await this.client.accountsGet(request);
+
+    const institutionRequest: InstitutionsGetByIdRequest = {
+      institution_id: accountsResponse.data.item.institution_id,
+      country_codes: [CountryCode.Us],
+    };
+
+    const institutionResponse = await this.client.institutionsGetById(
+      institutionRequest,
+    );
+
+    return {
+      accounts: accountsResponse.data.accounts,
+      institution: institutionResponse.data.institution,
+    };
   }
 
   public async createLinkToken(user: User, isAndroid: boolean) {
