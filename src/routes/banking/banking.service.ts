@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@src/user.decorator';
@@ -27,6 +28,7 @@ import { Role } from '@src/enum/roles.enum';
 @Injectable()
 export class BankingService {
   private readonly client: PlaidApi;
+  private readonly logger: Logger = new Logger(BankingService.name);
 
   constructor(
     @InjectRepository(Lifter) private readonly lifterRepo: Repository<Lifter>,
@@ -129,6 +131,8 @@ export class BankingService {
     };
     const stripeTokenResponse =
       await this.client.processorStripeBankAccountTokenCreate(stripeRequest);
+
+    this.logger.warn(stripeTokenResponse.data);
 
     // Save item and access token info in the lifter.
     const lifter = await this.lifterRepo.findOne({ userId: user.sub });
