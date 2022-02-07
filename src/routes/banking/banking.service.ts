@@ -18,6 +18,7 @@ import {
   LinkTokenCreateResponse,
   PlaidApi,
   PlaidEnvironments,
+  ProcessorStripeBankAccountTokenCreateRequest,
   Products,
 } from 'plaid';
 import { Repository } from 'typeorm';
@@ -109,9 +110,10 @@ export class BankingService {
 
   public async exchangePublicToken(
     user: User,
-    body: { publicToken: string },
+    body: { publicToken: string; accountId: string },
   ): Promise<void> {
     const token = body.publicToken;
+    const accountId = body.accountId;
 
     const response = await this.client.itemPublicTokenExchange({
       public_token: token,
@@ -119,6 +121,14 @@ export class BankingService {
 
     const accessToken = response.data.access_token;
     const itemId = response.data.item_id;
+
+    // Generate a bank account token
+    const stripeRequest: ProcessorStripeBankAccountTokenCreateRequest = {
+      access_token: accessToken,
+      account_id: accountId,
+    };
+    const stripeTokenResponse =
+      await this.client.processorStripeBankAccountTokenCreate(stripeRequest);
 
     // Save item and access token info in the lifter.
     const lifter = await this.lifterRepo.findOne({ userId: user.sub });
@@ -128,6 +138,7 @@ export class BankingService {
         accessToken: accessToken,
         itemId: itemId,
         hasLinkedBankAccount: true,
+        stripeBankAccountId: stripeTokenResponse.data.stripe_bank_account_token,
       }),
     });
 

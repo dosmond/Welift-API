@@ -53,7 +53,7 @@ export class BankingController {
   @Roles(Role.Lifter)
   public async exchangePublicToken(
     @User() user: User,
-    @Body() body: { publicToken: string },
+    @Body() body: { publicToken: string; accountId: string },
   ) {
     try {
       return await this.serv.exchangePublicToken(user, body);
