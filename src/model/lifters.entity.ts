@@ -145,7 +145,7 @@ export class Lifter {
   })
   checkrId: string | null;
 
-  @Column('json', {
+  @Column('jsonb', {
     name: 'plaid_access_token',
     nullable: true,
   })
