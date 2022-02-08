@@ -53,10 +53,30 @@ export class BankingController {
   @Roles(Role.Lifter)
   public async exchangePublicToken(
     @User() user: User,
-    @Body() body: { publicToken: string; accountId: string },
+    @Body()
+    body: {
+      publicToken: string;
+      accountId: string;
+      dob: string;
+      ssnLastFour: string;
+      hasStripeAccount: boolean;
+    },
   ) {
     try {
       return await this.serv.exchangePublicToken(user, body);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('payout')
+  @Roles(Role.Lifter)
+  public async payoutLifter(
+    @User() user: User,
+    @Body() body: { lifterId: string },
+  ) {
+    try {
+      return await this.serv.payoutLifter(user, body);
     } catch (err) {
       throw new BadRequestException(err);
     }

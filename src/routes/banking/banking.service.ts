@@ -24,6 +24,12 @@ import {
 } from 'plaid';
 import { Repository } from 'typeorm';
 import { Role } from '@src/enum/roles.enum';
+import Stripe from 'stripe';
+import dayjs from 'dayjs';
+
+const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
+  apiVersion: '2020-08-27',
+});
 
 @Injectable()
 export class BankingService {
@@ -112,10 +118,17 @@ export class BankingService {
 
   public async exchangePublicToken(
     user: User,
-    body: { publicToken: string; accountId: string },
+    body: {
+      publicToken: string;
+      accountId: string;
+      dob: string;
+      ssnLastFour: string;
+      hasStripeAccount: boolean;
+    },
   ): Promise<void> {
     const token = body.publicToken;
     const accountId = body.accountId;
+    const hasStripeAccount = body.hasStripeAccount;
 
     const response = await this.client.itemPublicTokenExchange({
       public_token: token,
@@ -135,17 +148,86 @@ export class BankingService {
     this.logger.warn(stripeTokenResponse.data);
 
     // Save item and access token info in the lifter.
-    const lifter = await this.lifterRepo.findOne({ userId: user.sub });
+    const lifter = await this.lifterRepo.findOne(
+      { userId: user.sub },
+      { relations: ['address'] },
+    );
+
     const updateLifter = new Lifter({
       id: lifter.id,
       plaidInfo: new PlaidInfo({
         accessToken: accessToken,
         itemId: itemId,
         hasLinkedBankAccount: true,
-        stripeBankAccountId: stripeTokenResponse.data.stripe_bank_account_token,
+        stripeBankAccountId: accountId,
+        stripeBankAccountToken:
+          stripeTokenResponse.data.stripe_bank_account_token,
       }),
     });
 
+    if (!hasStripeAccount) {
+      const dob = dayjs(body.dob);
+
+      const account = await stripe.accounts.create(
+        {
+          type: 'custom',
+          country: 'US',
+          email: lifter.email,
+          capabilities: {
+            card_payments: { requested: true },
+            transfers: { requested: true },
+          },
+          business_type: 'individual',
+          individual: {
+            address: {
+              line1: lifter.address.street,
+              city: lifter.address.city,
+              postal_code: lifter.address.postalCode,
+              state: lifter.address.state,
+            },
+            email: lifter.email,
+            phone: lifter.phone,
+            ssn_last_4: body.ssnLastFour,
+            dob: {
+              day: dob.date(),
+              month: dob.month(),
+              year: dob.year(),
+            },
+          },
+          external_account: stripeTokenResponse.data.stripe_bank_account_token,
+          business_profile: {
+            url: 'https://getwelift.com',
+          },
+        },
+        {},
+      );
+
+      updateLifter.plaidInfo.stripeBankAccountId = account.id;
+    }
+
     await this.lifterRepo.save(updateLifter);
+  }
+
+  public async payoutLifter(user: User, request: { lifterId: string }) {
+    const lifter = await this.lifterRepo.findOne({ id: request.lifterId });
+
+    // Can only get your own info unless you are an admin
+    if (!user.roles.split(',').includes(Role.Admin)) {
+      if (user.sub !== lifter.userId) {
+        throw new ForbiddenException('Forbidden');
+      }
+    }
+
+    const token = await stripe.accounts.retrieve();
+
+    console.log(token);
+
+    // const transfer = await stripe.transfers.create({
+    //   amount: 1000,
+    //   currency: 'usd',
+    //   destination: token.bank_account.id,
+    // });
+
+    // console.log(transfer);
   }
 }

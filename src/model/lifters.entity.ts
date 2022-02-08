@@ -36,6 +36,11 @@ export class PlaidInfo {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  stripeBankAccountToken: string | null;
+
+  @ApiProperty()
+  @IsOptional()
   @IsBoolean()
   hasLinkedBankAccount: boolean;
 
