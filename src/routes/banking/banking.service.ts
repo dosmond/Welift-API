@@ -135,8 +135,7 @@ export class BankingService {
     const lifterId = body.lifterId;
 
     this.logger.warn(
-      'Ip Address',
-      (req.headers['x-forwarded-for'] as string).split(',')[0],
+      `Ip Address ${(req.headers['x-forwarded-for'] as string).split(',')[0]}`,
     );
 
     const lifter = await this.lifterRepo.findOne(
@@ -218,7 +217,7 @@ export class BankingService {
         external_account: stripeTokenResponse.data.stripe_bank_account_token,
         business_profile: {
           url: 'https://getwelift.com',
-          mcc: 'motor_freight_carriers_and_trucking',
+          mcc: '4214',
         },
       });
 
