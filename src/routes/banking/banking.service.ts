@@ -130,6 +130,19 @@ export class BankingService {
     const token = body.publicToken;
     const accountId = body.accountId;
     const hasStripeAccount = body.hasStripeAccount;
+    const lifterId = body.lifterId;
+
+    const lifter = await this.lifterRepo.findOne(
+      { id: lifterId },
+      { relations: ['address'] },
+    );
+
+    // Can only get your own info unless you are an admin
+    if (!user.roles.split(',').includes(Role.Admin)) {
+      if (user.sub !== lifter.userId) {
+        throw new ForbiddenException('Forbidden');
+      }
+    }
 
     const response = await this.client.itemPublicTokenExchange({
       public_token: token,
@@ -149,11 +162,6 @@ export class BankingService {
     this.logger.warn(stripeTokenResponse.data);
 
     // Save item and access token info in the lifter.
-    const lifter = await this.lifterRepo.findOne(
-      { userId: user.sub },
-      { relations: ['address'] },
-    );
-
     const updateLifter = new Lifter({
       id: lifter.id,
       plaidInfo: new PlaidInfo({
