@@ -117,7 +117,7 @@ export class BankingService {
   }
 
   public async exchangePublicToken(
-    ipAddress: string,
+    req: Request,
     user: User,
     body: {
       lifterId: string;
@@ -133,7 +133,10 @@ export class BankingService {
     const hasStripeAccount = body.hasStripeAccount;
     const lifterId = body.lifterId;
 
-    this.logger.warn('Ip Address', ipAddress);
+    this.logger.warn(
+      'Ip Address',
+      req.headers['x-forwarded-for'].split(',')[0],
+    );
 
     const lifter = await this.lifterRepo.findOne(
       { id: lifterId },
@@ -209,7 +212,7 @@ export class BankingService {
         },
         tos_acceptance: {
           date: Date.now(),
-          ip: ipAddress,
+          ip: req.headers['x-forwarded-for'].split(',')[0],
         },
         external_account: stripeTokenResponse.data.stripe_bank_account_token,
         business_profile: {
