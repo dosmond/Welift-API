@@ -207,6 +207,7 @@ export class BankingService {
         external_account: stripeTokenResponse.data.stripe_bank_account_token,
         business_profile: {
           url: 'https://getwelift.com',
+          mcc: 'motor_freight_carriers_and_trucking',
         },
       });
 
