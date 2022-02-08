@@ -177,39 +177,36 @@ export class BankingService {
     if (!hasStripeAccount) {
       const dob = dayjs(body.dob);
 
-      const account = await stripe.accounts.create(
-        {
-          type: 'custom',
-          country: 'US',
+      const account = await stripe.accounts.create({
+        type: 'custom',
+        country: 'US',
+        email: lifter.email,
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+        business_type: 'individual',
+        individual: {
+          address: {
+            line1: lifter.address.street,
+            city: lifter.address.city,
+            postal_code: lifter.address.postalCode,
+            state: lifter.address.state,
+          },
           email: lifter.email,
-          capabilities: {
-            card_payments: { requested: true },
-            transfers: { requested: true },
-          },
-          business_type: 'individual',
-          individual: {
-            address: {
-              line1: lifter.address.street,
-              city: lifter.address.city,
-              postal_code: lifter.address.postalCode,
-              state: lifter.address.state,
-            },
-            email: lifter.email,
-            phone: lifter.phone,
-            ssn_last_4: body.ssnLastFour,
-            dob: {
-              day: dob.date(),
-              month: dob.month(),
-              year: dob.year(),
-            },
-          },
-          external_account: stripeTokenResponse.data.stripe_bank_account_token,
-          business_profile: {
-            url: 'https://getwelift.com',
+          phone: lifter.phone,
+          ssn_last_4: body.ssnLastFour,
+          dob: {
+            day: dob.date(),
+            month: dob.month(),
+            year: dob.year(),
           },
         },
-        {},
-      );
+        external_account: stripeTokenResponse.data.stripe_bank_account_token,
+        business_profile: {
+          url: 'https://getwelift.com',
+        },
+      });
 
       updateLifter.plaidInfo.stripeBankAccountId = account.id;
     }
