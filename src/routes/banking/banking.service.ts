@@ -211,7 +211,7 @@ export class BankingService {
           },
         },
         tos_acceptance: {
-          date: Date.now(),
+          date: Date.now() / 1000,
           ip: (req.headers['x-forwarded-for'] as string).split(',')[0],
         },
         external_account: stripeTokenResponse.data.stripe_bank_account_token,
