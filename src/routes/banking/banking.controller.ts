@@ -13,6 +13,7 @@ import { Roles } from '@src/auth/roles/roles.decorator';
 import { RolesGuard } from '@src/auth/roles/roles.gaurd';
 import { Role } from '@src/enum/roles.enum';
 import { User } from '@src/user.decorator';
+import { Request } from 'express';
 import { AccountBase, Institution } from 'plaid';
 import { BankingService } from './banking.service';
 

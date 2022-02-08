@@ -26,6 +26,7 @@ import { Repository } from 'typeorm';
 import { Role } from '@src/enum/roles.enum';
 import Stripe from 'stripe';
 import dayjs from 'dayjs';
+import { Request } from 'express';
 
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
@@ -135,7 +136,7 @@ export class BankingService {
 
     this.logger.warn(
       'Ip Address',
-      req.headers['x-forwarded-for'].split(',')[0],
+      (req.headers['x-forwarded-for'] as string).split(',')[0],
     );
 
     const lifter = await this.lifterRepo.findOne(
@@ -212,7 +213,7 @@ export class BankingService {
         },
         tos_acceptance: {
           date: Date.now(),
-          ip: req.headers['x-forwarded-for'].split(',')[0],
+          ip: (req.headers['x-forwarded-for'] as string).split(',')[0],
         },
         external_account: stripeTokenResponse.data.stripe_bank_account_token,
         business_profile: {
