@@ -10,6 +10,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '@src/auth/roles/roles.decorator';
 import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { IpAddress } from '@src/decorators/ipAddress.decorator';
 import { Role } from '@src/enum/roles.enum';
 import { User } from '@src/user.decorator';
 import { AccountBase, Institution } from 'plaid';
@@ -52,6 +53,7 @@ export class BankingController {
   @Post('exchange-public-token')
   @Roles(Role.Lifter)
   public async exchangePublicToken(
+    @IpAddress() ipAddress: string,
     @User() user: User,
     @Body()
     body: {
@@ -64,7 +66,7 @@ export class BankingController {
     },
   ) {
     try {
-      return await this.serv.exchangePublicToken(user, body);
+      return await this.serv.exchangePublicToken(ipAddress, user, body);
     } catch (err) {
       throw new BadRequestException(err);
     }

@@ -117,6 +117,7 @@ export class BankingService {
   }
 
   public async exchangePublicToken(
+    ipAddress: string,
     user: User,
     body: {
       lifterId: string;
@@ -131,6 +132,8 @@ export class BankingService {
     const accountId = body.accountId;
     const hasStripeAccount = body.hasStripeAccount;
     const lifterId = body.lifterId;
+
+    this.logger.warn('Ip Address', ipAddress);
 
     const lifter = await this.lifterRepo.findOne(
       { id: lifterId },
@@ -203,6 +206,10 @@ export class BankingService {
             month: dob.month(),
             year: dob.year(),
           },
+        },
+        tos_acceptance: {
+          date: Date.now(),
+          ip: ipAddress,
         },
         external_account: stripeTokenResponse.data.stripe_bank_account_token,
         business_profile: {
