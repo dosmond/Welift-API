@@ -187,6 +187,8 @@ export class BankingService {
         },
         business_type: 'individual',
         individual: {
+          first_name: lifter.firstName,
+          last_name: lifter.lastName,
           address: {
             line1: lifter.address.street,
             city: lifter.address.city,
