@@ -119,6 +119,7 @@ export class BankingService {
   public async exchangePublicToken(
     user: User,
     body: {
+      lifterId: string;
       publicToken: string;
       accountId: string;
       dob: string;

@@ -55,6 +55,7 @@ export class BankingController {
     @User() user: User,
     @Body()
     body: {
+      lifterId: string;
       publicToken: string;
       accountId: string;
       dob: string;
