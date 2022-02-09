@@ -70,9 +70,10 @@ export class AcceptedLiftController {
   @Post('verify-completion-token')
   @Roles(Role.Lifter)
   public async verifyToken(
+    @User() user: User,
     @Body() verificationRequest: TokenVerificationRequestDTO,
   ): Promise<AcceptedLiftDTO> {
-    return await this.serv.verifyToken(verificationRequest);
+    return await this.serv.verifyToken(user, verificationRequest);
   }
 
   @Put('update')

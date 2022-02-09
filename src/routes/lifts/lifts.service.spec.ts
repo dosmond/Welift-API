@@ -1,3 +1,5 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
+import { LifterTransaction } from './../../model/lifterTransaction.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
@@ -25,13 +27,19 @@ describe('LiftsService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([
           Lift,
+          LifterTransaction,
           AcceptedLift,
           Lifter,
           Booking,
           Address,
         ]),
       ],
-      providers: [LiftsService, AcceptedLiftService, TextClient],
+      providers: [
+        LiftsService,
+        AcceptedLiftService,
+        TextClient,
+        LifterTransactionsService,
+      ],
     }).compile();
 
     service = module.get<LiftsService>(LiftsService);

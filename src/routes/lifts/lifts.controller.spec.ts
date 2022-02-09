@@ -1,3 +1,5 @@
+import { LifterTransaction } from './../../model/lifterTransaction.entity';
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
@@ -16,10 +18,20 @@ describe('LiftsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-        TypeOrmModule.forFeature([Lift, AcceptedLift, Lifter]),
+        TypeOrmModule.forFeature([
+          Lift,
+          AcceptedLift,
+          Lifter,
+          LifterTransaction,
+        ]),
       ],
       controllers: [LiftsController],
-      providers: [LiftsService, AcceptedLiftService, TextClient],
+      providers: [
+        LiftsService,
+        AcceptedLiftService,
+        TextClient,
+        LifterTransactionsService,
+      ],
     }).compile();
 
     controller = module.get<LiftsController>(LiftsController);

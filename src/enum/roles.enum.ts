@@ -4,4 +4,5 @@ export enum Role {
   Admin = 'admin',
   Partner = 'partner',
   Rep = 'representative',
+  Tester = 'tester',
 }

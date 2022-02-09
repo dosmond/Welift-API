@@ -1,3 +1,4 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Lift } from '../../model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
 import {
@@ -18,6 +19,7 @@ import { AcceptedLiftUpdateDTO } from '../../dto/acceptedLift.update.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { EventNames } from '../../enum/eventNames.enum';
 import { ClockOutEvent } from '../../events/clockout.event';
+import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
 
 @Injectable()
 export class AcceptedLiftService {
@@ -26,6 +28,7 @@ export class AcceptedLiftService {
     private readonly repo: Repository<AcceptedLift>,
     @InjectRepository(Lift)
     private readonly liftRepo: Repository<Lift>,
+    private readonly transactionService: LifterTransactionsService,
   ) {}
 
   public async getAll(details: PaginatedDTO) {
@@ -218,10 +221,10 @@ export class AcceptedLiftService {
     }
   }
 
-  public async verifyToken(request: TokenVerificationRequestDTO) {
+  public async verifyToken(user: User, request: TokenVerificationRequestDTO) {
     const lift = await this.repo.findOne(
       { id: request.acceptedLiftId },
-      { relations: ['lift'] },
+      { relations: ['lift', 'lift.booking', 'lift.booking.startingAddress'] },
     );
 
     if (!lift) {
@@ -243,6 +246,19 @@ export class AcceptedLiftService {
     lift.clockOutTime = new Date();
 
     [lift.payrate, lift.totalPay] = this.getPayrateAndTotalPay(lift);
+
+    // Add transaction if role includes 'tester'
+    // 'tester' check to be removed on official release of payouts
+    if (user.roles.includes('tester') || user.roles.includes('admin')) {
+      await this.transactionService.create(
+        user,
+        new LifterTransactionDTO({
+          lifterId: lift.lifterId,
+          title: `Lift in ${lift?.lift?.booking?.startingAddress?.city}`,
+          amount: lift.totalPay * 100,
+        }),
+      );
+    }
 
     try {
       const updatedLift = await this.repo.save(lift);
