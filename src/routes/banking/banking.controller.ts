@@ -77,7 +77,7 @@ export class BankingController {
   @Roles(Role.Lifter)
   public async payoutLifter(
     @User() user: User,
-    @Body() body: { lifterId: string },
+    @Body() body: { lifterId: string; amount: number },
   ) {
     try {
       return await this.serv.payoutLifter(user, body);

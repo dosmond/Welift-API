@@ -4,4 +4,5 @@ export enum EventNames {
   DeleteFlaggedLifters = 'delete_flagged_lifters',
   CheckBookingCount = 'check_booking_count',
   CustomerPrep = 'customer_prep',
+  Payout = 'lifter_payout',
 }

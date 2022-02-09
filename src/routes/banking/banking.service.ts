@@ -1,3 +1,6 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
+import { PayoutEvent } from './../../events/payout.event';
+import { EventNames } from './../../enum/eventNames.enum';
 import { Lifter, PlaidInfo } from '@src/model/lifters.entity';
 import {
   ForbiddenException,
@@ -27,6 +30,8 @@ import { Role } from '@src/enum/roles.enum';
 import Stripe from 'stripe';
 import dayjs from 'dayjs';
 import { Request } from 'express';
+import { OnEvent } from '@nestjs/event-emitter';
+import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
 
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
@@ -39,6 +44,7 @@ export class BankingService {
 
   constructor(
     @InjectRepository(Lifter) private readonly lifterRepo: Repository<Lifter>,
+    private readonly transactionService: LifterTransactionsService,
   ) {
     const configuration: Configuration = new Configuration({
       basePath: PlaidEnvironments[process.env.PLAID_ENV],
@@ -227,7 +233,10 @@ export class BankingService {
     await this.lifterRepo.save(updateLifter);
   }
 
-  public async payoutLifter(user: User, request: { lifterId: string }) {
+  public async payoutLifter(
+    user: User,
+    request: { lifterId: string; amount: number },
+  ) {
     const lifter = await this.lifterRepo.findOne({ id: request.lifterId });
 
     // Can only get your own info unless you are an admin
@@ -237,16 +246,52 @@ export class BankingService {
       }
     }
 
-    const token = await stripe.accounts.retrieve();
+    await this.createTransfer(
+      new PayoutEvent({
+        title: 'Quick Deposit',
+        amount: request.amount,
+        lifter: lifter,
+        isQuickDeposit: true,
+        fees: Math.abs(Math.round(request.amount * 0.015)),
+      }),
+    );
+  }
 
-    console.log(token);
+  @OnEvent(EventNames.Payout)
+  private async createTransfer(event: PayoutEvent) {
+    const remaningBalance =
+      await this.transactionService.getLifterCurrentBalance(event.lifter.id);
 
-    // const transfer = await stripe.transfers.create({
-    //   amount: 1000,
-    //   currency: 'usd',
-    //   destination: token.bank_account.id,
-    // });
+    if (Math.abs(event.amount) > remaningBalance) {
+      throw new BadRequestException(
+        `Unable to process transfer for lifter: ${
+          event.lifter.id
+        }. Remaining balance is insufficient for the requested amount ($${Math.abs(
+          event.amount / 100,
+        )}). Remaining Balance: $${remaningBalance / 100}`,
+      );
+    }
 
-    // console.log(transfer);
+    const newTransaction = await this.transactionService.createStandardDeposit(
+      new LifterTransactionDTO({
+        title: event.title,
+        amount: event.amount,
+        lifterId: event.lifter.id,
+        fees: event.fees,
+        isQuickDeposit: event.isQuickDeposit,
+      }),
+    );
+
+    try {
+      await stripe.transfers.create({
+        amount: Math.abs(event.amount) - event.fees,
+        currency: 'usd',
+        destination: event.lifter.plaidInfo.stripeBankAccountId,
+      });
+    } catch (err) {
+      // There was en error on stripe side. We need to remove the created transaction!
+      await this.transactionService.delete(newTransaction.id);
+      throw new BadRequestException(err);
+    }
   }
 }
