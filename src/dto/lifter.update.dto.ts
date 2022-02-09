@@ -140,6 +140,11 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  hasLinkedBankAcount: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AcceptedLiftDTO)
@@ -230,6 +235,7 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         deletionPending: entity.deletionPending,
         latestOpen: entity.latestOpen,
         checkrId: entity.checkrId,
+        hasLinkedBankAcount: entity?.plaidInfo?.hasLinkedBankAccount || false,
         acceptedLifts: entity?.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
         ),

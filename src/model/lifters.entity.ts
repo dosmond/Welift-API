@@ -15,6 +15,39 @@ import { LifterReview } from './lifterReviews.entity';
 import { LifterStats } from './lifterStats.entity';
 import { Address } from './addresses.entity';
 import { LifterTransaction } from './lifterTransaction.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString, IsBoolean } from 'class-validator';
+
+export class PlaidInfo {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  accessToken: string | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  itemId: string | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  stripeBankAccountId: string | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  stripeBankAccountToken: string | null;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  hasLinkedBankAccount: boolean;
+
+  constructor(init?: Partial<PlaidInfo>) {
+    Object.assign(this, init);
+  }
+}
 
 @Index('fki_fk_lifter_address', ['address'], {})
 @Index('lifters_email_phone_key', ['email', 'phone'], { unique: true })
@@ -116,6 +149,12 @@ export class Lifter {
     length: 1024,
   })
   checkrId: string | null;
+
+  @Column('jsonb', {
+    name: 'plaid_access_token',
+    nullable: true,
+  })
+  plaidInfo: PlaidInfo;
 
   @OneToMany(() => AcceptedLift, (acceptedLift) => acceptedLift.lifter)
   acceptedLifts: AcceptedLift[];

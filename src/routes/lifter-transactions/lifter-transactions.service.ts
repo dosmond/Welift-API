@@ -210,4 +210,8 @@ export class LifterTransactionsService {
   public async deleteByLifter(lifterId: string): Promise<void> {
     await this.repo.delete({ lifterId: lifterId });
   }
+
+  public async delete(id: string): Promise<void> {
+    await this.repo.delete({ id: id });
+  }
 }
