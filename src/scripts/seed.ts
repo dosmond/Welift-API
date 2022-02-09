@@ -116,9 +116,14 @@ async function run() {
   // Service initialization
   //
   const authService = new AuthService();
+  const lifterTransactionsService = new LifterTransactionsService(
+    lifterTransactionRepo,
+    lifterRepo,
+  );
   const acceptedLiftService = new AcceptedLiftService(
     acceptedLiftRepo,
     liftRepo,
+    lifterTransactionsService,
   );
   const addressService = new AddressService(addressRepo);
   const badgeService = new BadgeService(badgeRepo);
@@ -153,10 +158,6 @@ async function run() {
   );
   const lifterReviewService = new LifterReviewsService(lifterReviewRepo);
   const lifterStatsService = new LifterStatsService(lifterStatsRepo);
-  const lifterTransactionsService = new LifterTransactionsService(
-    lifterTransactionRepo,
-    lifterRepo,
-  );
   const lifterService = new LiftersService(
     lifterRepo,
     lifterStatsRepo,

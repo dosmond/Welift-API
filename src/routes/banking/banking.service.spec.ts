@@ -1,3 +1,5 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
+import { LifterTransaction } from './../../model/lifterTransaction.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
@@ -9,10 +11,10 @@ describe('BankingService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BankingService],
+      providers: [BankingService, LifterTransactionsService],
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-        TypeOrmModule.forFeature([Lifter]),
+        TypeOrmModule.forFeature([Lifter, LifterTransaction]),
       ],
     }).compile();
 

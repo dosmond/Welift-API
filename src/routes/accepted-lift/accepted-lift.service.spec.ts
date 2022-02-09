@@ -1,3 +1,5 @@
+import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
+import { User } from '@src/user.decorator';
 import {
   BadRequestException,
   ConflictException,
@@ -20,6 +22,7 @@ import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
 import { AcceptedLiftDTO } from '@src/dto/acceptedLift.dto';
 import { TokenVerificationRequestDTO } from '@src/dto/tokenVerification.dto';
 import { AcceptedLiftUpdateDTO } from '@src/dto/acceptedLift.update.dto';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
 describe('AcceptedLiftService', () => {
   let service: AcceptedLiftService;
@@ -29,6 +32,8 @@ describe('AcceptedLiftService', () => {
   let lifterRepo: Repository<Lifter>;
   let addressRepo: Repository<Address>;
   let lifterStatsRepo: Repository<LifterStats>;
+  let lifterTransactionRepo: Repository<LifterTransaction>;
+  let user: User;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,10 +46,17 @@ describe('AcceptedLiftService', () => {
           Lifter,
           Address,
           LifterStats,
+          LifterTransaction,
         ]),
       ],
-      providers: [AcceptedLiftService],
+      providers: [AcceptedLiftService, LifterTransactionsService],
     }).compile();
+
+    user = {
+      roles: 'admin',
+      sub: '',
+      email: '',
+    };
 
     service = module.get<AcceptedLiftService>(AcceptedLiftService);
     addressRepo = module.get(getRepositoryToken(Address));
@@ -53,6 +65,7 @@ describe('AcceptedLiftService', () => {
     liftRepo = module.get(getRepositoryToken(Lift));
     acceptedLiftRepo = module.get(getRepositoryToken(AcceptedLift));
     bookingRepo = module.get(getRepositoryToken(Booking));
+    lifterTransactionRepo = module.get(getRepositoryToken(LifterTransaction));
   });
 
   it('should be defined', () => {
@@ -403,6 +416,7 @@ describe('AcceptedLiftService', () => {
     it('should return a 400 if lift does not exist', async () => {
       expect(async () => {
         await service.verifyToken(
+          user,
           new TokenVerificationRequestDTO({
             acceptedLiftId: '7628dfcb-b78c-4435-bf7c-33e7728f6a11',
             token: 'test',
@@ -426,6 +440,7 @@ describe('AcceptedLiftService', () => {
 
       expect(async () => {
         await service.verifyToken(
+          user,
           new TokenVerificationRequestDTO({
             acceptedLiftId: createdLift.id,
             token: 'test',
@@ -451,6 +466,7 @@ describe('AcceptedLiftService', () => {
 
       expect(async () => {
         await service.verifyToken(
+          user,
           new TokenVerificationRequestDTO({
             acceptedLiftId: createdLift.id,
             token: 'test',
@@ -475,6 +491,7 @@ describe('AcceptedLiftService', () => {
 
       expect(async () => {
         await service.verifyToken(
+          user,
           new TokenVerificationRequestDTO({
             acceptedLiftId: createdLift.id,
             token: 'test',
@@ -498,6 +515,7 @@ describe('AcceptedLiftService', () => {
       );
 
       const updatedLift = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLift.id,
           token: 'test12',
@@ -533,6 +551,7 @@ describe('AcceptedLiftService', () => {
       );
 
       const updatedLift = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLift.id,
           token: 'test12',
@@ -543,6 +562,7 @@ describe('AcceptedLiftService', () => {
       expect(updatedLift.totalPay).toEqual(45);
 
       const updatedLiftWithTruck = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLiftWithTruck.id,
           token: 'test12',
@@ -581,6 +601,7 @@ describe('AcceptedLiftService', () => {
       );
 
       const updatedLift = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLift.id,
           token: 'test12',
@@ -591,6 +612,7 @@ describe('AcceptedLiftService', () => {
       expect(updatedLift.totalPay).toEqual(50);
 
       const updatedLiftWithTruck = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLiftWithTruck.id,
           token: 'test12',
@@ -629,6 +651,7 @@ describe('AcceptedLiftService', () => {
       );
 
       const updatedLift = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLift.id,
           token: 'test12',
@@ -639,6 +662,7 @@ describe('AcceptedLiftService', () => {
       expect(updatedLift.totalPay).toEqual(55);
 
       const updatedLiftWithTruck = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLiftWithTruck.id,
           token: 'test12',
@@ -677,6 +701,7 @@ describe('AcceptedLiftService', () => {
       );
 
       const updatedLift = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLift.id,
           token: 'test12',
@@ -687,6 +712,7 @@ describe('AcceptedLiftService', () => {
       expect(updatedLift.totalPay).toEqual(60);
 
       const updatedLiftWithTruck = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLiftWithTruck.id,
           token: 'test12',
@@ -724,6 +750,7 @@ describe('AcceptedLiftService', () => {
       );
 
       const updatedLift = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLift.id,
           token: 'test12',
@@ -734,6 +761,7 @@ describe('AcceptedLiftService', () => {
       expect(updatedLift.totalPay).toEqual(20);
 
       const updatedLiftWithTruck = await service.verifyToken(
+        user,
         new TokenVerificationRequestDTO({
           acceptedLiftId: createdLiftWithTruck.id,
           token: 'test12',
@@ -1136,6 +1164,11 @@ describe('AcceptedLiftService', () => {
     const acceptedLifts = await acceptedLiftRepo.find();
     const addresses = await addressRepo.find();
     const lifterStats = await lifterStatsRepo.find();
+    const lifterTransactions = await lifterTransactionRepo.find();
+
+    for (const transaction of lifterTransactions) {
+      await lifterTransactionRepo.delete({ id: transaction.id });
+    }
 
     let promises: Promise<DeleteResult>[] = [];
     for (const lift of acceptedLifts)
