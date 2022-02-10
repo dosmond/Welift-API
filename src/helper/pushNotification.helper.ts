@@ -27,6 +27,17 @@ export class PushNotificationHelper {
       console.log(err);
     }
   }
+
+  public async sendPaymentReminder() {
+    await this.sendPushNotificationToTopic(
+      new PushNotificationRequest({
+        topic: `/topics/${process.env.NODE_ENV}-all`,
+        title: 'Automatic Payout Reminder',
+        message:
+          'You will be automatically paid out your balance tomorrow by end of day. It may take a few days to enter your account',
+      }),
+    );
+  }
 }
 
 export class PushNotificationRequest
@@ -41,10 +52,8 @@ export class PushNotificationRequest
   @IsString()
   message: string;
 
-  constructor(request: { topic: string; title: string; message: string }) {
-    this.topic = request.topic;
-    this.title = request.title;
-    this.message = request.message;
+  constructor(init?: Partial<PushNotificationRequest>) {
+    Object.assign(this, init);
   }
 }
 

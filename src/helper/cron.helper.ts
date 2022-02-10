@@ -1,3 +1,4 @@
+import { PushNotificationHelper } from './pushNotification.helper';
 import { CustomerPrepEvent } from './../events/customerPrep.event';
 import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
@@ -25,6 +26,7 @@ export class CronHelper implements OnApplicationBootstrap {
     @InjectRepository(CronJobDescription)
     private readonly cronRepo: Repository<CronJobDescription>,
     private eventEmitter: EventEmitter2,
+    private pushNotificationHelper: PushNotificationHelper,
   ) {}
 
   // On system restart, recover all the cron jobs that were
@@ -64,6 +66,21 @@ export class CronHelper implements OnApplicationBootstrap {
   })
   public async deleteFlaggedLifters() {
     this.eventEmitter.emit(EventNames.DeleteFlaggedLifters);
+  }
+
+  // Enable this when payments are fully out
+  // @Cron('0 0 20 * * THU *')
+  // public async sendPaymentReminder() {
+  //   await this.pushNotificationHelper.sendPaymentReminder();
+  // }
+
+  // Every Friday at 8:00 PM (America/Denver)
+  @Cron('0 0 20 * * FRI *', {
+    name: 'lifter-standard-payout',
+    timeZone: 'America/Denver',
+  })
+  public async payoutLifters() {
+    this.eventEmitter.emit(EventNames.Payout);
   }
 
   public async addCronJob(data: CronJobData, createDbObject = true) {
