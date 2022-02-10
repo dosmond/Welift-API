@@ -1,4 +1,3 @@
-import { LifterRanking } from './../enum/lifterRanking.enum';
 import {
   Column,
   Entity,
@@ -18,6 +17,7 @@ import { Address } from './addresses.entity';
 import { LifterTransaction } from './lifterTransaction.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsBoolean } from 'class-validator';
+import { LifterRanking } from '@src/enum/lifterRanking.enum';
 
 export class PlaidInfo {
   @ApiProperty()
@@ -151,7 +151,8 @@ export class Lifter {
   })
   checkrId: string | null;
 
-  @Column('character varying', {
+  @Column({
+    type: 'character varying',
     name: 'ranking',
     default: LifterRanking.Basic,
     length: 64,
