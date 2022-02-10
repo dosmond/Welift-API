@@ -1,3 +1,7 @@
+import {
+  LifterRankingTruckBasePay,
+  LifterRankingBasePay,
+} from './../../enum/lifterRanking.enum';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Lift } from '../../model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
@@ -224,7 +228,14 @@ export class AcceptedLiftService {
   public async verifyToken(user: User, request: TokenVerificationRequestDTO) {
     const lift = await this.repo.findOne(
       { id: request.acceptedLiftId },
-      { relations: ['lift', 'lift.booking', 'lift.booking.startingAddress'] },
+      {
+        relations: [
+          'lift',
+          'lift.booking',
+          'lift.booking.startingAddress',
+          'lifter',
+        ],
+      },
     );
 
     if (!lift) {
@@ -291,6 +302,7 @@ export class AcceptedLiftService {
   public async updateAllLiftTotalPay(): Promise<void> {
     const lifts = await this.repo
       .createQueryBuilder('q')
+      .leftJoinAndSelect('q.lifter', 'lifter')
       .where('q.clockOutTime is not null')
       .getMany();
 
@@ -394,7 +406,9 @@ export class AcceptedLiftService {
     const totalTime = Math.abs(diff);
 
     // Change payrate if you have a truck
-    const payrate = lift.usePickupTruck ? 35.0 : 20.0;
+    const payrate = lift.usePickupTruck
+      ? LifterRankingTruckBasePay[lift.lifter.ranking]
+      : LifterRankingBasePay[lift.lifter.ranking];
 
     // Anything in first hour is guaranteed the payrate
     if (totalTime <= 1) {

@@ -1,3 +1,4 @@
+import { LifterRanking } from './../enum/lifterRanking.enum';
 import {
   Column,
   Entity,
@@ -149,6 +150,13 @@ export class Lifter {
     length: 1024,
   })
   checkrId: string | null;
+
+  @Column('character varying', {
+    name: 'ranking',
+    default: LifterRanking.Basic,
+    length: 64,
+  })
+  ranking: LifterRanking;
 
   @Column('jsonb', {
     name: 'plaid_access_token',

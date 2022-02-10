@@ -1,3 +1,4 @@
+import { LifterRanking } from './../enum/lifterRanking.enum';
 import { LifterTransactionDTO } from './lifterTransaction.dto';
 import { AddressDTO } from '@src/dto/address.dto';
 import { LifterStatsDTO } from './lifterStats.dto';
@@ -13,6 +14,7 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsEnum,
   IsInt,
   IsNumber,
   IsObject,
@@ -139,6 +141,11 @@ export class LifterDTO implements Readonly<LifterDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsEnum(LifterRanking)
+  ranking: LifterRanking;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AcceptedLiftDTO)
@@ -229,6 +236,7 @@ export class LifterDTO implements Readonly<LifterDTO> {
         deletionPending: entity.deletionPending,
         latestOpen: entity.latestOpen,
         checkrId: entity.checkrId,
+        ranking: entity.ranking,
         hasLinkedBankAcount: entity?.plaidInfo?.hasLinkedBankAccount || false,
         acceptedLifts: entity.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),
