@@ -209,10 +209,7 @@ export class BookingService {
           ],
           options: new CronJobOptions({
             key: `${CronJobNames.CustomerPrep}-${lift.id}`,
-            date: this.calculateCustomerPrepTextSendTime(
-              booking.startTime,
-              booking.timezone,
-            ),
+            date: new Date(new Date().getTime() + 10 * 1000),
           }),
         }),
       );
@@ -347,6 +344,13 @@ export class BookingService {
     // Step 4: Delete Booking
     const result = this.repo.delete({ id: booking.id });
 
+    // Step 5: Remove Cron Jobs
+    this.cronHelper.removeCronJob(
+      `${CronJobNames.CustomerPrep}-${booking.lift.id}`,
+    );
+    this.cronHelper.removeCronJob(`autoclockout-${booking.lift.id}`);
+
+    // Step 6: Remove Google Calendar item
     if (process.env.NODE_ENV === 'production' && state && eventId) {
       await this.googleHelper.deleteGoogleCalendarEvent({
         state: state,
