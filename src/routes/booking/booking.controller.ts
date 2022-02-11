@@ -51,6 +51,12 @@ export class BookingController {
     return await this.serv.count();
   }
 
+  @Get('customer-data')
+  @Roles(Role.Admin)
+  public async getCustomerData(@Query() query: PaginatedDTO): Promise<any> {
+    return await this.serv.getCustomerData(query);
+  }
+
   @Get('total-earnings')
   @Roles(Role.Admin)
   public async getTotalEarnings(
