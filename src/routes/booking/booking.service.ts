@@ -132,6 +132,45 @@ export class BookingService {
     return await this.repo.count();
   }
 
+  public async getCustomerData(request: PaginatedDTO) {
+    const bookings = await this.getAll(request);
+
+    const uniqueCustomers = new Set<string>();
+    const repeatCustomers = new Map<string, number>();
+
+    for (const booking of bookings) {
+      if (uniqueCustomers.has(booking.phone)) {
+        if (repeatCustomers.has(booking.phone)) {
+          repeatCustomers.set(
+            booking.phone,
+            repeatCustomers.get(booking.phone) + 1,
+          );
+        } else {
+          repeatCustomers.set(booking.phone, 2);
+        }
+      } else {
+        uniqueCustomers.add(booking.phone);
+      }
+    }
+    let averageAmount = 1;
+
+    let sum = 0;
+    // Calculate average
+    for (const key of repeatCustomers.keys()) {
+      sum += repeatCustomers.get(key);
+    }
+
+    averageAmount = Math.max(sum / repeatCustomers.size, averageAmount);
+
+    return {
+      repeatCustomers: {
+        count: repeatCustomers.size,
+        averageAmount: averageAmount,
+      },
+      uniqueCustomers: uniqueCustomers.size,
+    };
+  }
+
   public async createBatch(batch: BookingBatchDTO): Promise<BookingDTO> {
     const startingAddress = AddressDTO.from(batch.startingAddress);
     const booking = BookingDTO.from(batch.booking);
@@ -347,6 +386,13 @@ export class BookingService {
     // Step 4: Delete Booking
     const result = this.repo.delete({ id: booking.id });
 
+    // Step 5: Remove Cron Jobs
+    this.cronHelper.removeCronJob(
+      `${CronJobNames.CustomerPrep}-${booking?.lift?.id}`,
+    );
+    this.cronHelper.removeCronJob(`autoclockout-${booking?.lift?.id}`);
+
+    // Step 6: Remove Google Calendar item
     if (process.env.NODE_ENV === 'production' && state && eventId) {
       await this.googleHelper.deleteGoogleCalendarEvent({
         state: state,

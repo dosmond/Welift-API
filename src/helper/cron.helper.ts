@@ -102,7 +102,21 @@ export class CronHelper implements OnApplicationBootstrap {
     }
   }
 
-  public async deleteCronJobDescription(key: string) {
+  public async removeCronJob(cronJobKey: string) {
+    try {
+      const job = this.schedulerReg.getCronJob(cronJobKey);
+      job?.stop();
+
+      this.schedulerReg.deleteCronJob(cronJobKey);
+      await this.deleteCronJobDescription(cronJobKey);
+    } catch (err) {
+      this.logger.warn(
+        `Unable to remove cron job with key: ${cronJobKey}. Error: ${err.message}`,
+      );
+    }
+  }
+
+  private async deleteCronJobDescription(key: string) {
     await this.cronRepo.delete({ key: key });
   }
 
