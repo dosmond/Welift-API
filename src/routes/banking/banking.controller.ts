@@ -62,7 +62,7 @@ export class BankingController {
       publicToken: string;
       accountId: string;
       dob: string;
-      ssnLastFour: string;
+      ssn: string;
       hasStripeAccount: boolean;
     },
   ) {
