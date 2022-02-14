@@ -137,6 +137,7 @@ export class BookingService {
 
     const uniqueCustomers = new Set<string>();
     const repeatCustomers = new Map<string, number>();
+    const channels = {};
 
     for (const booking of bookings) {
       if (uniqueCustomers.has(booking.phone)) {
@@ -150,6 +151,12 @@ export class BookingService {
         }
       } else {
         uniqueCustomers.add(booking.phone);
+      }
+
+      if (channels[booking?.acquisitionChannel]) {
+        channels[booking?.acquisitionChannel] += 1;
+      } else {
+        channels[booking?.acquisitionChannel] = 1;
       }
     }
     let averageAmount = 1;
@@ -167,6 +174,7 @@ export class BookingService {
         count: repeatCustomers.size,
         averageAmount: averageAmount,
       },
+      acquisitionChannelCounts: channels,
       uniqueCustomers: uniqueCustomers.size,
     };
   }
