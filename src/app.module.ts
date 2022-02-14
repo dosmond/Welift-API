@@ -72,7 +72,6 @@ dayjs.extend(timezone);
       },
     }),
     AddressModule,
-    AuthModule,
     AcceptedLiftModule,
     BadgeModule,
     BookingModule,

@@ -8,6 +8,5 @@ import { Module } from '@nestjs/common';
   imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [],
 })
 export class AuthModule {}
