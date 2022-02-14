@@ -71,11 +71,7 @@ dayjs.extend(timezone);
         },
       },
     }),
-    PartnerCreditHourPurchasesModule,
-    PartnerReferralsModule,
-    PartnersModule,
-    PushNotificationModule,
-    SurveyModule,
+
     SurveyResponseModule,
     TrainingVideosModule,
     NoteModule,
