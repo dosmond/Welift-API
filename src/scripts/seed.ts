@@ -141,12 +141,7 @@ async function run() {
     new EmailClient(),
     new GoogleCalendarApiHelper(),
     bookingLocationService,
-    new CronHelper(
-      new SchedulerRegistry(),
-      cronJobRepo,
-      new EventEmitter2(),
-      new PushNotificationHelper(),
-    ),
+    new CronHelper(new SchedulerRegistry(), cronJobRepo, new EventEmitter2()),
   );
   const completedLifterBadgeService = new CompletedLifterBadgeService(
     completedLifterBadgeRepo,

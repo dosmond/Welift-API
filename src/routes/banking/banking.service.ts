@@ -257,17 +257,18 @@ export class BankingService {
     );
   }
 
+  @OnEvent(EventNames.Payout)
   private async createTransfer(event: PayoutEvent) {
-    const remainingBalance =
+    const remaningBalance =
       await this.transactionService.getLifterCurrentBalance(event.lifter.id);
 
-    if (Math.abs(event.amount) > remainingBalance) {
+    if (Math.abs(event.amount) > remaningBalance) {
       throw new BadRequestException(
         `Unable to process transfer for lifter: ${
           event.lifter.id
         }. Remaining balance is insufficient for the requested amount ($${Math.abs(
           event.amount / 100,
-        )}). Remaining Balance: $${remainingBalance / 100}`,
+        )}). Remaining Balance: $${remaningBalance / 100}`,
       );
     }
 
@@ -290,50 +291,7 @@ export class BankingService {
     } catch (err) {
       // There was en error on stripe side. We need to remove the created transaction!
       await this.transactionService.delete(newTransaction.id);
-      this.logger.error(err);
       throw new BadRequestException(err);
     }
-  }
-
-  @OnEvent(EventNames.Payout)
-  private async payoutAllLifters() {
-    const lifters = await this.lifterRepo.find({
-      where: {
-        plaidInfo: {
-          hasLinkedBankAccount: true,
-        },
-      },
-    });
-
-    const promises: Promise<void>[] = [];
-    lifters.forEach((lifter) => {
-      promises.push(
-        new Promise(async () => {
-          try {
-            const remainingBalance =
-              await this.transactionService.getLifterCurrentBalance(lifter.id);
-
-            if (remainingBalance) {
-              await this.createTransfer(
-                new PayoutEvent({
-                  title: 'Standard Deposit',
-                  amount: -remainingBalance,
-                  fees: 0.0,
-                  isQuickDeposit: false,
-                  lifter: lifter,
-                }),
-              );
-            }
-          } catch (err) {
-            this.logger.error(
-              `Error during automatic payment for lifter: ${lifter.id} ----> ${err.message}`,
-            );
-          }
-        }),
-      );
-    });
-
-    // Let everything keep running. We just need to log if there are errors.
-    await Promise.allSettled(promises);
   }
 }
