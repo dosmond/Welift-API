@@ -71,10 +71,6 @@ dayjs.extend(timezone);
         },
       },
     }),
-
-    SurveyResponseModule,
-    TrainingVideosModule,
-    NoteModule,
     EmailModule,
   ],
   controllers: [AppController],

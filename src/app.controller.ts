@@ -17,7 +17,6 @@ export class AppController {
   }
 
   @Post('admin/retrieve')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Lifter, Role.Landing)
   public retrieve(@Body() body: { secrets: string[] }): Promise<any> {
     return this.appService.retrieveSecrets(body.secrets);
