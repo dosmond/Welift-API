@@ -131,7 +131,7 @@ export class BankingService {
       publicToken: string;
       accountId: string;
       dob: string;
-      ssn: string;
+      ssnLastFour: string;
       hasStripeAccount: boolean;
     },
   ): Promise<void> {
@@ -139,8 +139,10 @@ export class BankingService {
     const accountId = body.accountId;
     const hasStripeAccount = body.hasStripeAccount;
     const lifterId = body.lifterId;
-    const ssn = body.ssn;
-    const ssnLastFour = ssn.substring(ssn.length - 4);
+
+    this.logger.warn(
+      `Ip Address ${(req.headers['x-forwarded-for'] as string).split(',')[0]}`,
+    );
 
     const lifter = await this.lifterRepo.findOne(
       { id: lifterId },
@@ -207,8 +209,7 @@ export class BankingService {
           },
           email: lifter.email,
           phone: lifter.phone,
-          ssn_last_4: ssnLastFour,
-          id_number: ssn,
+          ssn_last_4: body.ssnLastFour,
           dob: {
             day: dob.date(),
             month: dob.month(),
