@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Lifter } from '../../model/lifters.entity';
 import { LiftersService } from './../lifters/lifters.service';
@@ -40,6 +41,7 @@ import { LifterTransaction } from '@src/model/lifterTransaction.entity';
       AcceptedLift,
       Lift,
     ]),
+    AuthModule,
   ],
   controllers: [CheckrController],
   providers: [

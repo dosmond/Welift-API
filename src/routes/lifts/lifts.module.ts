@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Lifter } from '@src/model/lifters.entity';
 import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
@@ -8,7 +9,7 @@ import { LiftsController } from './lifts.controller';
 import { LiftsService } from './lifts.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lift, AcceptedLift, Lifter])],
+  imports: [TypeOrmModule.forFeature([Lift, AcceptedLift, Lifter]), AuthModule],
   controllers: [LiftsController],
   providers: [LiftsService, AcceptedLiftService],
 })

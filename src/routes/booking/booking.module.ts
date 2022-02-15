@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
 import { SlackHelper } from './../../helper/slack.helper';
 import { AcceptedLift } from '@src/model/acceptedLift.entity';
@@ -23,6 +24,7 @@ import { Note } from '@src/model/note.entity';
       Lift,
       Note,
     ]),
+    AuthModule,
   ],
   controllers: [BookingController],
   providers: [BookingService, GoogleCalendarApiHelper, SlackHelper],

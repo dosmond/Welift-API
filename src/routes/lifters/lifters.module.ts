@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { AuthService } from './../../auth/auth.service';
 import { Lift } from '@src/model/lifts.entity';
@@ -39,6 +40,7 @@ import { LifterTransaction } from '@src/model/lifterTransaction.entity';
       AcceptedLift,
       Lift,
     ]),
+    AuthModule,
   ],
   controllers: [LiftersController],
   providers: [

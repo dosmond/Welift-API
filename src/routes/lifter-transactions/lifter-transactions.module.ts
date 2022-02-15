@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Lifter } from '@src/model/lifters.entity';
 import { Module, Global } from '@nestjs/common';
 import { LifterTransactionsService } from './lifter-transactions.service';
@@ -7,7 +8,7 @@ import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([LifterTransaction, Lifter])],
+  imports: [TypeOrmModule.forFeature([LifterTransaction, Lifter]), AuthModule],
   controllers: [LifterTransactionsController],
   providers: [LifterTransactionsService],
   exports: [LifterTransactionsService],

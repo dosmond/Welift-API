@@ -32,6 +32,7 @@ import dayjs from 'dayjs';
 import { Request } from 'express';
 import { OnEvent } from '@nestjs/event-emitter';
 import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
+import { PlaidWebhookDTO } from '@src/dto/plaidWebhook.dto';
 
 const stripe = new Stripe(process.env.GATSBY_STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
@@ -254,6 +255,10 @@ export class BankingService {
         fees: Math.abs(Math.round(request.amount * 0.015)),
       }),
     );
+  }
+
+  public async plaidWebhook(event: PlaidWebhookDTO) {
+    console.log(event);
   }
 
   private async createTransfer(event: PayoutEvent) {

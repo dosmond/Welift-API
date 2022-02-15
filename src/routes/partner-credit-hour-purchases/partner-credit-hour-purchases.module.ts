@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Partner } from '../../model/partner.entity';
 import { PartnerCreditHourPurchase } from './../../model/partnerCreditHourPurchases.entity';
 import { Module } from '@nestjs/common';
@@ -6,7 +7,10 @@ import { PartnerCreditHourPurchasesController } from './partner-credit-hour-purc
 import { PartnerCreditHourPurchasesService } from './partner-credit-hour-purchases.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PartnerCreditHourPurchase, Partner])],
+  imports: [
+    TypeOrmModule.forFeature([PartnerCreditHourPurchase, Partner]),
+    AuthModule,
+  ],
   controllers: [PartnerCreditHourPurchasesController],
   providers: [PartnerCreditHourPurchasesService],
 })
