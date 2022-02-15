@@ -11,6 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '@src/auth/roles/roles.decorator';
 import { RolesGuard } from '@src/auth/roles/roles.gaurd';
+import { PlaidWebhookDTO } from '@src/dto/plaidWebhook.dto';
 import { Role } from '@src/enum/roles.enum';
 import { User } from '@src/user.decorator';
 import { Request } from 'express';
@@ -18,11 +19,11 @@ import { AccountBase, Institution } from 'plaid';
 import { BankingService } from './banking.service';
 
 @Controller('banking')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BankingController {
   constructor(private readonly serv: BankingService) {}
 
   @Get('account')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Lifter)
   public async getLifterAccount(
     @User() user: User,
@@ -39,6 +40,7 @@ export class BankingController {
   }
 
   @Post('create-link-token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Lifter)
   public async createLinkToken(
     @User() user: User,
@@ -52,6 +54,7 @@ export class BankingController {
   }
 
   @Post('exchange-public-token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Lifter)
   public async exchangePublicToken(
     @Req() req: Request,
@@ -74,6 +77,7 @@ export class BankingController {
   }
 
   @Post('payout')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Lifter)
   public async payoutLifter(
     @User() user: User,
@@ -81,6 +85,15 @@ export class BankingController {
   ) {
     try {
       return await this.serv.payoutLifter(user, body);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('plaid-webhook')
+  public async plaidWebhook(@Body() body: PlaidWebhookDTO) {
+    try {
+      return await this.serv.plaidWebhook(body);
     } catch (err) {
       throw new BadRequestException(err);
     }
