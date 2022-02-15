@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { LifterTransaction } from './../../model/lifterTransaction.entity';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -15,6 +16,7 @@ describe('BankingService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Lifter, LifterTransaction]),
+        AuthModule,
       ],
     }).compile();
 

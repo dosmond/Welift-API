@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 import { EmailClient } from '@src/helper/email.client';
@@ -50,6 +51,7 @@ describe('CheckrController', () => {
           AcceptedLift,
           Lift,
         ]),
+        AuthModule,
       ],
       controllers: [CheckrController],
       providers: [

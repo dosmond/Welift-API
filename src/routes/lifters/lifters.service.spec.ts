@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { AddressUpdateDTO } from './../../dto/address.update.dto';
 import { LifterUpdateDTO } from './../../dto/lifter.update.dto';
@@ -69,6 +70,7 @@ describe('LiftersService', () => {
           AcceptedLift,
           Lift,
         ]),
+        AuthModule,
       ],
       providers: [
         LiftersService,

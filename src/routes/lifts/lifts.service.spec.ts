@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { LifterTransaction } from './../../model/lifterTransaction.entity';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -33,6 +34,7 @@ describe('LiftsService', () => {
           Booking,
           Address,
         ]),
+        AuthModule,
       ],
       providers: [
         LiftsService,

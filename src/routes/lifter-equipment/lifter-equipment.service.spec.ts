@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterEquipmentDTO } from './../../dto/lifterEquipment.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -21,6 +22,7 @@ describe('LifterEquipmentService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([LifterEquipment, Equipment, Lifter, Address]),
+        AuthModule,
       ],
       providers: [LifterEquipmentService],
     }).compile();

@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { PartnerDTO } from './../../dto/partner.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -22,6 +23,7 @@ describe('PartnersService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([PartnerReferral, Partner]),
+        AuthModule,
       ],
       providers: [PartnersService, EmailClient],
     }).compile();

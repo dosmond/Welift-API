@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
@@ -16,6 +17,7 @@ describe('LifterTransactionsController', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([LifterTransaction, Address, Lifter]),
+        AuthModule,
       ],
       providers: [LifterTransactionsService],
     }).compile();

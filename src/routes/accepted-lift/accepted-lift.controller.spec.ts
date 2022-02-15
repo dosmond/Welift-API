@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Lifter } from '@src/model/lifters.entity';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { AcceptedLiftService } from './accepted-lift.service';
@@ -21,6 +22,7 @@ describe('AcceptedLiftController', () => {
           Lifter,
           LifterTransaction,
         ]),
+        AuthModule,
       ],
       controllers: [AcceptedLiftController],
       providers: [AcceptedLiftService, LifterTransactionsService],

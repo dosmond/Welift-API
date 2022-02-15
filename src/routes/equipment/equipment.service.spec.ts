@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Lifter } from './../../model/lifters.entity';
 import { EquipmentDTO } from './../../dto/equipment.dto';
 import { BadRequestException } from '@nestjs/common';
@@ -23,6 +24,7 @@ describe('EquipmentService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Equipment, LifterEquipment, Lifter, Address]),
+        AuthModule,
       ],
       providers: [EquipmentService],
     }).compile();

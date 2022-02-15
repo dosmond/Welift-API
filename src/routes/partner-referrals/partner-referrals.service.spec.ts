@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Booking } from '@src/model/booking.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -21,6 +22,7 @@ describe('PartnerReferralsService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([PartnerReferral, Partner, Booking, Address]),
+        AuthModule,
       ],
       providers: [PartnerReferralsService],
     }).compile();

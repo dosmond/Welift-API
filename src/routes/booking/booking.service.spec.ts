@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { BookingUpdateDTO } from './../../dto/booking.update.dto';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -56,6 +57,7 @@ describe('BookingService', () => {
           Lift,
           Note,
         ]),
+        AuthModule,
       ],
       controllers: [BookingController],
       providers: [

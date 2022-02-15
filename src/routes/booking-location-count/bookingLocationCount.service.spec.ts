@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
@@ -15,6 +16,7 @@ describe('BookingService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([BookingLocationCount]),
+        AuthModule,
       ],
       providers: [BookingLocationCountService, PushNotificationHelper],
     }).compile();
