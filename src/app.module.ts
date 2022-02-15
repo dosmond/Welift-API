@@ -71,6 +71,7 @@ dayjs.extend(timezone);
         },
       },
     }),
+    AddressModule,
     AuthModule,
   ],
   controllers: [AppController],

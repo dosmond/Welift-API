@@ -11,6 +11,6 @@ options.defaultStrategy = 'jwt';
   imports: [PassportModule.register(options)],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [],
+  exports: [PassportModule],
 })
 export class AuthModule {}
