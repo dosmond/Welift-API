@@ -71,6 +71,7 @@ dayjs.extend(timezone);
         },
       },
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard],
