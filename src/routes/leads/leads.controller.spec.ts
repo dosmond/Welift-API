@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { EmailClient } from '@src/helper/email.client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,6 +16,7 @@ describe('LeadsController', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Lead]),
+        AuthModule,
       ],
       controllers: [LeadsController],
       providers: [LeadsService, SlackHelper, EmailClient],

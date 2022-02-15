@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from '@src/config/config.service';
@@ -14,6 +15,7 @@ describe('PartnerCreditHourPurchasesController', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([PartnerCreditHourPurchase, Partner]),
+        AuthModule,
       ],
       controllers: [PartnerCreditHourPurchasesController],
       providers: [PartnerCreditHourPurchasesService],

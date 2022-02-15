@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { AddressUpdateDTO } from '@src/dto/address.update.dto';
 import { AddressDTO } from '@src/dto/address.dto';
 import { Address } from '@src/model/addresses.entity';
@@ -17,6 +18,7 @@ describe('AddressService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Address]),
+        AuthModule,
       ],
       providers: [AddressService],
     }).compile();

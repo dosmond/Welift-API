@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LeadUpdateDTO } from './../../dto/lead.update.dto';
 import { LeadLandingDTO } from '@src/dto/lead.landing.dto';
 import {
@@ -29,6 +30,7 @@ describe('LeadsService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Lead]),
+        AuthModule,
       ],
       controllers: [LeadsController],
       providers: [LeadsService, SlackHelper, EmailClient],

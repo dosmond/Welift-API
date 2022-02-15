@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -16,6 +17,7 @@ describe('BadgeService', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Badge]),
+        AuthModule,
       ],
       providers: [BadgeService],
     }).compile();

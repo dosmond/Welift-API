@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -48,6 +49,7 @@ describe('LiftersController', () => {
           AcceptedLift,
           Lift,
         ]),
+        AuthModule,
       ],
       controllers: [LiftersController],
       providers: [

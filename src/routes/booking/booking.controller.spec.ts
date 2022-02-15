@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CronJobDescription } from './../../model/cronjob.entity';
 import { CronHelper } from './../../helper/cron.helper';
@@ -39,6 +40,7 @@ describe('BookingController', () => {
           Lift,
           Note,
         ]),
+        AuthModule,
       ],
       controllers: [BookingController],
       providers: [

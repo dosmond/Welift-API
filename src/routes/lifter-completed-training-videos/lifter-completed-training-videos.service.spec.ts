@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { TrainingVideo } from './../../model/TrainingVideos.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -27,6 +28,7 @@ describe('LifterCompletedTrainingVideosService', () => {
           Address,
           TrainingVideo,
         ]),
+        AuthModule,
       ],
       controllers: [LifterCompletedTrainingVideosController],
       providers: [LifterCompletedTrainingVideosService],

@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { WhatsNewService } from './whats-new.service';
 import { WhatsNew } from '@src/model/whatsnew.entity';
 import { WhatsNewController } from './whats-new.controller';
@@ -13,6 +14,7 @@ describe('TrainingVideosController', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([WhatsNew]),
+        AuthModule,
       ],
       controllers: [WhatsNewController],
       providers: [WhatsNewService],

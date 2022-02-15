@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { User } from '@src/user.decorator';
 import {
@@ -48,6 +49,7 @@ describe('AcceptedLiftService', () => {
           LifterStats,
           LifterTransaction,
         ]),
+        AuthModule,
       ],
       providers: [AcceptedLiftService, LifterTransactionsService],
     }).compile();
