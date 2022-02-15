@@ -212,7 +212,7 @@ export class BankingService {
           id_number: ssn,
           dob: {
             day: dob.date(),
-            month: dob.month(),
+            month: dob.month() + 1,
             year: dob.year(),
           },
         },
