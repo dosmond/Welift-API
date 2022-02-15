@@ -1,3 +1,4 @@
+import { AuthModule } from './../../auth/auth.module';
 import { LifterEquipment } from './../../model/lifterEquipment.entity';
 import { Equipment } from './../../model/equipment.entity';
 import { Module } from '@nestjs/common';
@@ -6,7 +7,7 @@ import { EquipmentService } from './equipment.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Equipment, LifterEquipment])],
+  imports: [TypeOrmModule.forFeature([Equipment, LifterEquipment]), AuthModule],
   controllers: [EquipmentController],
   providers: [EquipmentService],
 })
