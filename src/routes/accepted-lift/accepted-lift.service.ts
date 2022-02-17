@@ -11,12 +11,11 @@ import {
   ConflictException,
   NotAcceptableException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokenVerificationRequestDTO } from '../../dto/tokenVerification.dto';
 import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
 import { User } from '../../user.decorator';
-import { DeleteResult, getConnection, getManager } from 'typeorm';
+import { DeleteResult, getConnection, getManager, Repository } from 'typeorm';
 import { PaginatedDTO } from '../../dto/base.paginated.dto';
 import { LifterPaginatedDTO } from '../../dto/lifter.paginated.dto';
 import { AcceptedLiftUpdateDTO } from '../../dto/acceptedLift.update.dto';
