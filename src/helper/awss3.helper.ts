@@ -30,7 +30,7 @@ export class AWSS3Helper {
       // Check file exists first
       await this.s3.headObject(params).promise();
     } catch (err) {
-      throw err;
+      return null;
     }
 
     try {
