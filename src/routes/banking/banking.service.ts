@@ -301,13 +301,14 @@ export class BankingService {
 
   @OnEvent(EventNames.Payout)
   private async payoutAllLifters() {
-    const lifters = await this.lifterRepo.find({
-      where: {
-        plaidInfo: {
+    const lifters = await this.lifterRepo
+      .createQueryBuilder('q')
+      .where('q.plaidInfo ::jsonb @> :hasLinked', {
+        hasLinked: {
           hasLinkedBankAccount: true,
         },
-      },
-    });
+      })
+      .getMany();
 
     const promises: Promise<void>[] = [];
     lifters.forEach((lifter) => {
