@@ -45,6 +45,11 @@ export class PlaidInfo {
   @IsBoolean()
   hasLinkedBankAccount: boolean;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  isBetaTester: boolean;
+
   constructor(init?: Partial<PlaidInfo>) {
     Object.assign(this, init);
   }

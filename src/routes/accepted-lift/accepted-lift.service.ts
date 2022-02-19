@@ -11,12 +11,11 @@ import {
   ConflictException,
   NotAcceptableException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokenVerificationRequestDTO } from '../../dto/tokenVerification.dto';
 import { AcceptedLiftDTO } from '../../dto/acceptedLift.dto';
 import { User } from '../../user.decorator';
-import { DeleteResult, getConnection, getManager } from 'typeorm';
+import { DeleteResult, getConnection, getManager, Repository } from 'typeorm';
 import { PaginatedDTO } from '../../dto/base.paginated.dto';
 import { LifterPaginatedDTO } from '../../dto/lifter.paginated.dto';
 import { AcceptedLiftUpdateDTO } from '../../dto/acceptedLift.update.dto';
@@ -376,21 +375,34 @@ export class AcceptedLiftService {
     try {
       const lift = await this.liftRepo.findOne(
         { id: payload.liftId },
-        { relations: ['acceptedLifts'] },
+        {
+          relations: [
+            'acceptedLifts',
+            'acceptedLifts.lifter',
+            'booking',
+            'booking.startingAddress',
+          ],
+        },
       );
 
-      const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
-      lift?.acceptedLifts?.forEach((accepted) => {
+      for (const accepted of lift.acceptedLifts) {
         if (accepted.clockInTime && !accepted.clockOutTime) {
           accepted.clockOutTime = new Date(Date.now());
           [accepted.payrate, accepted.totalPay] =
             this.getPayrateAndTotalPay(accepted);
-          promises.push(
-            this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
-          );
+          await this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted));
+          if (accepted?.lifter?.plaidInfo?.isBetaTester) {
+            await this.transactionService.create(
+              null,
+              new LifterTransactionDTO({
+                lifterId: accepted.lifterId,
+                title: `Lift in ${lift?.booking?.startingAddress?.city}`,
+                amount: accepted.totalPay * 100,
+              }),
+            );
+          }
         }
-      });
-      await Promise.all(promises);
+      }
     } catch (err) {
       console.log(err);
     }
