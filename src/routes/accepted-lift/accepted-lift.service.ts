@@ -375,21 +375,34 @@ export class AcceptedLiftService {
     try {
       const lift = await this.liftRepo.findOne(
         { id: payload.liftId },
-        { relations: ['acceptedLifts'] },
+        {
+          relations: [
+            'acceptedLifts',
+            'acceptedLifts.lifter',
+            'booking',
+            'booking.startingAddress',
+          ],
+        },
       );
 
-      const promises: Promise<AcceptedLiftUpdateDTO>[] = [];
-      lift?.acceptedLifts?.forEach((accepted) => {
+      for (const accepted of lift.acceptedLifts) {
         if (accepted.clockInTime && !accepted.clockOutTime) {
           accepted.clockOutTime = new Date(Date.now());
           [accepted.payrate, accepted.totalPay] =
             this.getPayrateAndTotalPay(accepted);
-          promises.push(
-            this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted)),
-          );
+          await this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted));
+          if (accepted?.lifter?.plaidInfo?.isBetaTester) {
+            await this.transactionService.create(
+              null,
+              new LifterTransactionDTO({
+                lifterId: accepted.lifterId,
+                title: `Lift in ${lift?.booking?.startingAddress?.city}`,
+                amount: accepted.totalPay * 100,
+              }),
+            );
+          }
         }
-      });
-      await Promise.all(promises);
+      }
     } catch (err) {
       console.log(err);
     }

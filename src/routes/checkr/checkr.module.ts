@@ -8,7 +8,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from '../../auth/auth.service';
 import { AWSS3Helper } from '../../helper/awss3.helper';
-import { AcceptedLiftService } from '../accepted-lift/accepted-lift.service';
 import { AddressService } from '../address/address.service';
 import { CompletedLifterBadgeService } from '../completed-lifter-badge/completed-lifter-badge.service';
 import { LifterCompletedTrainingVideosService } from '../lifter-completed-training-videos/lifter-completed-training-videos.service';
@@ -55,7 +54,6 @@ import { LifterTransaction } from '@src/model/lifterTransaction.entity';
     LifterEquipmentService,
     LifterReviewsService,
     LifterTransactionsService,
-    AcceptedLiftService,
     AuthService,
   ],
 })

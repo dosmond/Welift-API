@@ -3,7 +3,6 @@ import { LifterTransactionsService } from './../lifter-transactions/lifter-trans
 import { AuthService } from './../../auth/auth.service';
 import { Lift } from '@src/model/lifts.entity';
 import { AcceptedLift } from '@src/model/acceptedLift.entity';
-import { AcceptedLiftService } from './../accepted-lift/accepted-lift.service';
 import { CompletedLifterBadge } from '@src/model/completedLifterBadges.entity';
 import { LifterReviewsService } from './../lifter-reviews/lifter-reviews.service';
 import { LifterEquipmentService } from './../lifter-equipment/lifter-equipment.service';
@@ -53,7 +52,6 @@ import { LifterTransaction } from '@src/model/lifterTransaction.entity';
     LifterEquipmentService,
     LifterReviewsService,
     LifterTransactionsService,
-    AcceptedLiftService,
     AuthService,
   ],
 })
