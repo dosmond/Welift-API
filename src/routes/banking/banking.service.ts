@@ -310,14 +310,14 @@ export class BankingService {
       })
       .getMany();
 
-    console.log(lifters);
+    this.logger.warn(lifters);
 
     for (const lifter of lifters) {
       try {
         const remainingBalance =
           await this.transactionService.getLifterCurrentBalance(lifter.id);
 
-        console.log(remainingBalance);
+        this.logger.warn(`Remaining Balance: ${remainingBalance}`);
 
         if (remainingBalance) {
           await this.createTransfer(
