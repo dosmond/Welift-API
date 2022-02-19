@@ -75,7 +75,7 @@ export class CronHelper implements OnApplicationBootstrap {
   // }
 
   // Every Friday at 8:00 PM (America/Denver)
-  @Cron('0 0 20 * * FRI *', {
+  @Cron('0 0 21 * * FRI *', {
     name: 'lifter-standard-payout',
     timeZone: 'America/Denver',
   })
