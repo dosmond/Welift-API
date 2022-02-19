@@ -310,35 +310,31 @@ export class BankingService {
       })
       .getMany();
 
-    const promises: Promise<void>[] = [];
-    lifters.forEach((lifter) => {
-      promises.push(
-        new Promise(async () => {
-          try {
-            const remainingBalance =
-              await this.transactionService.getLifterCurrentBalance(lifter.id);
+    this.logger.warn(lifters);
 
-            if (remainingBalance) {
-              await this.createTransfer(
-                new PayoutEvent({
-                  title: 'Standard Deposit',
-                  amount: -remainingBalance,
-                  fees: 0.0,
-                  isQuickDeposit: false,
-                  lifter: lifter,
-                }),
-              );
-            }
-          } catch (err) {
-            this.logger.error(
-              `Error during automatic payment for lifter: ${lifter.id} ----> ${err.message}`,
-            );
-          }
-        }),
-      );
-    });
+    for (const lifter of lifters) {
+      try {
+        const remainingBalance =
+          await this.transactionService.getLifterCurrentBalance(lifter.id);
 
-    // Let everything keep running. We just need to log if there are errors.
-    await Promise.allSettled(promises);
+        this.logger.warn(`Remaining Balance: ${remainingBalance}`);
+
+        if (remainingBalance) {
+          await this.createTransfer(
+            new PayoutEvent({
+              title: 'Standard Deposit',
+              amount: -remainingBalance,
+              fees: 0.0,
+              isQuickDeposit: false,
+              lifter: lifter,
+            }),
+          );
+        }
+      } catch (err) {
+        this.logger.error(
+          `Error during automatic payment for lifter: ${lifter.id} ----> ${err.message}`,
+        );
+      }
+    }
   }
 }
