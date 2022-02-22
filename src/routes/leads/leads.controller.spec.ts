@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { EmailClient } from '@src/helper/email.client';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -16,6 +17,7 @@ describe('LeadsController', () => {
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Lead]),
+        LoggerModule.forRoot(),
         AuthModule,
       ],
       controllers: [LeadsController],

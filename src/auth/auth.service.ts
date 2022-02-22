@@ -8,6 +8,7 @@ import {
 } from 'amazon-cognito-identity-js';
 
 import { Credentials, config, CognitoIdentityServiceProvider } from 'aws-sdk';
+import { PinoLogger } from 'nestjs-pino';
 
 // This should only be necessary for local dev work.
 if (process.env.NODE_ENV == 'local') {
@@ -24,7 +25,7 @@ config.update({ region: 'us-east-1' });
 export class AuthService {
   private userPools: { [key: string]: CognitoUserPool };
 
-  constructor() {
+  constructor(private readonly logger: PinoLogger) {
     this.userPools = {
       landing: new CognitoUserPool({
         UserPoolId: process.env.LANDING_USERPOOL_ID,

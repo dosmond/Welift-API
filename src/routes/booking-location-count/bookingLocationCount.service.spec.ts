@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -17,6 +18,7 @@ describe('BookingService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([BookingLocationCount]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [BookingLocationCountService, PushNotificationHelper],
     }).compile();

@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookingLocationCountController } from './bookingLocationCount.controller';
@@ -7,7 +8,7 @@ describe('BookingLocationCount', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AuthModule],
+      imports: [AuthModule, LoggerModule.forRoot()],
       controllers: [BookingLocationCountController],
     }).compile();
 

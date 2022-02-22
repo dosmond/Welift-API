@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { LeadUpdateDTO } from './../../dto/lead.update.dto';
 import { LeadLandingDTO } from '@src/dto/lead.landing.dto';
@@ -31,6 +32,7 @@ describe('LeadsService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Lead]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [LeadsController],
       providers: [LeadsService, SlackHelper, EmailClient],

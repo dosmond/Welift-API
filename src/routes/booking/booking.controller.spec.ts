@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CronJobDescription } from './../../model/cronjob.entity';
@@ -41,6 +42,7 @@ describe('BookingController', () => {
           Note,
         ]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [BookingController],
       providers: [

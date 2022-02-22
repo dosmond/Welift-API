@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -28,6 +29,7 @@ describe('CompletedLifterBadgeService', () => {
           Address,
         ]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [CompletedLifterBadgeService],
     }).compile();

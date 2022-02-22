@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { configService } from '@src/config/config.service';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -15,6 +16,7 @@ describe('BadgeController', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Badge]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [BadgeController],
       providers: [BadgeService],

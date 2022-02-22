@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -29,6 +30,7 @@ describe('LifterTransactionsService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([LifterTransaction, Address, Lifter]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [LifterTransactionsService],
     }).compile();

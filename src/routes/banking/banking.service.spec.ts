@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { LifterTransaction } from './../../model/lifterTransaction.entity';
@@ -17,6 +18,7 @@ describe('BankingService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Lifter, LifterTransaction]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
     }).compile();
 

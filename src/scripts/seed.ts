@@ -62,6 +62,7 @@ import { BookingBatchDTO } from '@src/dto/booking.batch.dto';
 import { AddressDTO } from '@src/dto/address.dto';
 import { LifterBatchDTO } from '@src/dto/lifter.batch.dto';
 import { LifterTransaction } from '@src/model/lifterTransaction.entity';
+import { PinoLogger } from 'nestjs-pino';
 
 async function run() {
   const seedId = Date.now()
@@ -115,7 +116,7 @@ async function run() {
   //
   // Service initialization
   //
-  const authService = new AuthService();
+  const authService = new AuthService(new PinoLogger({}));
   const lifterTransactionsService = new LifterTransactionsService(
     lifterTransactionRepo,
     lifterRepo,
