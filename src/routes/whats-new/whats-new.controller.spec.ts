@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { WhatsNewService } from './whats-new.service';
 import { WhatsNew } from '@src/model/whatsnew.entity';
@@ -15,6 +16,7 @@ describe('TrainingVideosController', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([WhatsNew]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [WhatsNewController],
       providers: [WhatsNewService],

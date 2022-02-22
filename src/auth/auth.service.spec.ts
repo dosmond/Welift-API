@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 
@@ -6,6 +7,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [LoggerModule.forRoot()],
       providers: [AuthService],
     }).compile();
 

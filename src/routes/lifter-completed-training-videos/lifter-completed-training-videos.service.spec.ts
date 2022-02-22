@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { TrainingVideo } from './../../model/TrainingVideos.entity';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -29,6 +30,7 @@ describe('LifterCompletedTrainingVideosService', () => {
           TrainingVideo,
         ]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [LifterCompletedTrainingVideosController],
       providers: [LifterCompletedTrainingVideosService],

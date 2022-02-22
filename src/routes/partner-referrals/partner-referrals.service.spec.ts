@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Booking } from '@src/model/booking.entity';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -23,6 +24,7 @@ describe('PartnerReferralsService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([PartnerReferral, Partner, Booking, Address]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [PartnerReferralsService],
     }).compile();

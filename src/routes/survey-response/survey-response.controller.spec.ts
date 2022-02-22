@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,6 +18,7 @@ describe('SurveyResponseController', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([SurveyResponse, Survey]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [SurveyResponseController],
       providers: [SurveyResponseService, SurveyService],

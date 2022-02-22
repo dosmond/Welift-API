@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { AddressUpdateDTO } from './../../dto/address.update.dto';
@@ -71,6 +72,7 @@ describe('LiftersService', () => {
           Lift,
         ]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [
         LiftersService,

@@ -1,9 +1,19 @@
 import { AuthService } from './auth.service';
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Logger,
+  Post,
+} from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: PinoLogger,
+  ) {}
 
   @Post('register')
   async register(
@@ -47,6 +57,12 @@ export class AuthController {
   async refresh(
     @Body() body: { refreshToken: string; appName: string; username: string },
   ) {
+    this.logger.assign({
+      token: body.refreshToken,
+      appName: body.appName,
+      username: body.username,
+    });
+
     try {
       return await this.authService.refresh(
         body.refreshToken,
@@ -54,7 +70,6 @@ export class AuthController {
         body.username,
       );
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err.message);
     }
   }

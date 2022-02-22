@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -19,6 +20,7 @@ describe('PartnerCreditHourPurchasesService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([PartnerCreditHourPurchase, Partner]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [PartnerCreditHourPurchasesService],
     }).compile();

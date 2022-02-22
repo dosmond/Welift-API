@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { Lifter } from '@src/model/lifters.entity';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
@@ -23,6 +24,7 @@ describe('AcceptedLiftController', () => {
           LifterTransaction,
         ]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [AcceptedLiftController],
       providers: [AcceptedLiftService, LifterTransactionsService],

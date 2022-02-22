@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { AddressUpdateDTO } from '@src/dto/address.update.dto';
 import { AddressDTO } from '@src/dto/address.dto';
@@ -19,6 +20,7 @@ describe('AddressService', () => {
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Address]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       providers: [AddressService],
     }).compile();

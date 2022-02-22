@@ -1,3 +1,4 @@
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { BookingUpdateDTO } from './../../dto/booking.update.dto';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -58,6 +59,7 @@ describe('BookingService', () => {
           Note,
         ]),
         AuthModule,
+        LoggerModule.forRoot(),
       ],
       controllers: [BookingController],
       providers: [
