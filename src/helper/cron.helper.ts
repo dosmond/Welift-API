@@ -75,12 +75,12 @@ export class CronHelper implements OnApplicationBootstrap {
   // }
 
   // Every Friday at 8:00 PM (America/Denver)
-  @Cron('0 30 12 * * WED *', {
+  @Cron('0 0 0 * * FRI *', {
     name: 'lifter-standard-payout',
     timeZone: 'America/Denver',
   })
   public async payoutLifters() {
-    console.log('emitting payout');
+    this.logger.log('emitting payout');
     this.eventEmitter.emit(EventNames.Payout);
   }
 
