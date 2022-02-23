@@ -122,7 +122,10 @@ export class LifterTransactionsService {
     const dto = LifterTransactionDTO.from(request);
 
     // Can only alter your own info unless you are an admin
-    if (!user.roles.split(',').includes(Role.Admin)) {
+    if (
+      !user.roles.split(',').includes(Role.Admin) ||
+      !user.roles.split(',').includes(Role.SuperAdmin)
+    ) {
       const lifter = await this.lifterRepo.findOne({ id: request.lifterId });
 
       if (user.sub !== lifter.userId) {

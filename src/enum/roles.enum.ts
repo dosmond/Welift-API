@@ -5,4 +5,5 @@ export enum Role {
   Partner = 'partner',
   Rep = 'representative',
   Tester = 'tester',
+  SuperAdmin = 'superadmin',
 }

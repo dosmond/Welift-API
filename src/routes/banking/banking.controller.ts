@@ -92,7 +92,7 @@ export class BankingController {
 
   @Post('initiate-auto-payout')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.SuperAdmin)
   public async initiateAutoPayout() {
     try {
       return await this.serv.initiateAutoPayout();

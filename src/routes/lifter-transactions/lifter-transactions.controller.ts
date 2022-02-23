@@ -86,7 +86,7 @@ export class LifterTransactionsController {
   }
 
   @Post('create')
-  @Roles(Role.Admin)
+  @Roles(Role.SuperAdmin)
   public async create(
     @User() user: User,
     @Body() body: LifterTransactionDTO,
