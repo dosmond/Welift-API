@@ -45,7 +45,6 @@ export class CheckrService {
       case 'candidate.created':
         this.logger.debug('Checkr Candidate Created');
       default:
-        this.logger.warn('Unhandled bc webhook type');
         break;
     }
   }
