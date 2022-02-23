@@ -257,6 +257,10 @@ export class BankingService {
     );
   }
 
+  public async initiateAutoPayout() {
+    return await this.payoutAllLifters();
+  }
+
   public async plaidWebhook(event: PlaidWebhookDTO) {
     console.log(event);
   }

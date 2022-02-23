@@ -90,6 +90,17 @@ export class BankingController {
     }
   }
 
+  @Post('initiate-auto-payout')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Admin)
+  public async initiateAutoPayout() {
+    try {
+      return await this.serv.initiateAutoPayout();
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
   @Post('plaid-webhook')
   public async plaidWebhook(@Body() body: PlaidWebhookDTO) {
     try {
