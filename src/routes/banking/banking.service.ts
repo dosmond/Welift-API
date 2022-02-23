@@ -71,7 +71,10 @@ export class BankingService {
     const lifter = await this.lifterRepo.findOne({ id: lifterId });
 
     // Can only get your own info unless you are an admin
-    if (!user.roles.split(',').includes(Role.Admin)) {
+    if (
+      !user.roles.split(',').includes(Role.Admin) &&
+      !user.roles.split(',').includes(Role.SuperAdmin)
+    ) {
       if (user.sub !== lifter.userId) {
         throw new ForbiddenException('Forbidden');
       }
@@ -149,7 +152,10 @@ export class BankingService {
     );
 
     // Can only get your own info unless you are an admin
-    if (!user.roles.split(',').includes(Role.Admin)) {
+    if (
+      !user.roles.split(',').includes(Role.Admin) &&
+      !user.roles.split(',').includes(Role.SuperAdmin)
+    ) {
       if (user.sub !== lifter.userId) {
         throw new ForbiddenException('Forbidden');
       }
@@ -240,7 +246,10 @@ export class BankingService {
     const lifter = await this.lifterRepo.findOne({ id: request.lifterId });
 
     // Can only get your own info unless you are an admin
-    if (!user.roles.split(',').includes(Role.Admin)) {
+    if (
+      !user.roles.split(',').includes(Role.Admin) &&
+      !user.roles.split(',').includes(Role.SuperAdmin)
+    ) {
       if (user.sub !== lifter.userId) {
         throw new ForbiddenException('Forbidden');
       }

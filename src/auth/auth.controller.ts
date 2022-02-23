@@ -1,11 +1,5 @@
 import { AuthService } from './auth.service';
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Logger,
-  Post,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 @Controller('auth')
