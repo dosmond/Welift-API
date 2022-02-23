@@ -72,7 +72,7 @@ export class BankingService {
 
     // Can only get your own info unless you are an admin
     if (
-      !user.roles.split(',').includes(Role.Admin) ||
+      !user.roles.split(',').includes(Role.Admin) &&
       !user.roles.split(',').includes(Role.SuperAdmin)
     ) {
       if (user.sub !== lifter.userId) {
@@ -153,7 +153,7 @@ export class BankingService {
 
     // Can only get your own info unless you are an admin
     if (
-      !user.roles.split(',').includes(Role.Admin) ||
+      !user.roles.split(',').includes(Role.Admin) &&
       !user.roles.split(',').includes(Role.SuperAdmin)
     ) {
       if (user.sub !== lifter.userId) {
@@ -247,7 +247,7 @@ export class BankingService {
 
     // Can only get your own info unless you are an admin
     if (
-      !user.roles.split(',').includes(Role.Admin) ||
+      !user.roles.split(',').includes(Role.Admin) &&
       !user.roles.split(',').includes(Role.SuperAdmin)
     ) {
       if (user.sub !== lifter.userId) {

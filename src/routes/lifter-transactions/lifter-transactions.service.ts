@@ -123,7 +123,7 @@ export class LifterTransactionsService {
 
     // Can only alter your own info unless you are an admin
     if (
-      !user.roles.split(',').includes(Role.Admin) ||
+      !user.roles.split(',').includes(Role.Admin) &&
       !user.roles.split(',').includes(Role.SuperAdmin)
     ) {
       const lifter = await this.lifterRepo.findOne({ id: request.lifterId });
