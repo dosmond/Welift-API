@@ -69,13 +69,13 @@ export class CronHelper implements OnApplicationBootstrap {
   }
 
   // Enable this when payments are fully out
-  // @Cron('0 0 20 * * THU *')
+  // @Cron('0 0 20 * * THU')
   // public async sendPaymentReminder() {
   //   await this.pushNotificationHelper.sendPaymentReminder();
   // }
 
   // Every Friday at 8:00 PM (America/Denver)
-  @Cron('0 0 0 * * FRI *', {
+  @Cron('0 0 20 * * THU', {
     name: 'lifter-standard-payout',
     timeZone: 'America/Denver',
   })
