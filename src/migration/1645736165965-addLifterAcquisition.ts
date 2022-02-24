@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addLifterAcquisition1645735992288 implements MigrationInterface {
-  name = 'addLifterAcquisition1645735992288';
+export class addLifterAcquisition1645736165965 implements MigrationInterface {
+  name = 'addLifterAcquisition1645736165965';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "lifters" ADD "acquisition_channel" character varying(128) NOT NULL DEFAULT Not Tracked`,
+      `ALTER TABLE "lifters" ADD "acquisition_channel" character varying(128) NOT NULL DEFAULT 'Not Tracked'`,
     );
   }
 

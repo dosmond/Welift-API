@@ -167,7 +167,7 @@ export class Lifter {
   @Column({
     type: 'character varying',
     name: 'acquisition_channel',
-    default: () => 'Not Tracked',
+    default: 'Not Tracked',
     length: 128,
   })
   acquisitionChannel: string;
