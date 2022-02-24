@@ -164,6 +164,14 @@ export class Lifter {
   })
   ranking: LifterRanking;
 
+  @Column({
+    type: 'character varying',
+    name: 'acquisition_channel',
+    default: 'Not Tracked',
+    length: 128,
+  })
+  acquisitionChannel: string;
+
   @Column('jsonb', {
     name: 'plaid_access_token',
     nullable: true,

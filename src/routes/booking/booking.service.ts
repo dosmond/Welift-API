@@ -169,12 +169,21 @@ export class BookingService {
 
     averageAmount = Math.max(sum / repeatCustomers.size, averageAmount);
 
+    const channelData: { name: string; value: number }[] = [];
+
+    for (const key in channels) {
+      channelData.push({
+        name: key,
+        value: channels[key],
+      });
+    }
+
     return {
       repeatCustomers: {
         count: repeatCustomers.size,
         averageAmount: averageAmount,
       },
-      acquisitionChannelCounts: channels,
+      acquisitionChannelCounts: channelData,
       uniqueCustomers: uniqueCustomers.size,
     };
   }
