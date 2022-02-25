@@ -25,7 +25,10 @@ import { LifterEquipmentDTO } from './lifterEquipment.dto';
 import { LifterReviewDTO } from './lifterReview.dto';
 import { LifterStatsDTO } from './lifterStats.dto';
 import { LifterTransactionDTO } from './lifterTransaction.dto';
-import { LifterRanking } from '@src/enum/lifterRanking.enum';
+import {
+  InternalLifterRanking,
+  LifterRanking,
+} from '@src/enum/lifterRanking.enum';
 
 export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
   @ApiProperty()
@@ -152,6 +155,11 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
 
   @ApiProperty()
   @IsOptional()
+  @IsEnum(InternalLifterRanking)
+  internalRanking: InternalLifterRanking;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   acquisitionChannel: string;
 
@@ -248,6 +256,7 @@ export class LifterUpdateDTO implements Readonly<LifterUpdateDTO>, LifterDTO {
         latestOpen: entity.latestOpen,
         checkrId: entity.checkrId,
         ranking: entity.ranking,
+        internalRanking: entity.internalRanking,
         acquisitionChannel: entity.acquisitionChannel,
         hasLinkedBankAcount: entity?.plaidInfo?.hasLinkedBankAccount || false,
         acceptedLifts: entity?.acceptedLifts?.map((item) =>
