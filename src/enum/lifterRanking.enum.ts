@@ -15,3 +15,10 @@ export enum LifterRankingTruckBasePay {
   Premium = 37.5,
   Rep = 40.0,
 }
+
+export enum InternalLifterRanking {
+  Rookie = 'Rookie',
+  Normal = 'Normal',
+  Veteran = 'Veteran',
+  Suspended = 'Suspended',
+}

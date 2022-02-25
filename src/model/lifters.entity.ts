@@ -1,3 +1,4 @@
+import { InternalLifterRanking } from './../enum/lifterRanking.enum';
 import {
   Column,
   Entity,
@@ -163,6 +164,14 @@ export class Lifter {
     length: 64,
   })
   ranking: LifterRanking;
+
+  @Column({
+    type: 'character varying',
+    name: 'internal_ranking',
+    default: InternalLifterRanking.Rookie,
+    length: 64,
+  })
+  internalRanking: InternalLifterRanking;
 
   @Column({
     type: 'character varying',
