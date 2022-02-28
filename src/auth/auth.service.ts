@@ -1,3 +1,4 @@
+import { RefreshDTO } from './../dto/auth/refresh.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import {
   AuthenticationDetails,
@@ -100,11 +101,9 @@ export class AuthService {
     });
   }
 
-  public async refresh(
-    refreshToken: string,
-    appName: string,
-    username: string,
-  ) {
+  public async refresh(request: RefreshDTO) {
+    const { appName, username, refreshToken } = request;
+
     const userPool = this.userPools[appName];
 
     if (!userPool) {

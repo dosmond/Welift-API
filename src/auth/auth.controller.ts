@@ -1,6 +1,7 @@
 import { AuthService } from './auth.service';
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
+import { RefreshDTO } from '@src/dto/auth/refresh.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -48,9 +49,7 @@ export class AuthController {
   }
 
   @Post('refresh')
-  async refresh(
-    @Body() body: { refreshToken: string; appName: string; username: string },
-  ) {
+  async refresh(@Body() body: RefreshDTO) {
     this.logger.assign({
       token: body.refreshToken,
       appName: body.appName,
@@ -58,13 +57,8 @@ export class AuthController {
     });
 
     try {
-      return await this.authService.refresh(
-        body.refreshToken,
-        body.appName,
-        body.username,
-      );
+      return await this.authService.refresh(body);
     } catch (err) {
-      this.logger.error(err);
       throw new BadRequestException(err.message);
     }
   }
