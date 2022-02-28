@@ -64,6 +64,7 @@ export class AuthController {
         body.username,
       );
     } catch (err) {
+      this.logger.error(err);
       throw new BadRequestException(err.message);
     }
   }
