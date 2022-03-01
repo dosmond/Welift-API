@@ -661,8 +661,6 @@ export class BookingService {
   private getBookingDeletionTime(booking: Booking): Date {
     const now = dayjs();
 
-    return dayjs().add(1, 'minute').toDate();
-
     if (dayjs(booking.startTime).date() - now.date() === 0) {
       return dayjs().add(1, 'hour').toDate();
     }
