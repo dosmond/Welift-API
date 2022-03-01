@@ -13,6 +13,8 @@ import { LifterTransactionUpdateDTO } from '@src/dto/lifterTransaction.update.dt
 import { Repository } from 'typeorm';
 import { LifterPaginatedDTO } from '@src/dto/lifter.paginated.dto';
 import { User } from '@src/user.decorator';
+import dayjs from 'dayjs';
+import { Order } from '@src/enum/order.enum';
 
 @Injectable()
 export class LifterTransactionsService {
@@ -197,11 +199,32 @@ export class LifterTransactionsService {
   ): Promise<LifterTransactionUpdateDTO> {
     const dto = LifterTransactionUpdateDTO.from(request);
 
+    if (dto.amount || dto.remainingBalance) {
+      throw new ForbiddenException('Unable to update');
+    }
+
     if (!(await this.repo.findOne({ id: dto.id })))
       throw new BadRequestException('Transaction does not exist');
 
     return LifterTransactionUpdateDTO.fromEntity(
       await this.repo.save(dto.toEntity()),
+    );
+  }
+
+  public async updateAmount(request: LifterTransactionUpdateDTO) {
+    const dto = LifterTransactionUpdateDTO.from(request);
+
+    const current = await this.repo.findOne({ id: dto.id });
+
+    if (!current) throw new BadRequestException('Transaction does not exist');
+
+    const transactions = this.getAllByLifter(
+      new LifterPaginatedDTO({
+        lifterId: current.lifterId,
+        start: dayjs(current.date).subtract(1, 'minute').toDate(),
+        end: dayjs().toDate(),
+        order: Order.ASC,
+      }),
     );
   }
 

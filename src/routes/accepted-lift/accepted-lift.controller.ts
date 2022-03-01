@@ -85,6 +85,14 @@ export class AcceptedLiftController {
     return await this.serv.update(user, acceptedLift);
   }
 
+  @Put('update-clock-times')
+  @Roles(Role.Admin)
+  public async updateClockTimes(
+    @Body() acceptedLift: AcceptedLiftUpdateDTO,
+  ): Promise<void> {
+    return await this.serv.updateClockTimes(acceptedLift);
+  }
+
   @Put('update-all-lift-total-pay')
   @Roles(Role.Admin)
   public async updateAllLiftTotalPay() {
