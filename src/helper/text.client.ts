@@ -122,6 +122,26 @@ If you have any issues, please reach out to 385-309-3256`;
     }
   };
 
+  public async sendCustomerBookingCancellationText(request: {
+    name: string;
+    phoneNumber: string;
+  }) {
+    try {
+      const message = `Hi ${request.name}, We appreciate you requesting a lift with us. We are so sorry to inform you that we are unable to fulfill your request on your selected date and time. If you would like to select another date or time please contact customer success via text or phone call at (385) 309-3256 or visit https://getwelift.com/request-a-lift. Thank you.`;
+
+      const params: SNS.PublishInput = {
+        Message: message,
+        PhoneNumber: `+1${BookingDTO.standardizePhoneNumber(
+          request.phoneNumber,
+        )}`,
+      };
+
+      await new SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
+    } catch (err) {
+      this.logger.error(err);
+    }
+  }
+
   private async cleanUpSubscriptions(subscriptions): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const promises: Promise<{ $response: AWS.Response<{}, AWS.AWSError> }>[] =
