@@ -6,4 +6,5 @@ export enum EventNames {
   CustomerPrep = 'customer_prep',
   Payout = 'lifter_payout',
   ReferrerBonus = 'referrer_bonus',
+  HighRiskBookingDeletion = 'high_risk_booking_deletion',
 }

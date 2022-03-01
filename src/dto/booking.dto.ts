@@ -123,6 +123,11 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  sendConfirmationEmail: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   description: string;
 

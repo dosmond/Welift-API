@@ -135,6 +135,11 @@ export class BookingUpdateDTO
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  sendConfirmationEmail: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO;
 
