@@ -1,3 +1,4 @@
+import { PushNotificationHelper } from '@src/helper/pushNotification.helper';
 import { TextClient } from './../../helper/text.client';
 import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
 import { SlackHelper } from '@src/helper/slack.helper';
@@ -77,6 +78,7 @@ export class BookingService {
     private cronHelper: CronHelper,
     private slackHelper: SlackHelper,
     private textClient: TextClient,
+    private pushNotificationHelper: PushNotificationHelper,
   ) {}
 
   public async getById(id: string): Promise<BookingDTO> {
@@ -410,12 +412,14 @@ export class BookingService {
 
     // Step 1: Delete Accepted Lifts
     if (booking.lift?.acceptedLifts.length > 0) {
-      const deletePromises: Promise<DeleteResult>[] = [];
-      booking.lift?.acceptedLifts?.forEach((acceptedLift) => {
-        deletePromises.push(this.acceptedLiftRepo.delete(acceptedLift));
-      });
-
-      await Promise.all(deletePromises);
+      for (const acceptedLift of booking.lift?.acceptedLifts) {
+        await this.acceptedLiftRepo.delete(acceptedLift);
+        await this.pushNotificationHelper.sendAcceptedLiftDeletedNotification({
+          acceptedLiftId: acceptedLift.id,
+          date: dayjs(booking.startTime).format('MM/DD/YYYY'),
+          time: dayjs(booking.startTime).format('h:mm A'),
+        });
+      }
     }
 
     // Step 2: Delete Lift
@@ -460,7 +464,10 @@ export class BookingService {
   ) {
     await this.delete(event.booking.id, event.state, event.eventId);
 
-    // TODO: Send Booking deleted text to customer
+    await this.textClient.sendCustomerBookingCancellationText({
+      name: event.booking.name,
+      phoneNumber: event.booking.phone,
+    });
 
     // Send Slack Notification about expiration
     this.slackHelper.sendBasicSucessSlackMessage(
@@ -653,6 +660,8 @@ export class BookingService {
    */
   private getBookingDeletionTime(booking: Booking): Date {
     const now = dayjs();
+
+    return dayjs().add(1, 'minute').toDate();
 
     if (dayjs(booking.startTime).date() - now.date() === 0) {
       return dayjs().add(1, 'hour').toDate();

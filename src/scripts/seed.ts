@@ -152,6 +152,7 @@ async function run() {
     ),
     new SlackHelper(),
     new TextClient(),
+    new PushNotificationHelper(),
   );
   const completedLifterBadgeService = new CompletedLifterBadgeService(
     completedLifterBadgeRepo,

@@ -38,6 +38,20 @@ export class PushNotificationHelper {
       }),
     );
   }
+
+  public async sendAcceptedLiftDeletedNotification(request: {
+    acceptedLiftId: string;
+    date: string;
+    time: string;
+  }) {
+    await this.sendPushNotificationToTopic(
+      new PushNotificationRequest({
+        topic: `/topics/${process.env.NODE_ENV}-${request.acceptedLiftId}`,
+        title: 'Lift Cancelled',
+        message: `We are so sorry but you lift on ${request.date} at ${request.time} has been cancelled. Please contact lifter support if you have any questions`,
+      }),
+    );
+  }
 }
 
 export class PushNotificationRequest
