@@ -48,7 +48,7 @@ export class PushNotificationHelper {
       new PushNotificationRequest({
         topic: `/topics/${process.env.NODE_ENV}-${request.acceptedLiftId}`,
         title: 'Lift Cancelled',
-        message: `We are so sorry but you lift on ${request.date} at ${request.time} has been cancelled. Please contact lifter support if you have any questions`,
+        message: `We are so sorry but your lift on ${request.date} at ${request.time} has been cancelled. Please contact lifter support if you have any questions`,
       }),
     );
   }
