@@ -459,7 +459,7 @@ export class BookingService {
 
     // TODO: Send Booking deleted text to customer
 
-    // TODO: Send Slack Notification about expiration
+    // Send Slack Notification about expiration
     this.slackHelper.sendBasicSucessSlackMessage(
       this.slackHelper.prepareBasicSuccessSlackMessage({
         type: SlackHelper.HIGH_RISK_DELETION,
