@@ -26,6 +26,7 @@ import { EventNames } from '../../enum/eventNames.enum';
 import { ClockOutEvent } from '../../events/clockout.event';
 import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
 import { Lifter } from '@src/model/lifters.entity';
+import { LifterTransactionUpdateDTO } from '@src/dto/lifterTransaction.update.dto';
 
 @Injectable()
 export class AcceptedLiftService {
@@ -334,6 +335,41 @@ export class AcceptedLiftService {
     }
 
     await Promise.all(updates);
+  }
+
+  public async updateClockTimes(
+    acceptedLift: AcceptedLiftDTO,
+  ): Promise<AcceptedLiftUpdateDTO> {
+    const dto = AcceptedLiftDTO.from(acceptedLift);
+
+    const lift = await this.repo.findOne(
+      { id: dto.id },
+      { relations: ['lifter'] },
+    );
+
+    if (!lift) {
+      throw new BadRequestException('Accepted Lift does not exist');
+    }
+
+    dto.lifter = lift.lifter;
+    dto.transactionId = lift.transactionId;
+
+    [dto.payrate, dto.totalPay] = this.getPayrateAndTotalPay(dto);
+
+    if (dto.transactionId) {
+      await this.transactionService.updateAmount(
+        new LifterTransactionUpdateDTO({
+          id: dto.transactionId,
+          amount: dto.totalPay * 100,
+        }),
+      );
+    }
+
+    return AcceptedLiftUpdateDTO.fromEntity(
+      await this.repo.save(dto.toEntity()),
+    );
+
+    return;
   }
 
   public async delete(user: User, id: string): Promise<DeleteResult> {
