@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { LifterTransaction } from './../../model/lifterTransaction.entity';
@@ -35,6 +36,7 @@ describe('LiftsController', () => {
         AcceptedLiftService,
         TextClient,
         LifterTransactionsService,
+        EventEmitter2,
       ],
     }).compile();
 

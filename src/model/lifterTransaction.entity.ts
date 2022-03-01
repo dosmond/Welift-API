@@ -1,9 +1,11 @@
+import { AcceptedLift } from '@src/model/acceptedLift.entity';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Lifter } from './lifters.entity';
@@ -37,12 +39,22 @@ export class LifterTransaction {
   @Column('boolean', { name: 'is_quick_deposit', default: false })
   isQuickDeposit: boolean;
 
+  @Column('boolean', { name: 'is_referral', default: false })
+  isReferral: boolean;
+
   @Column('uuid', { name: 'lifter_id' })
   lifterId: string;
+
+  @Column('uuid', { name: 'accepted_lift_id', nullable: true })
+  acceptedLiftId: string | null;
 
   @ManyToOne(() => Lifter, (lifter) => lifter.lifterTransactions)
   @JoinColumn([{ name: 'lifter_id', referencedColumnName: 'id' }])
   lifter: Lifter;
+
+  @OneToOne(() => AcceptedLift, (acceptedLift) => acceptedLift.transaction)
+  @JoinColumn([{ name: 'accepted_lift_id', referencedColumnName: 'id' }])
+  acceptedLift: AcceptedLift;
 
   constructor(init?: Partial<LifterTransaction>) {
     Object.assign(this, init);

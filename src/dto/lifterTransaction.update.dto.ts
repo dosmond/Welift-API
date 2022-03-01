@@ -11,6 +11,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { LifterTransaction } from '../model/lifterTransaction.entity';
+import { AcceptedLiftDTO } from './acceptedLift.dto';
 
 export class LifterTransactionUpdateDTO
   implements Readonly<LifterTransactionUpdateDTO>, LifterTransactionDTO
@@ -46,6 +47,11 @@ export class LifterTransactionUpdateDTO
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsBoolean()
+  isReferral: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsNumber()
   fees: number;
 
@@ -54,10 +60,20 @@ export class LifterTransactionUpdateDTO
   @IsUUID()
   lifterId: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  acceptedLiftId: string;
+
   @ApiProperty()
   @ValidateNested()
   @IsOptional()
   lifter: LifterDTO;
+
+  @ApiProperty()
+  @ValidateNested()
+  @IsOptional()
+  acceptedLift: AcceptedLiftDTO;
 
   constructor(init?: Partial<LifterTransactionDTO>) {
     Object.assign(this, init);
@@ -83,7 +99,10 @@ export class LifterTransactionUpdateDTO
         isQuickDeposit: entity.isQuickDeposit,
         fees: entity.fees,
         amount: entity.amount,
+        acceptedLiftId: entity.acceptedLiftId,
+        isReferral: entity.isReferral,
         lifter: LifterDTO.fromEntity(entity?.lifter),
+        acceptedLift: AcceptedLiftDTO.fromEntity(entity?.acceptedLift),
       });
     }
     return null;

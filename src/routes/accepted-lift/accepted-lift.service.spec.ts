@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
@@ -53,7 +54,11 @@ describe('AcceptedLiftService', () => {
         AuthModule,
         LoggerModule.forRoot(),
       ],
-      providers: [AcceptedLiftService, LifterTransactionsService],
+      providers: [
+        AcceptedLiftService,
+        LifterTransactionsService,
+        EventEmitter2,
+      ],
     }).compile();
 
     user = {
@@ -1170,16 +1175,16 @@ describe('AcceptedLiftService', () => {
     const lifterStats = await lifterStatsRepo.find();
     const lifterTransactions = await lifterTransactionRepo.find();
 
-    for (const transaction of lifterTransactions) {
-      await lifterTransactionRepo.delete({ id: transaction.id });
-    }
-
     let promises: Promise<DeleteResult>[] = [];
     for (const lift of acceptedLifts)
       promises.push(acceptedLiftRepo.delete({ id: lift.id }));
 
     await Promise.all(promises);
     promises = [];
+
+    for (const transaction of lifterTransactions) {
+      await lifterTransactionRepo.delete({ id: transaction.id });
+    }
 
     for (const lift of lifts) promises.push(liftRepo.delete({ id: lift.id }));
     await Promise.all(promises);

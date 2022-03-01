@@ -5,4 +5,5 @@ export enum EventNames {
   CheckBookingCount = 'check_booking_count',
   CustomerPrep = 'customer_prep',
   Payout = 'lifter_payout',
+  ReferrerBonus = 'referrer_bonus',
 }
