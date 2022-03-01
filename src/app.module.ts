@@ -53,7 +53,10 @@ dayjs.extend(timezone);
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     ScheduleModule.forRoot(),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({
+      maxListeners: 1,
+      verboseMemoryLeak: true,
+    }),
     CacheModule.register(),
     ThrottlerModule.forRoot(),
     LoggerModule.forRoot({
