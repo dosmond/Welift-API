@@ -216,16 +216,37 @@ export class LifterTransactionsService {
 
     const current = await this.repo.findOne({ id: dto.id });
 
+    const amountDiff = dto.amount - current.amount;
+
     if (!current) throw new BadRequestException('Transaction does not exist');
 
-    const transactions = this.getAllByLifter(
+    const transactions = await this.getAllByLifter(
       new LifterPaginatedDTO({
         lifterId: current.lifterId,
-        start: dayjs(current.date).subtract(1, 'minute').toDate(),
+        start: dayjs(current.date).toDate(),
         end: dayjs().toDate(),
         order: Order.ASC,
       }),
     );
+
+    transactions.forEach((item) => {
+      if (amountDiff < 0 && item.remainingBalance + amountDiff < 0) {
+        throw new BadRequestException(
+          'Unable to change amount. This would result in a negative balance',
+        );
+      }
+
+      if (item.id === current.id) {
+        item.amount = dto.amount;
+        item.remainingBalance += amountDiff;
+      } else {
+        item.remainingBalance += amountDiff;
+      }
+    });
+
+    for (const item of transactions) {
+      await this.repo.save(item);
+    }
   }
 
   /**

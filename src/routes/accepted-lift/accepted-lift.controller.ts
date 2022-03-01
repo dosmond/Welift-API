@@ -89,7 +89,7 @@ export class AcceptedLiftController {
   @Roles(Role.Admin)
   public async updateClockTimes(
     @Body() acceptedLift: AcceptedLiftUpdateDTO,
-  ): Promise<void> {
+  ): Promise<AcceptedLiftUpdateDTO> {
     return await this.serv.updateClockTimes(acceptedLift);
   }
 
