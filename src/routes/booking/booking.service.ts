@@ -1,3 +1,4 @@
+import { TextClient } from './../../helper/text.client';
 import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { EventNames } from './../../enum/eventNames.enum';
@@ -43,6 +44,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { OnEvent } from '@nestjs/event-emitter';
+import { BookingConfirmTextDTO } from '@src/dto/bookingConfirmText.dto';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
@@ -74,6 +76,7 @@ export class BookingService {
     private locationCountService: BookingLocationCountService,
     private cronHelper: CronHelper,
     private slackHelper: SlackHelper,
+    private textClient: TextClient,
   ) {}
 
   public async getById(id: string): Promise<BookingDTO> {
@@ -505,6 +508,14 @@ export class BookingService {
     const base64Data = Buffer.from(stringifiedData).toString('base64');
 
     await this.emailClient.sendLeadConvertEmail(lift.booking.email, base64Data);
+
+    await this.textClient.sendBookingConfirmedText(
+      new BookingConfirmTextDTO({
+        number: lift.booking.phone,
+        date: dayjs(lift.booking?.startTime).format('MM/DD/YYYY'),
+        numLifters: lift.booking.lifterCount,
+      }),
+    );
 
     this.slackHelper.sendBasicSucessSlackMessage(
       this.slackHelper.prepareBasicSuccessSlackMessage({

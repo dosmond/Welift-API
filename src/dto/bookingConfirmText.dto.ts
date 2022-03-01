@@ -13,4 +13,8 @@ export class BookingConfirmTextDTO implements Readonly<BookingConfirmTextDTO> {
   @ApiProperty()
   @IsNumber()
   numLifters: number;
+
+  constructor(init?: Partial<BookingConfirmTextDTO>) {
+    Object.assign(this, init);
+  }
 }
