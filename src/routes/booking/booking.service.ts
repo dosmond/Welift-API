@@ -1,3 +1,8 @@
+import { TextClient } from './../../helper/text.client';
+import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
+import { SlackHelper } from '@src/helper/slack.helper';
+import { EventNames } from './../../enum/eventNames.enum';
+import { HighRiskBookingDeletionEvent } from './../../events/highRiskBookingDeletion.event';
 import { CronJobNames } from './../../enum/cronJobNames.enum';
 import { CronHelper } from './../../helper/cron.helper';
 import { BookingLocationCount } from './../../model/bookingLocationCount.entity';
@@ -38,6 +43,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { OnEvent } from '@nestjs/event-emitter';
+import { BookingConfirmTextDTO } from '@src/dto/bookingConfirmText.dto';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
@@ -68,6 +75,8 @@ export class BookingService {
     private googleHelper: GoogleCalendarApiHelper,
     private locationCountService: BookingLocationCountService,
     private cronHelper: CronHelper,
+    private slackHelper: SlackHelper,
+    private textClient: TextClient,
   ) {}
 
   public async getById(id: string): Promise<BookingDTO> {
@@ -283,6 +292,28 @@ export class BookingService {
         }
       }
 
+      // This is a high risk booking. Enter high risk flow.
+      if (!batch.booking.sendConfirmationEmail) {
+        this.cronHelper.addCronJob(
+          new CronJobData({
+            cronName: CronJobNames.HighRiskBookingDeletion,
+            params: [
+              new HighRiskBookingDeletionEvent({
+                booking: result,
+                liftId: lift.id,
+                state: starting.state,
+                eventId: result.calendarEventId,
+                phoneNumber: BookingDTO.standardizePhoneNumber(result.phone),
+              }),
+            ],
+            options: new CronJobOptions({
+              key: `${CronJobNames.HighRiskBookingDeletion}-${lift.id}`,
+              date: this.getBookingDeletionTime(result),
+            }),
+          }),
+        );
+      }
+
       // Update location count for push notification
       await this.updateLocationCountAmount(starting);
 
@@ -408,6 +439,9 @@ export class BookingService {
       `${CronJobNames.CustomerPrep}-${booking?.lift?.id}`,
     );
     this.cronHelper.removeCronJob(`autoclockout-${booking?.lift?.id}`);
+    this.cronHelper.removeCronJob(
+      `${CronJobNames.HighRiskBookingDeletion}-${booking?.lift?.id}`,
+    );
 
     // Step 6: Remove Google Calendar item
     if (process.env.NODE_ENV === 'production' && state && eventId) {
@@ -418,6 +452,82 @@ export class BookingService {
     }
 
     return result;
+  }
+
+  @OnEvent(EventNames.HighRiskBookingDeletion)
+  private async handleHighRiskBookingDeletion(
+    event: HighRiskBookingDeletionEvent,
+  ) {
+    await this.delete(event.booking.id, event.state, event.eventId);
+
+    // TODO: Send Booking deleted text to customer
+
+    // Send Slack Notification about expiration
+    this.slackHelper.sendBasicSucessSlackMessage(
+      this.slackHelper.prepareBasicSuccessSlackMessage({
+        type: SlackHelper.HIGH_RISK_DELETION,
+        objects: [event.booking],
+        sendBasic: true,
+      }),
+    );
+  }
+
+  @OnEvent(EventNames.HighRiskBookingDeletionCancellation)
+  private async handleHighRiskBookingDeletionCancellation(
+    event: HighRiskBookingDeletionCancellationEvent,
+  ) {
+    this.cronHelper.removeCronJob(
+      `${CronJobNames.HighRiskBookingDeletion}-${event.liftId}`,
+    );
+
+    const lift = await this.liftRepo.findOne(
+      { id: event.liftId },
+      {
+        relations: [
+          'booking',
+          'booking.startingAddress',
+          'booking.endingAddress',
+        ],
+      },
+    );
+
+    const metadata = {
+      booking: {
+        id: lift.booking.id,
+        name: lift.booking.name,
+        date: lift.booking.startTime,
+        needsPickupTruck: lift.booking.needsPickupTruck,
+        startTime: lift.booking.startTime,
+        lifterCount: lift.booking.lifterCount,
+        totalCost: lift.booking.totalCost,
+        timezone: lift.booking.timezone,
+      },
+    };
+
+    const stringifiedData = JSON.stringify(metadata);
+    const base64Data = Buffer.from(stringifiedData).toString('base64');
+
+    await this.emailClient.sendLeadConvertEmail(lift.booking.email, base64Data);
+
+    await this.textClient.sendBookingConfirmedText(
+      new BookingConfirmTextDTO({
+        number: lift.booking.phone,
+        date: dayjs(lift.booking?.startTime).format('MM/DD/YYYY'),
+        numLifters: lift.booking.lifterCount,
+      }),
+    );
+
+    this.slackHelper.sendBasicSucessSlackMessage(
+      this.slackHelper.prepareBasicSuccessSlackMessage({
+        type: 'Booking',
+        objects: [
+          lift.booking.startingAddress,
+          lift.booking.endingAddress,
+          lift.booking,
+        ],
+        sendBasic: true,
+      }),
+    );
   }
 
   private generateCompletionToken(): string {
@@ -534,5 +644,24 @@ export class BookingService {
 
     // Time is between 8:00am and 7:00pm, just send the text then.
     return adjustedTime.toDate();
+  }
+
+  /**
+   * Returns a datetime object that represents when the booking, lift, and all
+   * accepted lifts should be deleted if not completely filled up.
+   * @param booking Booking to be analyzed
+   */
+  private getBookingDeletionTime(booking: Booking): Date {
+    const now = dayjs();
+
+    if (dayjs(booking.startTime).date() - now.date() === 0) {
+      return dayjs().add(1, 'hour').toDate();
+    }
+
+    if (dayjs(booking.startTime).date() - now.date() === 1) {
+      return dayjs().add(2, 'hour').toDate();
+    }
+
+    return dayjs().add(4, 'hour').toDate();
   }
 }

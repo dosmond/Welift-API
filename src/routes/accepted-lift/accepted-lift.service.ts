@@ -1,3 +1,4 @@
+import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
 import { ReferrerBonusEvent } from './../../events/referrerBonus.event';
 import {
   LifterRankingTruckBasePay,
@@ -202,6 +203,17 @@ export class AcceptedLiftService {
       }
 
       liftToUpdate.currentLifterCount += 1;
+
+      if (
+        liftToUpdate.currentLifterCount === liftToUpdate.booking.lifterCount
+      ) {
+        this.eventEmitter.emit(
+          EventNames.HighRiskBookingDeletionCancellation,
+          new HighRiskBookingDeletionCancellationEvent({
+            liftId: lift.liftId,
+          }),
+        );
+      }
 
       // If this is the last slot and the booking still needs
       // someone with a pickup truck, then only allow people with a pickup truck.

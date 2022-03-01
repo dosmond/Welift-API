@@ -6,6 +6,7 @@ export class SlackHelper {
   private readonly LIFTER_CREATION = 'Lifter';
   private readonly LIFT_REQUEST = 'Lift Request';
   private readonly BOOKING_CREATION = 'Booking';
+  static readonly HIGH_RISK_DELETION = 'High Risk Booking Deletion';
 
   public prepareVitalErrorSlackMessage = (error, sm) => {
     const message: any = {
@@ -173,9 +174,29 @@ export class SlackHelper {
         return this.generateLiftRequestMessageBlock(objects, message);
       case this.BOOKING_CREATION:
         return this.generateBookingMessageBlock(objects, message);
+      case SlackHelper.HIGH_RISK_DELETION:
+        return this.generateHighRiskDeletionMessageblock(objects, message);
       default:
         break;
     }
+  };
+
+  private generateHighRiskDeletionMessageblock = (
+    objects: any[],
+    message: any,
+  ) => {
+    const booking = objects[0];
+
+    message.blocks.push({
+      type: 'section',
+      block_id: `section1234`,
+      text: {
+        type: 'mrkdwn',
+        text: `*Name*: ${booking.name}\n*Phone*: ${booking.phone}\n*Email*: ${booking.email}`,
+      },
+    });
+
+    return message;
   };
 
   private generateLifterMessageBlock = (objects: any[], message: any) => {

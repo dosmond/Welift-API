@@ -63,6 +63,7 @@ import { AddressDTO } from '@src/dto/address.dto';
 import { LifterBatchDTO } from '@src/dto/lifter.batch.dto';
 import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 import { PinoLogger } from 'nestjs-pino';
+import { SlackHelper } from '@src/helper/slack.helper';
 
 async function run() {
   const seedId = Date.now()
@@ -149,6 +150,8 @@ async function run() {
       new EventEmitter2(),
       new PushNotificationHelper(),
     ),
+    new SlackHelper(),
+    new TextClient(),
   );
   const completedLifterBadgeService = new CompletedLifterBadgeService(
     completedLifterBadgeRepo,

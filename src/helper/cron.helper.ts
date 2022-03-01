@@ -1,3 +1,4 @@
+import { HighRiskBookingDeletionEvent } from './../events/highRiskBookingDeletion.event';
 import { PushNotificationHelper } from './pushNotification.helper';
 import { CustomerPrepEvent } from './../events/customerPrep.event';
 import { CronJobNames } from './../enum/cronJobNames.enum';
@@ -127,6 +128,12 @@ export class CronHelper implements OnApplicationBootstrap {
 
   private async [CronJobNames.CustomerPrep](event: CustomerPrepEvent) {
     this.eventEmitter.emit(EventNames.CustomerPrep, event);
+  }
+
+  private async [CronJobNames.HighRiskBookingDeletion](
+    event: HighRiskBookingDeletionEvent,
+  ) {
+    this.eventEmitter.emit(EventNames.HighRiskBookingDeletion, event);
   }
 }
 
