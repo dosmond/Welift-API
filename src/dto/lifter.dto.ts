@@ -159,6 +159,16 @@ export class LifterDTO implements Readonly<LifterDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  referrerCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  referredCode: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AcceptedLiftDTO)
@@ -252,6 +262,8 @@ export class LifterDTO implements Readonly<LifterDTO> {
         ranking: entity.ranking,
         internalRanking: entity.internalRanking,
         acquisitionChannel: entity.acquisitionChannel,
+        referredCode: entity.referredCode,
+        referrerCode: entity.referrerCode,
         hasLinkedBankAcount: entity?.plaidInfo?.hasLinkedBankAccount || false,
         acceptedLifts: entity.acceptedLifts?.map((item) =>
           AcceptedLiftDTO.fromEntity(item),

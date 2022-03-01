@@ -14,7 +14,7 @@ import { AWSS3Helper } from './../../helper/awss3.helper';
 import { LifterStats } from './../../model/lifterStats.entity';
 import { Address } from '@src/model/addresses.entity';
 import { Lifter } from './../../model/lifters.entity';
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LiftersController } from './lifters.controller';
 import { LiftersService } from './lifters.service';
@@ -24,6 +24,7 @@ import { LifterEquipment } from '@src/model/lifterEquipment.entity';
 import { LifterReview } from '@src/model/lifterReviews.entity';
 import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -54,5 +55,6 @@ import { LifterTransaction } from '@src/model/lifterTransaction.entity';
     LifterTransactionsService,
     AuthService,
   ],
+  exports: [LiftersService],
 })
 export class LiftersModule {}

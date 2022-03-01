@@ -1,3 +1,4 @@
+import { ReferrerBonusEvent } from './../../events/referrerBonus.event';
 import { LifterTransactionsService } from './../lifter-transactions/lifter-transactions.service';
 import { PushNotificationHelper } from './../../helper/pushNotification.helper';
 import { EventNames } from './../../enum/eventNames.enum';
@@ -29,6 +30,7 @@ import { PendingVerification } from '@src/model/pendingVerification.entity';
 import { EmailClient } from '@src/helper/email.client';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PushNotificationRequest } from '@src/helper/pushNotification.helper';
+import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
 
 @Injectable()
 export class LiftersService {
@@ -344,5 +346,22 @@ export class LiftersService {
     });
 
     await Promise.all(promises);
+  }
+
+  @OnEvent(EventNames.ReferrerBonus)
+  private async handleReferralBonus(event: ReferrerBonusEvent) {
+    const lifter = await this.repo.findOne({
+      referrerCode: event.referredCode,
+    });
+
+    await this.lifterTransactionService.create(
+      null,
+      new LifterTransactionDTO({
+        lifterId: lifter.id,
+        title: `Referrer Bonus for ${event.referredName}`,
+        amount: 2000,
+        isReferral: true,
+      }),
+    );
   }
 }

@@ -187,6 +187,20 @@ export class Lifter {
   })
   plaidInfo: PlaidInfo;
 
+  @Column('character varying', {
+    name: 'referrer_code',
+    length: 64,
+    default: () => 'generate_random_referral()',
+  })
+  referrerCode: string;
+
+  @Column('character varying', {
+    name: 'referred_code',
+    nullable: true,
+    length: 64,
+  })
+  referredCode: string;
+
   @OneToMany(() => AcceptedLift, (acceptedLift) => acceptedLift.lifter)
   acceptedLifts: AcceptedLift[];
 

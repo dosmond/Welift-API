@@ -1,3 +1,4 @@
+import { AcceptedLiftDTO } from '@src/dto/acceptedLift.dto';
 import { LifterDTO } from './lifter.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -43,18 +44,32 @@ export class LifterTransactionDTO implements Readonly<LifterTransactionDTO> {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsBoolean()
+  isReferral: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsNumber()
   fees: number;
 
-  @ApiProperty()
   @ApiProperty({ required: true })
   @IsUUID()
   lifterId: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  acceptedLiftId: string;
 
   @ApiProperty()
   @ValidateNested()
   @IsOptional()
   lifter: LifterDTO;
+
+  @ApiProperty()
+  @ValidateNested()
+  @IsOptional()
+  acceptedLift: AcceptedLiftDTO;
 
   constructor(init?: Partial<LifterTransactionDTO>) {
     Object.assign(this, init);
@@ -78,9 +93,12 @@ export class LifterTransactionDTO implements Readonly<LifterTransactionDTO> {
         date: entity.date,
         remainingBalance: entity.remainingBalance,
         isQuickDeposit: entity.isQuickDeposit,
+        acceptedLiftId: entity.acceptedLiftId,
         fees: entity.fees,
         amount: entity.amount,
+        isReferral: entity.isReferral,
         lifter: LifterDTO.fromEntity(entity?.lifter),
+        acceptedLift: AcceptedLiftDTO.fromEntity(entity?.acceptedLift),
       });
     }
     return null;

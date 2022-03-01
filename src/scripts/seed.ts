@@ -125,6 +125,7 @@ async function run() {
     acceptedLiftRepo,
     liftRepo,
     lifterTransactionsService,
+    new EventEmitter2(),
   );
   const addressService = new AddressService(addressRepo);
   const badgeService = new BadgeService(badgeRepo);

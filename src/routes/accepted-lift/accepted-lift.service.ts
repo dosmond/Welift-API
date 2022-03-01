@@ -1,3 +1,4 @@
+import { ReferrerBonusEvent } from './../../events/referrerBonus.event';
 import {
   LifterRankingTruckBasePay,
   LifterRankingBasePay,
@@ -10,6 +11,7 @@ import {
   BadRequestException,
   ConflictException,
   NotAcceptableException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokenVerificationRequestDTO } from '../../dto/tokenVerification.dto';
@@ -19,19 +21,23 @@ import { DeleteResult, getConnection, getManager, Repository } from 'typeorm';
 import { PaginatedDTO } from '../../dto/base.paginated.dto';
 import { LifterPaginatedDTO } from '../../dto/lifter.paginated.dto';
 import { AcceptedLiftUpdateDTO } from '../../dto/acceptedLift.update.dto';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { EventNames } from '../../enum/eventNames.enum';
 import { ClockOutEvent } from '../../events/clockout.event';
 import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
+import { Lifter } from '@src/model/lifters.entity';
 
 @Injectable()
 export class AcceptedLiftService {
+  private readonly logger: Logger = new Logger(AcceptedLiftService.name);
+
   constructor(
     @InjectRepository(AcceptedLift)
     private readonly repo: Repository<AcceptedLift>,
     @InjectRepository(Lift)
     private readonly liftRepo: Repository<Lift>,
     private readonly transactionService: LifterTransactionsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async getAll(details: PaginatedDTO) {
@@ -66,7 +72,10 @@ export class AcceptedLiftService {
 
   public async getById(id: string): Promise<AcceptedLiftDTO> {
     return await this.repo
-      .findOne({ id: id }, { relations: ['lifter', 'lift', 'lift.booking'] })
+      .findOne(
+        { id: id },
+        { relations: ['lifter', 'lift', 'lift.booking', 'transaction'] },
+      )
       .then((e) => AcceptedLiftDTO.fromEntity(e));
   }
 
@@ -87,12 +96,13 @@ export class AcceptedLiftService {
     const query = this.repo
       .createQueryBuilder('q')
       .leftJoinAndSelect('q.lift', 'lift')
+      .leftJoinAndSelect('q.transaction', 'transaction')
       .leftJoinAndSelect('lift.booking', 'booking')
       .leftJoinAndSelect('booking.startingAddress', 'startingAddress')
       .leftJoinAndSelect('booking.endingAddress', 'endingAddress')
       .leftJoin('q.lifter', 'lifter');
 
-    query.where('lifter_id = :id', { id: lifterId });
+    query.where('q.lifter_id = :id', { id: lifterId });
 
     if (hideCompleted && !hideUncompleted) {
       query.andWhere('q.clockOutTime is null');
@@ -260,14 +270,22 @@ export class AcceptedLiftService {
     // Add transaction if role includes 'tester'
     // 'tester' check to be removed on official release of payouts
     if (user.roles.includes('tester') || user.roles.includes('admin')) {
-      await this.transactionService.create(
-        user,
-        new LifterTransactionDTO({
-          lifterId: lift.lifterId,
-          title: `Lift in ${lift?.lift?.booking?.startingAddress?.city}`,
-          amount: lift.totalPay * 100,
-        }),
-      );
+      try {
+        const transaction = await this.transactionService.create(
+          user,
+          new LifterTransactionDTO({
+            lifterId: lift.lifterId,
+            title: `Lift in ${lift?.lift?.booking?.startingAddress?.city}`,
+            amount: lift.totalPay * 100,
+          }),
+        );
+
+        lift.transactionId = transaction.id;
+      } catch (err) {
+        throw new BadRequestException(err);
+      }
+
+      await this.checkForReferralBonus(user, lift.lifter);
     }
 
     try {
@@ -370,6 +388,38 @@ export class AcceptedLiftService {
     await Promise.all(promises);
   }
 
+  private async checkForReferralBonus(user: User, lifter: Lifter) {
+    if (
+      lifter.referredCode &&
+      (
+        await this.getLifterAccepted(
+          new LifterPaginatedDTO({
+            lifterId: lifter.id,
+            hideUncompleted: true,
+          }),
+        )
+      ).length === 0
+    ) {
+      await this.transactionService.create(
+        user,
+        new LifterTransactionDTO({
+          lifterId: lifter.id,
+          title: `Referred Bonus`,
+          amount: 2000,
+          isReferral: true,
+        }),
+      );
+
+      this.eventEmitter.emit(
+        EventNames.ReferrerBonus,
+        new ReferrerBonusEvent({
+          referredCode: lifter.referredCode,
+          referredName: lifter.firstName,
+        }),
+      );
+    }
+  }
+
   @OnEvent(EventNames.AutoClockOut)
   private async handleAutoClockOut(payload: ClockOutEvent) {
     try {
@@ -385,22 +435,31 @@ export class AcceptedLiftService {
         },
       );
 
-      for (const accepted of lift.acceptedLifts) {
+      for (const accepted of lift?.acceptedLifts) {
         if (accepted.clockInTime && !accepted.clockOutTime) {
           accepted.clockOutTime = new Date(Date.now());
           [accepted.payrate, accepted.totalPay] =
             this.getPayrateAndTotalPay(accepted);
-          await this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted));
-          if (accepted?.lifter?.plaidInfo?.isBetaTester) {
-            await this.transactionService.create(
-              null,
-              new LifterTransactionDTO({
-                lifterId: accepted.lifterId,
-                title: `Lift in ${lift?.booking?.startingAddress?.city}`,
-                amount: accepted.totalPay * 100,
-              }),
-            );
+
+          try {
+            if (accepted?.lifter?.plaidInfo?.isBetaTester) {
+              await this.transactionService.create(
+                null,
+                new LifterTransactionDTO({
+                  lifterId: accepted.lifterId,
+                  title: `Lift in ${lift?.booking?.startingAddress?.city}`,
+                  amount: accepted.totalPay * 100,
+                }),
+              );
+
+              await this.checkForReferralBonus(null, accepted.lifter);
+            }
+          } catch (err) {
+            this.logger.error(err);
+            return;
           }
+
+          await this.update(null, AcceptedLiftUpdateDTO.fromEntity(accepted));
         }
       }
     } catch (err) {

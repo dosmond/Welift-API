@@ -6,6 +6,7 @@ import { AcceptedLift } from '../model/acceptedLift.entity';
 import { Lifter } from '../model/lifters.entity';
 import { Lift } from '../model/lifts.entity';
 import { User } from '../user.decorator';
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 
 export class AcceptedLiftUpdateDTO
   implements Readonly<AcceptedLiftUpdateDTO>, AcceptedLiftDTO
@@ -35,6 +36,11 @@ export class AcceptedLiftUpdateDTO
   liftId: string;
 
   @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  transactionId: string;
+
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsNumber()
   payrate: number;
@@ -48,6 +54,10 @@ export class AcceptedLiftUpdateDTO
   @IsOptional()
   @IsBoolean()
   usePickupTruck: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  transaction: LifterTransaction;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -81,8 +91,10 @@ export class AcceptedLiftUpdateDTO
         payrate: entity.payrate,
         totalPay: entity.totalPay,
         usePickupTruck: entity.usePickupTruck,
+        transactionId: entity.transactionId,
         lift: entity.lift,
         lifter: entity.lifter,
+        transaction: entity.transaction,
       });
 
     return null;

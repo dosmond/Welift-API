@@ -1,9 +1,11 @@
+import { LifterTransaction } from '@src/model/lifterTransaction.entity';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -46,8 +48,15 @@ export class AcceptedLift {
   })
   totalPay: number;
 
+  @Column('uuid', { name: 'transaction_id', nullable: true })
+  transactionId: string | null;
+
   @Column('boolean', { name: 'use_pickup_truck', default: () => 'false' })
   usePickupTruck: boolean;
+
+  @OneToOne(() => LifterTransaction, (transaction) => transaction.acceptedLift)
+  @JoinColumn([{ name: 'transaction_id', referencedColumnName: 'id' }])
+  transaction: LifterTransaction;
 
   @ManyToOne(() => Lift, (lifts) => lifts.acceptedLifts)
   @JoinColumn([{ name: 'lift_id', referencedColumnName: 'id' }])
