@@ -5,7 +5,11 @@ export class AppService {
   private readonly secretsWhiteList: string[];
 
   constructor() {
-    this.secretsWhiteList = ['GOOGLE_PLACES_API_KEY', 'CHECKR_API_KEY', 'FIREBASE_API_KEY'];
+    this.secretsWhiteList = [
+      'GOOGLE_PLACES_API_KEY',
+      'CHECKR_API_KEY',
+      'FIREBASE_API_KEY',
+    ];
   }
 
   getHello(): string {

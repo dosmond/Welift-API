@@ -337,7 +337,12 @@ describe('LifterTransactionsService', () => {
 
     it('should update the existing transaction', async () => {
       transaction.title = 'updated';
-      await service.update(LifterTransactionUpdateDTO.fromEntity(transaction));
+      await service.update(
+        new LifterTransactionUpdateDTO({
+          id: transaction.id,
+          title: transaction.title,
+        }),
+      );
       const updated = await transactionRepo.findOne({ id: transaction.id });
       expect(updated.title).toEqual(transaction.title);
     });
