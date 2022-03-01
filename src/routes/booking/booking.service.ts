@@ -1,3 +1,4 @@
+import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { EventNames } from './../../enum/eventNames.enum';
 import { HighRiskBookingDeletionEvent } from './../../events/highRiskBookingDeletion.event';
@@ -454,7 +455,6 @@ export class BookingService {
   private async handleHighRiskBookingDeletion(
     event: HighRiskBookingDeletionEvent,
   ) {
-    console.log('event fired');
     await this.delete(event.booking.id, event.state, event.eventId);
 
     // TODO: Send Booking deleted text to customer
@@ -464,6 +464,56 @@ export class BookingService {
       this.slackHelper.prepareBasicSuccessSlackMessage({
         type: SlackHelper.HIGH_RISK_DELETION,
         objects: [event.booking],
+        sendBasic: true,
+      }),
+    );
+  }
+
+  @OnEvent(EventNames.HighRiskBookingDeletionCancellation)
+  private async handleHighRiskBookingDeletionCancellation(
+    event: HighRiskBookingDeletionCancellationEvent,
+  ) {
+    this.cronHelper.removeCronJob(
+      `${CronJobNames.HighRiskBookingDeletion}-${event.liftId}`,
+    );
+
+    const lift = await this.liftRepo.findOne(
+      { id: event.liftId },
+      {
+        relations: [
+          'booking',
+          'booking.startingAddress',
+          'booking.endingAddress',
+        ],
+      },
+    );
+
+    const metadata = {
+      booking: {
+        id: lift.booking.id,
+        name: lift.booking.name,
+        date: lift.booking.startTime,
+        needsPickupTruck: lift.booking.needsPickupTruck,
+        startTime: lift.booking.startTime,
+        lifterCount: lift.booking.lifterCount,
+        totalCost: lift.booking.totalCost,
+        timezone: lift.booking.timezone,
+      },
+    };
+
+    const stringifiedData = JSON.stringify(metadata);
+    const base64Data = Buffer.from(stringifiedData).toString('base64');
+
+    await this.emailClient.sendLeadConvertEmail(lift.booking.email, base64Data);
+
+    this.slackHelper.sendBasicSucessSlackMessage(
+      this.slackHelper.prepareBasicSuccessSlackMessage({
+        type: 'Booking',
+        objects: [
+          lift.booking.startingAddress,
+          lift.booking.endingAddress,
+          lift.booking,
+        ],
         sendBasic: true,
       }),
     );
@@ -592,8 +642,6 @@ export class BookingService {
    */
   private getBookingDeletionTime(booking: Booking): Date {
     const now = dayjs();
-
-    // return now.add(20, 'second').toDate();
 
     if (dayjs(booking.startTime).date() - now.date() === 0) {
       return dayjs().add(1, 'hour').toDate();
