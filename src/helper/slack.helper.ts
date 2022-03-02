@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class SlackHelper {
@@ -8,6 +9,7 @@ export class SlackHelper {
   private readonly BOOKING_CREATION = 'Booking';
   static readonly HIGH_RISK_DELETION = 'High Risk Booking Deletion';
   static readonly HIGH_RISK_BOOKING = 'High Risk Booking';
+  static readonly ACCEPTED_LIFT_DELETED = 'Accepted Lift Cancelled';
 
   public prepareVitalErrorSlackMessage = (error, sm) => {
     const message: any = {
@@ -179,9 +181,32 @@ export class SlackHelper {
         return this.generateHighRiskDeletionMessageblock(objects, message);
       case SlackHelper.HIGH_RISK_BOOKING:
         return this.generateBookingMessageBlock(objects, message);
+      case SlackHelper.ACCEPTED_LIFT_DELETED:
+        return this.generateAcceptedLiftDeletedMessageBlock(objects, message);
       default:
         break;
     }
+  };
+
+  private generateAcceptedLiftDeletedMessageBlock = (
+    objects: any[],
+    message: any,
+  ) => {
+    const acceptedLift = objects[0];
+
+    message.blocks.push({
+      type: 'section',
+      block_id: `section1234`,
+      text: {
+        type: 'mrkdwn',
+        // eslint-disable-next-line prettier/prettier
+        text: `*Lifter Name*: ${acceptedLift?.lifter?.firstName} ${acceptedLift?.lifter?.lastName}\n*Lift Details*\n*Name*: ${acceptedLift?.lift?.booking?.name}\n${acceptedLift?.lift?.booking?.startTime ? `*Start Time*: ${dayjs(acceptedLift?.lift?.booking?.startTime).format('MM/DD/YYYY h:mm A')}` : ''}`,
+      },
+    });
+
+    message.blocks[0].text.text = `${SlackHelper.ACCEPTED_LIFT_DELETED}`;
+
+    return message;
   };
 
   private generateHighRiskDeletionMessageblock = (

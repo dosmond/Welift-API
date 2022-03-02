@@ -1,3 +1,4 @@
+import { SlackHelper } from '@src/helper/slack.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
@@ -91,6 +92,7 @@ describe('LiftersService', () => {
         PushNotificationHelper,
         EmailClient,
         EventEmitter2,
+        SlackHelper,
       ],
     }).compile();
 
