@@ -78,16 +78,16 @@ export class BookingController {
   public async createBatch(@Body() body: BookingBatchDTO): Promise<BookingDTO> {
     const result = await this.serv.createBatch(body);
 
-    // Only send this now if booking was not high risk
-    if (body.booking.sendConfirmationEmail) {
-      this.slackHelper.sendBasicSucessSlackMessage(
-        this.slackHelper.prepareBasicSuccessSlackMessage({
-          type: 'Booking',
-          objects: [body.startingAddress, body.endingAddress, body.booking],
-          sendBasic: true,
-        }),
-      );
-    }
+    this.slackHelper.sendBasicSucessSlackMessage(
+      this.slackHelper.prepareBasicSuccessSlackMessage({
+        type: body.booking.sendConfirmationEmail
+          ? 'Booking'
+          : SlackHelper.HIGH_RISK_BOOKING,
+        objects: [body.startingAddress, body.endingAddress, body.booking],
+        sendBasic: true,
+      }),
+    );
+
     return result;
   }
 

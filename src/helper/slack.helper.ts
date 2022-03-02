@@ -7,6 +7,7 @@ export class SlackHelper {
   private readonly LIFT_REQUEST = 'Lift Request';
   private readonly BOOKING_CREATION = 'Booking';
   static readonly HIGH_RISK_DELETION = 'High Risk Booking Deletion';
+  static readonly HIGH_RISK_BOOKING = 'High Risk Booking';
 
   public prepareVitalErrorSlackMessage = (error, sm) => {
     const message: any = {
@@ -176,6 +177,8 @@ export class SlackHelper {
         return this.generateBookingMessageBlock(objects, message);
       case SlackHelper.HIGH_RISK_DELETION:
         return this.generateHighRiskDeletionMessageblock(objects, message);
+      case SlackHelper.HIGH_RISK_BOOKING:
+        return this.generateBookingMessageBlock(objects, message);
       default:
         break;
     }
