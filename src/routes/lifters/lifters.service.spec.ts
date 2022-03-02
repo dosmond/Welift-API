@@ -251,33 +251,41 @@ describe('LiftersService', () => {
     });
   });
 
-  describe('getUniqueLifterCount', () => {
+  describe('getLifterData', () => {
     beforeAll(async () => {
       await createTwoBookingsAndAssignOneLifterToEach();
     });
 
     it('should return the correct amount of unique lifters when no params given', async () => {
-      expect(await service.getUniqueLifterCount(new PaginatedDTO())).toEqual(2);
+      expect(
+        await (
+          await service.getLifterData(new PaginatedDTO())
+        ).uniqueCount,
+      ).toEqual(2);
     });
 
     it('should return the correct amount when start is given', async () => {
       expect(
-        await service.getUniqueLifterCount(
-          new PaginatedDTO({
-            start: new Date('2022-01-05 20:35:00+00'),
-          }),
-        ),
+        (
+          await service.getLifterData(
+            new PaginatedDTO({
+              start: new Date('2022-01-05 20:35:00+00'),
+            }),
+          )
+        ).uniqueCount,
       ).toEqual(1);
     });
 
     it('should return the correct amount when start and end are given', async () => {
       expect(
-        await service.getUniqueLifterCount(
-          new PaginatedDTO({
-            start: new Date('2022-01-05 20:35:00+00'),
-            end: new Date('2022-01-06 20:35:00+00'),
-          }),
-        ),
+        (
+          await service.getLifterData(
+            new PaginatedDTO({
+              start: new Date('2022-01-05 20:35:00+00'),
+              end: new Date('2022-01-06 20:35:00+00'),
+            }),
+          )
+        ).uniqueCount,
       ).toEqual(1);
     });
 
@@ -286,33 +294,39 @@ describe('LiftersService', () => {
     });
   });
 
-  describe('getRepeatLifterCount', () => {
+  describe('getLifterData', () => {
     beforeAll(async () => {
       await createTwoBookingsAndAssignOneLifterToBoth();
     });
 
     it('should return the correct amount of repeat lifters when no params given', async () => {
-      expect(await service.getRepeatLifterCount(new PaginatedDTO())).toEqual(1);
+      expect(
+        (await service.getLifterData(new PaginatedDTO())).repeatCount,
+      ).toEqual(1);
     });
 
     it('should return the correct amount when start is given', async () => {
       expect(
-        await service.getRepeatLifterCount(
-          new PaginatedDTO({
-            start: new Date('2022-01-05 20:35:00+00'),
-          }),
-        ),
+        (
+          await service.getLifterData(
+            new PaginatedDTO({
+              start: new Date('2022-01-05 20:35:00+00'),
+            }),
+          )
+        ).repeatCount,
       ).toEqual(0);
     });
 
     it('should return the correct amount when start and end are given', async () => {
       expect(
-        await service.getRepeatLifterCount(
-          new PaginatedDTO({
-            start: new Date('2022-01-05 20:35:00+00'),
-            end: new Date('2022-01-06 20:35:00+00'),
-          }),
-        ),
+        (
+          await service.getLifterData(
+            new PaginatedDTO({
+              start: new Date('2022-01-05 20:35:00+00'),
+              end: new Date('2022-01-06 20:35:00+00'),
+            }),
+          )
+        ).repeatCount,
       ).toEqual(0);
     });
 

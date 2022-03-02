@@ -141,23 +141,17 @@ export class LiftersService {
     return count;
   }
 
-  public async getUniqueLifterCount(request: PaginatedDTO): Promise<number> {
+  public async getLifterData(request: PaginatedDTO): Promise<{
+    repeatCount: number;
+    uniqueCount: number;
+    acquisitionChannelCounts: any;
+  }> {
     const acceptedLifts = await this.acceptedLiftService.getAll(request);
-
-    const uniqueLifters = new Set<string>();
-
-    for (const lift of acceptedLifts) {
-      uniqueLifters.add(lift.lifterId);
-    }
-
-    return uniqueLifters.size;
-  }
-
-  public async getRepeatLifterCount(request: PaginatedDTO): Promise<number> {
-    const acceptedLifts = await this.acceptedLiftService.getAll(request);
+    const lifters = await this.getAll(request);
 
     const uniqueLifters = new Set<string>();
     const repeatLifters = new Set<string>();
+    const channels = {};
 
     for (const lift of acceptedLifts) {
       if (uniqueLifters.has(lift.lifterId)) repeatLifters.add(lift.lifterId);
@@ -165,7 +159,28 @@ export class LiftersService {
       uniqueLifters.add(lift.lifterId);
     }
 
-    return repeatLifters.size;
+    for (const lifter of lifters) {
+      if (channels[lifter?.acquisitionChannel]) {
+        channels[lifter?.acquisitionChannel] += 1;
+      } else {
+        channels[lifter?.acquisitionChannel] = 1;
+      }
+    }
+
+    const channelData: { name: string; value: number }[] = [];
+
+    for (const key in channels) {
+      channelData.push({
+        name: key,
+        value: channels[key],
+      });
+    }
+
+    return {
+      repeatCount: repeatLifters.size,
+      uniqueCount: uniqueLifters.size,
+      acquisitionChannelCounts: channelData,
+    };
   }
 
   public async getProfilePicture(lifterId: string) {
