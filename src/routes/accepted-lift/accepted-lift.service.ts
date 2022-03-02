@@ -382,7 +382,7 @@ export class AcceptedLiftService {
           amount: dto.totalPay * 100,
         }),
       );
-    } else if (dto.clockOutTime) {
+    } else if (dto.clockOutTime && lift.lifter.plaidInfo.isBetaTester) {
       const transaction = await this.transactionService.create(
         null,
         new LifterTransactionUpdateDTO({
