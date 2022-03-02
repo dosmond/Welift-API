@@ -314,10 +314,18 @@ export class BookingService {
             }),
           }),
         );
+
+        await this.pushNotificationHelper.sendHighRiskBookingCreatedNotification(
+          {
+            state: starting.state,
+          },
+        );
       }
 
       // Update location count for push notification
-      await this.updateLocationCountAmount(starting);
+      // No longer need this. Going to leave this here just
+      // in case though.
+      // await this.updateLocationCountAmount(starting);
 
       await queryRunner.commitTransaction();
       await queryRunner.release();

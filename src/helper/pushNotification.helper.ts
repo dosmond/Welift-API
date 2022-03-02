@@ -39,6 +39,18 @@ export class PushNotificationHelper {
     );
   }
 
+  public async sendHighRiskBookingCreatedNotification(request: {
+    state: string;
+  }) {
+    await this.sendPushNotificationToTopic(
+      new PushNotificationRequest({
+        topic: `/topics/${process.env.NODE_ENV}-${request.state}`,
+        title: 'New Lift',
+        message: 'To be filled',
+      }),
+    );
+  }
+
   public async sendAcceptedLiftDeletedNotification(request: {
     acceptedLiftId: string;
     date: string;
