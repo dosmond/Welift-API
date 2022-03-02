@@ -318,6 +318,8 @@ export class BookingService {
         await this.pushNotificationHelper.sendHighRiskBookingCreatedNotification(
           {
             state: starting.state,
+            date: dayjs(result.startTime).format('MM/DD'),
+            city: starting.city,
           },
         );
       }
