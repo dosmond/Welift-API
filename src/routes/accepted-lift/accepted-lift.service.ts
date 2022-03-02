@@ -1,3 +1,4 @@
+import { SlackHelper } from '@src/helper/slack.helper';
 import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
 import { ReferrerBonusEvent } from './../../events/referrerBonus.event';
 import {
@@ -40,6 +41,7 @@ export class AcceptedLiftService {
     private readonly liftRepo: Repository<Lift>,
     private readonly transactionService: LifterTransactionsService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly slackHelper: SlackHelper,
   ) {}
 
   public async getAll(details: PaginatedDTO) {
@@ -406,7 +408,7 @@ export class AcceptedLiftService {
     try {
       return await getManager().transaction('SERIALIZABLE', async (manager) => {
         const accepted = await manager.findOne(AcceptedLift, id, {
-          relations: ['lift'],
+          relations: ['lift', 'lifter', 'lift.booking'],
         });
 
         const liftToUpdate = await this.liftRepo.findOne(
@@ -437,6 +439,14 @@ export class AcceptedLiftService {
         }
 
         await manager.save(liftToUpdate);
+        await this.slackHelper.sendBasicSucessSlackMessage(
+          this.slackHelper.prepareBasicSuccessSlackMessage({
+            type: SlackHelper.ACCEPTED_LIFT_DELETED,
+            objects: [accepted],
+            sendBasic: true,
+          }),
+        );
+
         return await manager.delete(AcceptedLift, id);
       });
     } catch (err) {

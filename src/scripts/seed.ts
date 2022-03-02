@@ -127,6 +127,7 @@ async function run() {
     liftRepo,
     lifterTransactionsService,
     new EventEmitter2(),
+    new SlackHelper(),
   );
   const addressService = new AddressService(addressRepo);
   const badgeService = new BadgeService(badgeRepo);

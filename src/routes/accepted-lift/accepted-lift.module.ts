@@ -1,3 +1,4 @@
+import { SlackHelper } from '@src/helper/slack.helper';
 import { AuthModule } from './../../auth/auth.module';
 import { Lift } from '@src/model/lifts.entity';
 import { AcceptedLift } from './../../model/acceptedLift.entity';
@@ -10,7 +11,7 @@ import { AcceptedLiftService } from './accepted-lift.service';
 @Module({
   imports: [TypeOrmModule.forFeature([AcceptedLift, Lift]), AuthModule],
   controllers: [AcceptedLiftController],
-  providers: [AcceptedLiftService],
+  providers: [AcceptedLiftService, SlackHelper],
   exports: [AcceptedLiftService],
 })
 export class AcceptedLiftModule {}
