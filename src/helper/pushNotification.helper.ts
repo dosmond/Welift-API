@@ -48,7 +48,7 @@ export class PushNotificationHelper {
       new PushNotificationRequest({
         topic: `/topics/${process.env.NODE_ENV}-${request.state}`,
         title: `New lift on ${request.date}`,
-        message: `${request.state} lift only available for a short time! Claim the job.`,
+        message: `${request.city} lift only available for a short time! Claim the job.`,
       }),
     );
   }
