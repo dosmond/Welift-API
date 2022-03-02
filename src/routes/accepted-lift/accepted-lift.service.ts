@@ -356,7 +356,14 @@ export class AcceptedLiftService {
 
     const lift = await this.repo.findOne(
       { id: dto.id },
-      { relations: ['lifter'] },
+      {
+        relations: [
+          'lifter',
+          'lift',
+          'lift.booking',
+          'lift.booking.startingAddress',
+        ],
+      },
     );
 
     if (!lift) {
@@ -375,6 +382,17 @@ export class AcceptedLiftService {
           amount: dto.totalPay * 100,
         }),
       );
+    } else if (dto.clockOutTime && lift.lifter.plaidInfo.isBetaTester) {
+      const transaction = await this.transactionService.create(
+        null,
+        new LifterTransactionUpdateDTO({
+          lifterId: lift.lifterId,
+          title: `Lift in ${lift?.lift?.booking?.startingAddress?.city}`,
+          amount: dto.totalPay * 100,
+        }),
+      );
+
+      dto.transactionId = transaction.id;
     }
 
     return AcceptedLiftUpdateDTO.fromEntity(
