@@ -136,6 +136,11 @@ export class BookingUpdateDTO
   @ApiProperty()
   @IsOptional()
   @IsBoolean()
+  isHighRisk: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
   sendConfirmationEmail: boolean;
 
   @ApiProperty()
@@ -198,6 +203,7 @@ export class BookingUpdateDTO
         calendarEventId: entity.calendarEventId,
         acquisitionChannel: entity.acquisitionChannel,
         description: entity.description,
+        isHighRisk: entity.isHighRisk,
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),

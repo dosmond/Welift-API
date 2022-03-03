@@ -131,6 +131,9 @@ export class Booking {
   })
   description: string | null;
 
+  @Column('boolean', { name: 'is_high_risk', default: false })
+  isHighRisk: boolean;
+
   @OneToOne(() => Address, (addresses) => addresses.bookingEnd)
   @JoinColumn([{ name: 'ending_address', referencedColumnName: 'id' }])
   endingAddress: Address;

@@ -133,6 +133,11 @@ export class BookingDTO implements Readonly<BookingDTO> {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  isHighRisk: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @ValidateNested()
   @Type(() => AddressDTO)
   startingAddress: AddressDTO;
@@ -195,6 +200,7 @@ export class BookingDTO implements Readonly<BookingDTO> {
         calendarEventId: entity.calendarEventId,
         acquisitionChannel: entity.acquisitionChannel,
         description: entity.description,
+        isHighRisk: entity.isHighRisk,
         endingAddress: AddressDTO.fromEntity(entity.endingAddress),
         startingAddress: AddressDTO.fromEntity(entity.startingAddress),
         lift: LiftDTO.fromEntity(entity.lift),

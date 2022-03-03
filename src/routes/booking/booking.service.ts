@@ -233,6 +233,8 @@ export class BookingService {
         booking.calendarEventId = data.id;
       }
 
+      booking.isHighRisk = !booking.sendConfirmationEmail;
+
       // Create Booking
       const result = await queryRunner.manager.save(booking.toEntity());
 

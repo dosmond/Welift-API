@@ -207,7 +207,8 @@ export class AcceptedLiftService {
       liftToUpdate.currentLifterCount += 1;
 
       if (
-        liftToUpdate.currentLifterCount === liftToUpdate.booking.lifterCount
+        liftToUpdate.currentLifterCount === liftToUpdate.booking.lifterCount &&
+        liftToUpdate.booking.isHighRisk
       ) {
         this.eventEmitter.emit(
           EventNames.HighRiskBookingDeletionCancellation,
