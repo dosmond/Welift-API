@@ -224,6 +224,8 @@ export class SlackHelper {
       },
     });
 
+    message.blocks[0].text.text = `${SlackHelper.HIGH_RISK_DELETION} called`;
+
     return message;
   };
 
