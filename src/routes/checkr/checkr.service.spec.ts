@@ -1,3 +1,4 @@
+import { CronHelper, CronModule } from './../../helper/cron.helper';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
@@ -33,6 +34,7 @@ import { LifterReviewsService } from '../lifter-reviews/lifter-reviews.service';
 import { LifterStatsService } from '../lifter-stats/lifter-stats.service';
 import { LiftersService } from '../lifters/lifters.service';
 import { CheckrService } from './checkr.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 describe('CheckrService', () => {
   let module: TestingModule;
@@ -58,6 +60,8 @@ describe('CheckrService', () => {
           Lift,
         ]),
         AuthModule,
+        CronModule,
+        ScheduleModule.forRoot(),
         LoggerModule.forRoot(),
       ],
       providers: [

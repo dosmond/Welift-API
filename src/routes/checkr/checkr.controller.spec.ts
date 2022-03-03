@@ -1,3 +1,4 @@
+import { CronHelper, CronModule } from './../../helper/cron.helper';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
@@ -32,6 +33,7 @@ import { LiftersService } from '../lifters/lifters.service';
 import { CheckrController } from './checkr.controller';
 import { CheckrService } from './checkr.service';
 import { configService } from '@src/config/config.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 describe('CheckrController', () => {
   let controller: CheckrController;
@@ -55,6 +57,8 @@ describe('CheckrController', () => {
           Lift,
         ]),
         AuthModule,
+        CronModule,
+        ScheduleModule.forRoot(),
         LoggerModule.forRoot(),
       ],
       controllers: [CheckrController],
@@ -74,8 +78,8 @@ describe('CheckrController', () => {
         PushNotificationHelper,
         EmailClient,
         LifterTransactionsService,
-        EventEmitter2,
         SlackHelper,
+        EventEmitter2,
       ],
     }).compile();
 

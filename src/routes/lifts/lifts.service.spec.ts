@@ -18,6 +18,8 @@ import { Lift } from '@src/model/lifts.entity';
 import { Repository } from 'typeorm';
 import { AcceptedLiftService } from '../accepted-lift/accepted-lift.service';
 import { LiftsService } from './lifts.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from '@src/helper/cron.helper';
 
 describe('LiftsService', () => {
   let service: LiftsService;
@@ -38,6 +40,8 @@ describe('LiftsService', () => {
           Address,
         ]),
         AuthModule,
+        CronModule,
+        ScheduleModule.forRoot(),
         LoggerModule.forRoot(),
       ],
       providers: [

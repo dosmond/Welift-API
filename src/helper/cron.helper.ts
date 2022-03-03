@@ -1,5 +1,4 @@
 import { HighRiskBookingDeletionEvent } from './../events/highRiskBookingDeletion.event';
-import { PushNotificationHelper } from './pushNotification.helper';
 import { CustomerPrepEvent } from './../events/customerPrep.event';
 import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
@@ -28,7 +27,6 @@ export class CronHelper implements OnApplicationBootstrap {
     @InjectRepository(CronJobDescription)
     private readonly cronRepo: Repository<CronJobDescription>,
     private eventEmitter: EventEmitter2,
-    private pushNotificationHelper: PushNotificationHelper,
   ) {}
 
   // On system restart, recover all the cron jobs that were
@@ -154,7 +152,7 @@ export class CronHelper implements OnApplicationBootstrap {
 @Global()
 @Module({
   imports: [TypeOrmModule.forFeature([CronJobDescription])],
-  providers: [CronHelper],
+  providers: [CronHelper, EventEmitter2],
   exports: [CronHelper],
 })
 export class CronModule {}
