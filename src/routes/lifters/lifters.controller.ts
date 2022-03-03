@@ -34,10 +34,14 @@ export class LiftersController {
   @Roles(Role.Lifter, Role.Rep)
   public async getById(
     @User() user: User,
-    @Query() query: { id: string; userId: string },
+    @Query() query: { id: string; userId: string; referrerCode: string },
   ): Promise<LifterDTO> {
     try {
       if (query.id) return await this.serv.getById(user, query.id);
+
+      if (query.referrerCode)
+        return await this.serv.getByReferrerCode(user, query.referrerCode);
+
       return await this.serv.getByUserId(user, query.userId);
     } catch (err) {
       console.log(err);

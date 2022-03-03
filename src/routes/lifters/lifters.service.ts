@@ -73,6 +73,24 @@ export class LiftersService {
     );
   }
 
+  public async getByReferrerCode(user: User, id: string): Promise<LifterDTO> {
+    return LifterDTO.fromEntity(
+      await this.repo.findOne(
+        { referrerCode: id },
+        {
+          relations: [
+            'lifterReviews',
+            'lifterStats',
+            'address',
+            'lifterEquipments',
+            'completedLifterBadges',
+            'lifterCompletedTrainingVideos',
+          ],
+        },
+      ),
+    );
+  }
+
   public async getByUserId(user: User, userId: string): Promise<LifterDTO> {
     return LifterDTO.fromEntity(
       await this.repo.findOne(

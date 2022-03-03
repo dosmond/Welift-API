@@ -128,12 +128,7 @@ async function run() {
     lifterTransactionsService,
     new EventEmitter2(),
     new SlackHelper(),
-    new CronHelper(
-      new SchedulerRegistry(),
-      cronJobRepo,
-      new EventEmitter2(),
-      new PushNotificationHelper(),
-    ),
+    new CronHelper(new SchedulerRegistry(), cronJobRepo, new EventEmitter2()),
     new TextClient(),
   );
   const addressService = new AddressService(addressRepo);
@@ -152,12 +147,7 @@ async function run() {
     new EmailClient(),
     new GoogleCalendarApiHelper(),
     bookingLocationService,
-    new CronHelper(
-      new SchedulerRegistry(),
-      cronJobRepo,
-      new EventEmitter2(),
-      new PushNotificationHelper(),
-    ),
+    new CronHelper(new SchedulerRegistry(), cronJobRepo, new EventEmitter2()),
     new SlackHelper(),
     new TextClient(),
     new PushNotificationHelper(),
