@@ -1,4 +1,4 @@
-import { CronHelper, CronModule } from './../../helper/cron.helper';
+import { CronModule } from './../../helper/cron.helper';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
