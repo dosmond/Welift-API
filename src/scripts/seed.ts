@@ -128,6 +128,13 @@ async function run() {
     lifterTransactionsService,
     new EventEmitter2(),
     new SlackHelper(),
+    new CronHelper(
+      new SchedulerRegistry(),
+      cronJobRepo,
+      new EventEmitter2(),
+      new PushNotificationHelper(),
+    ),
+    new TextClient(),
   );
   const addressService = new AddressService(addressRepo);
   const badgeService = new BadgeService(badgeRepo);

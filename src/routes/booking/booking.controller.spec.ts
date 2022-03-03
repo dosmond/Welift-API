@@ -2,7 +2,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './../../auth/auth.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CronJobDescription } from './../../model/cronjob.entity';
-import { CronHelper } from './../../helper/cron.helper';
+import { CronHelper, CronModule } from './../../helper/cron.helper';
 import { EmailClient } from '@src/helper/email.client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,7 +30,6 @@ describe('BookingController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-        ScheduleModule.forRoot(),
         TypeOrmModule.forFeature([
           Booking,
           BookingLocationCount,
@@ -42,6 +41,8 @@ describe('BookingController', () => {
           Note,
         ]),
         AuthModule,
+        CronModule,
+        ScheduleModule.forRoot(),
         LoggerModule.forRoot(),
       ],
       controllers: [BookingController],

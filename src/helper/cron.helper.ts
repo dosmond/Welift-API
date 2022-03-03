@@ -1,5 +1,4 @@
 import { HighRiskBookingDeletionEvent } from './../events/highRiskBookingDeletion.event';
-import { PushNotificationHelper } from './pushNotification.helper';
 import { CustomerPrepEvent } from './../events/customerPrep.event';
 import { CronJobNames } from './../enum/cronJobNames.enum';
 import { EventNames } from './../enum/eventNames.enum';
@@ -17,6 +16,7 @@ import { CronJob } from 'cron';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { LifterClockInReminderEvent } from '@src/events/lifterClockInReminder.event';
 
 @Injectable()
 export class CronHelper implements OnApplicationBootstrap {
@@ -27,7 +27,6 @@ export class CronHelper implements OnApplicationBootstrap {
     @InjectRepository(CronJobDescription)
     private readonly cronRepo: Repository<CronJobDescription>,
     private eventEmitter: EventEmitter2,
-    private pushNotificationHelper: PushNotificationHelper,
   ) {}
 
   // On system restart, recover all the cron jobs that were
@@ -135,12 +134,25 @@ export class CronHelper implements OnApplicationBootstrap {
   ) {
     this.eventEmitter.emit(EventNames.HighRiskBookingDeletion, event);
   }
+
+  private async [CronJobNames.LifterClockInReminder](
+    acceptedLiftId: string,
+    city: string,
+  ) {
+    this.eventEmitter.emit(
+      EventNames.LifterClockInReminder,
+      new LifterClockInReminderEvent({
+        acceptedLiftId: acceptedLiftId,
+        city: city,
+      }),
+    );
+  }
 }
 
 @Global()
 @Module({
   imports: [TypeOrmModule.forFeature([CronJobDescription])],
-  providers: [CronHelper],
+  providers: [CronHelper, EventEmitter2],
   exports: [CronHelper],
 })
 export class CronModule {}

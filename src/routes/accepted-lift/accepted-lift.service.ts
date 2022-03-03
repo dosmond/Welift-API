@@ -1,3 +1,6 @@
+import { LifterClockInReminderEvent } from '@src/events/lifterClockInReminder.event';
+import { TextClient } from '@src/helper/text.client';
+import { CronHelper } from './../../helper/cron.helper';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { HighRiskBookingDeletionCancellationEvent } from './../../events/highRiskBookingDeletionCancellation.event';
 import { ReferrerBonusEvent } from './../../events/referrerBonus.event';
@@ -29,6 +32,9 @@ import { ClockOutEvent } from '../../events/clockout.event';
 import { LifterTransactionDTO } from '@src/dto/lifterTransaction.dto';
 import { Lifter } from '@src/model/lifters.entity';
 import { LifterTransactionUpdateDTO } from '@src/dto/lifterTransaction.update.dto';
+import { CronJobData, CronJobOptions } from '@src/model/cronjob.entity';
+import { CronJobNames } from '@src/enum/cronJobNames.enum';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class AcceptedLiftService {
@@ -42,6 +48,8 @@ export class AcceptedLiftService {
     private readonly transactionService: LifterTransactionsService,
     private readonly eventEmitter: EventEmitter2,
     private readonly slackHelper: SlackHelper,
+    private readonly cronHelper: CronHelper,
+    private readonly textClient: TextClient,
   ) {}
 
   public async getAll(details: PaginatedDTO) {
@@ -75,12 +83,12 @@ export class AcceptedLiftService {
   }
 
   public async getById(id: string): Promise<AcceptedLiftDTO> {
-    return await this.repo
-      .findOne(
+    return AcceptedLiftDTO.fromEntity(
+      await this.repo.findOne(
         { id: id },
         { relations: ['lifter', 'lift', 'lift.booking', 'transaction'] },
-      )
-      .then((e) => AcceptedLiftDTO.fromEntity(e));
+      ),
+    );
   }
 
   public async getLifterAccepted(
@@ -194,7 +202,7 @@ export class AcceptedLiftService {
     try {
       const liftToUpdate = await this.liftRepo.findOne(
         { id: lift.liftId },
-        { relations: ['booking'] },
+        { relations: ['booking', 'booking.startingAddress'] },
       );
 
       if (
@@ -205,18 +213,6 @@ export class AcceptedLiftService {
       }
 
       liftToUpdate.currentLifterCount += 1;
-
-      if (
-        liftToUpdate.currentLifterCount === liftToUpdate.booking.lifterCount &&
-        liftToUpdate.booking.isHighRisk
-      ) {
-        this.eventEmitter.emit(
-          EventNames.HighRiskBookingDeletionCancellation,
-          new HighRiskBookingDeletionCancellationEvent({
-            liftId: lift.liftId,
-          }),
-        );
-      }
 
       // If this is the last slot and the booking still needs
       // someone with a pickup truck, then only allow people with a pickup truck.
@@ -240,8 +236,36 @@ export class AcceptedLiftService {
 
       const dto = AcceptedLiftDTO.fromEntity(lift);
       const result = await queryRunner.manager.save(dto.toEntity(user));
+
       await queryRunner.commitTransaction();
       await queryRunner.release();
+
+      if (
+        liftToUpdate.currentLifterCount === liftToUpdate.booking.lifterCount &&
+        liftToUpdate.booking.isHighRisk
+      ) {
+        this.eventEmitter.emit(
+          EventNames.HighRiskBookingDeletionCancellation,
+          new HighRiskBookingDeletionCancellationEvent({
+            liftId: lift.liftId,
+          }),
+        );
+      }
+
+      // Lifter reminder text cron job
+      this.cronHelper.addCronJob(
+        new CronJobData({
+          cronName: CronJobNames.LifterClockInReminder,
+          params: [result.id, liftToUpdate.booking.startingAddress.city],
+          options: new CronJobOptions({
+            key: `${CronJobNames.LifterClockInReminder}-${result.id}`,
+            date: dayjs(liftToUpdate?.booking?.startTime)
+              .subtract(5, 'minute')
+              .toDate(),
+          }),
+        }),
+      );
+
       return AcceptedLiftDTO.fromEntity(result);
     } catch (err) {
       await queryRunner.rollbackTransaction();
@@ -448,7 +472,13 @@ export class AcceptedLiftService {
           }),
         );
 
-        return await manager.delete(AcceptedLift, id);
+        const result = await manager.delete(AcceptedLift, id);
+
+        this.cronHelper.removeCronJob(
+          `${CronJobNames.LifterClockInReminder}-${id}`,
+        );
+
+        return result;
       });
     } catch (err) {
       throw new BadRequestException(err.message);
@@ -495,6 +525,18 @@ export class AcceptedLiftService {
         }),
       );
     }
+  }
+
+  @OnEvent(EventNames.LifterClockInReminder)
+  private async handleLifterClockInReminder(
+    payload: LifterClockInReminderEvent,
+  ) {
+    const acceptedLift = await this.getById(payload?.acceptedLiftId);
+
+    await this.textClient.sendLifterClockInReminderText({
+      phoneNumber: acceptedLift.lifter.phone,
+      city: payload.city,
+    });
   }
 
   @OnEvent(EventNames.AutoClockOut)

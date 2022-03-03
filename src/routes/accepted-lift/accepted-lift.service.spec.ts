@@ -1,3 +1,7 @@
+import { CronJobDescription } from './../../model/cronjob.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronHelper, CronModule } from './../../helper/cron.helper';
+import { TextClient } from '@src/helper/text.client';
 import { SlackHelper } from '@src/helper/slack.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
@@ -51,8 +55,10 @@ describe('AcceptedLiftService', () => {
           Address,
           LifterStats,
           LifterTransaction,
+          CronJobDescription,
         ]),
         AuthModule,
+        ScheduleModule.forRoot(),
         LoggerModule.forRoot(),
       ],
       providers: [
@@ -60,6 +66,8 @@ describe('AcceptedLiftService', () => {
         LifterTransactionsService,
         EventEmitter2,
         SlackHelper,
+        TextClient,
+        CronHelper,
       ],
     }).compile();
 
