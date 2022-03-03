@@ -8,4 +8,5 @@ export enum EventNames {
   ReferrerBonus = 'referrer_bonus',
   HighRiskBookingDeletion = 'high_risk_booking_deletion',
   HighRiskBookingDeletionCancellation = 'high_risk_booking_deletion_cancellation',
+  LifterClockInReminder = 'lifter_clock_in_reminder',
 }

@@ -17,6 +17,7 @@ import { CronJob } from 'cron';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { LifterClockInReminderEvent } from '@src/events/lifterClockInReminder.event';
 
 @Injectable()
 export class CronHelper implements OnApplicationBootstrap {
@@ -134,6 +135,19 @@ export class CronHelper implements OnApplicationBootstrap {
     event: HighRiskBookingDeletionEvent,
   ) {
     this.eventEmitter.emit(EventNames.HighRiskBookingDeletion, event);
+  }
+
+  private async [CronJobNames.LifterClockInReminder](
+    acceptedLiftId: string,
+    city: string,
+  ) {
+    this.eventEmitter.emit(
+      EventNames.LifterClockInReminder,
+      new LifterClockInReminderEvent({
+        acceptedLiftId: acceptedLiftId,
+        city: city,
+      }),
+    );
   }
 }
 

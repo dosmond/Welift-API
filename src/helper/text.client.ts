@@ -142,6 +142,26 @@ If you have any issues, please reach out to 385-309-3256`;
     }
   }
 
+  public async sendLifterClockInReminderText(request: {
+    phoneNumber: string;
+    city: string;
+  }) {
+    try {
+      const message = `Your lift in ${request.city} is about to start! Don't forget to clock in!`;
+
+      const params: SNS.PublishInput = {
+        Message: message,
+        PhoneNumber: `+1${BookingDTO.standardizePhoneNumber(
+          request.phoneNumber,
+        )}`,
+      };
+
+      await new SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
+    } catch (err) {
+      this.logger.error(err);
+    }
+  }
+
   private async cleanUpSubscriptions(subscriptions): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const promises: Promise<{ $response: AWS.Response<{}, AWS.AWSError> }>[] =
