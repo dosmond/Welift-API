@@ -476,10 +476,10 @@ export class BookingService {
   ) {
     await this.delete(event.booking.id, event.state, event.eventId);
 
-    await this.textClient.sendCustomerBookingCancellationText({
-      name: event.booking.name,
-      phoneNumber: event.booking.phone,
-    });
+    // await this.textClient.sendCustomerBookingCancellationText({
+    //   name: event.booking.name,
+    //   phoneNumber: event.booking.phone,
+    // });
 
     // Send Slack Notification about expiration
     this.slackHelper.sendBasicSucessSlackMessage(
